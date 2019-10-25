@@ -186,7 +186,7 @@ class BudgetInfo extends React.Component {
                         </Row>
                         <Row>
                             <Col span={24}>
-                                <Form.Item label="部门">
+                                <Form.Item label="部门1">
                                     {getFieldDecorator('department')(
                                         <Input
                                             onPressEnter={this.onSearch}
