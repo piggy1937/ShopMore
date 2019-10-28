@@ -87,6 +87,8 @@ class LoginForm extends React.Component {
             }
 
             localStorage.setItem('username', values.username)
+            let currentTime =  Date.now()/1000;
+            localStorage.setItem('expires_time',currentTime +res2.expires_in)
             authenticateSuccess(JSON.stringify(res2))
             this.props.history.push('/')
         } catch (e) {

@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { SET_USER, SET_WEBSOCKET, SET_ONLINELIST, SET_CHATLIST, ADD_CHAT } from './actions'
+import { SET_USER, SET_WEBSOCKET, SET_ONLINELIST, SET_CHATLIST, ADD_CHAT,REFRESH_TOKEN } from './actions'
 
 /**
  * 用户信息
@@ -10,6 +10,9 @@ function user(state = {}, action) {
     switch (action.type) {
         case SET_USER: {
             return action.user
+        }
+        case REFRESH_TOKEN:{
+            console.log('获取预算信息')
         }
         default:
             return state

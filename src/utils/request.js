@@ -3,8 +3,10 @@ import { cloneDeep, isEmpty } from 'lodash'
 import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
 import { CANCEL_REQUEST_MESSAGE } from '@/utils/constant'
-import { isAuthenticated } from '@/utils/session'
+import { isAuthenticated, logout } from '@/utils/session'
+import { refreshToken } from '@/store/actions'
 import qs from 'qs'
+import history from './history'
 const BASE_URL = process.env.REACT_APP_BASE_URL || ''
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 
@@ -15,7 +17,7 @@ axios.interceptors.request.use(function (config) {
   if (authention) {
     token = authention.access_token;
   }
-  config.headers.common['Authorization'] = 'Bearer '+token;
+  config.headers.common['Authorization'] = 'Bearer ' + token;
   //console.dir(config);
   return config;
 }, function (error) {
@@ -24,6 +26,27 @@ axios.interceptors.request.use(function (config) {
   console.info(error);
   return Promise.reject(error);
 });
+
+
+//添加一个响应拦截器
+axios.interceptors.response.use(response => {
+  return response;
+}, err => {
+  return new Promise((resolve, reject) => {
+
+    const { response } = err
+    let error = response
+    if (error.status === 401 && error.data.error_description.indexOf('Access token expired') != -1) {
+      refreshToken({ initialRequest: error.config, resolve: resolve, reject: reject });
+    } else if (error.status === 401 && error.statusText === 'Unauthorized') {
+      logout()
+      history.push('/login')
+    } else {
+      reject(error);
+    }
+  });
+});
+
 
 
 
@@ -41,7 +64,7 @@ export default function request(options) {
       ;[domain] = urlMatch
       url = url.slice(domain.length)
     }
-    
+
     const match = pathToRegexp.parse(url)
     url = pathToRegexp.compile(url)(data)
     for (const item of match) {
@@ -49,22 +72,22 @@ export default function request(options) {
         delete cloneData[item.name]
       }
     }
-   
+
     url = domain + url
-   
+
   } catch (e) {
     message.error(e.message)
   }
- 
+
   options.url = url
-  if(options.method === 'post'){
-    if(url.indexOf('oauth/token')!=-1){
-    options.data =qs.stringify(cloneData);
-    }else{
+  if (options.method === 'post') {
+    if (url.indexOf('oauth/token') != -1) {
+      options.data = qs.stringify(cloneData);
+    } else {
       options.data = cloneData
     }
-  }else{
-  options.params = cloneData
+  } else {
+    options.params = cloneData
   }
   options.cancelToken = new CancelToken(cancel => {
     window.cancelRequest.set(Symbol(Date.now()), {
