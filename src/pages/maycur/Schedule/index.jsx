@@ -74,7 +74,7 @@ class ScheduleInfo extends React.Component {
                     'content-type': 'application/json',
                 },
                 method: 'get',
-                url: '/job/page',
+                url: '/api/job/page',
                 data: {
                     pageNum:1,
                     pageSize:20
@@ -114,7 +114,7 @@ class ScheduleInfo extends React.Component {
                             'content-type': 'application/json',
                         },
                         method: 'delete',
-                        url: '/job',
+                        url: '/api/job',
                         data: {
                             jobClassName: props.jobClassName,
                             jobGroupName: props.jobGroup

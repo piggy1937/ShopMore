@@ -52,7 +52,7 @@ class CreateModal extends Component {
                     'content-type': 'application/json',
                 },
                 method: 'post',
-                url: '/job',
+                url: '/api/job',
                 data: {
                     jobClassName:fields.jobClassName,
                     jobGroupName:fields.jobGroupName,
