@@ -25,7 +25,8 @@ class BudgetInfo extends React.Component {
             isShowCreateModal: false,
             value: undefined,
             treeData:[],
-            depTreeData:[]
+            depTreeData:[],
+            projTreeData:[]
 
         }
     }
@@ -51,7 +52,8 @@ class BudgetInfo extends React.Component {
                 // current: page - 1,
                 budgetExecDate: fields.execDate? fields.execDate.format("YYYY-MM-DD") : '',   //koa会把参数转换为字符串，undefined也会
                 budgetAccountBizCode: fields.subject || '',
-                deptBizCodes: [...fields.department || '']
+                deptBizCodes: [...fields.department || ''],
+                projectBizCodes:[...fields.project||'']
             }
         })
     }catch(e){
@@ -82,7 +84,9 @@ class BudgetInfo extends React.Component {
     onSearch = () => {
         this.getBudgetInfo();
     }
-   
+    onReset = ()=>{
+        this.props.form.resetFields();
+    }
   
    async componentDidMount (){
        
@@ -114,11 +118,25 @@ class BudgetInfo extends React.Component {
             }
 
           })
-         const ret= await Promise.all([p1, p2])
+          let p3 = new Promise(async (resolve, reject) => {      
+            try{
+                const ret = await request({
+                    method:'get',
+                    url:'/api/admin/profna',
+                    data:{}
+                })
+                resolve(ret)
+            }catch(e){
+                reject(e)
+            }
+
+          })
+         const ret= await Promise.all([p1, p2,p3])
         if(ret){
             this.setState({
                 treeData:ret[0].result,
-                depTreeData:ret[1].result
+                depTreeData:ret[1].result,
+                projTreeData:ret[2].result
             })
         }
     }
@@ -145,7 +163,7 @@ class BudgetInfo extends React.Component {
 
     render() {
         const { getFieldDecorator, selectedRowKeys } = this.props.form
-        const { pagination ,treeData,depTreeData} = this.state
+        const { pagination ,treeData,depTreeData,projTreeData} = this.state
         const { SHOW_PARENT } = TreeSelect;
         const columns = [
             {
@@ -260,7 +278,7 @@ class BudgetInfo extends React.Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={24}>
+                            <Col span={6}>
                                 <Form.Item label="部门">
                                     {getFieldDecorator('department')(
                                        <TreeSelect
@@ -277,6 +295,28 @@ class BudgetInfo extends React.Component {
                                        onSelect={(value,node,extra)=>{
                                         const { setFieldsValue } = this.props.form
                                         setFieldsValue({'department':{...value}})
+                                        this.onSearch()
+                                       }}
+                                       />
+                                    )}
+                                </Form.Item>
+                            </Col>
+                            <Col span={6}>
+                                <Form.Item label="项目">
+                                    {getFieldDecorator('project')(
+                                       <TreeSelect
+                                       showSearch
+                                       treeDataSimpleMode
+                                       treeNodeFilterProp="title"
+                                       style={{ width: 200 }}
+                                       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                                       placeholder="请选择项目"
+                                       treeData={projTreeData}
+                                       treeCheckable={true}
+                                       showCheckedStrategy={SHOW_PARENT}
+                                       onSelect={(value,node,extra)=>{
+                                        const { setFieldsValue } = this.props.form
+                                        setFieldsValue({'project':{...value}})
                                         this.onSearch()
                                        }}
                                        />
