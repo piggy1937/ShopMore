@@ -10,7 +10,7 @@ const MessageBoard = LoadableComponent(import('./MessageBoard/index'), true);
 const Chat = LoadableComponent(import('./Chat/index'), true);
 const About = LoadableComponent(import('./About/index'), true);
 const BudgetInfo = LoadableComponent(import('./maycur/budget'), true);
-
+const ScheduleInfo = LoadableComponent(import('./maycur/Schedule'), true);
 const menu = [
     {
        name:'每刻报销',
@@ -20,7 +20,13 @@ const menu = [
         name: '获取预算',
         icon: '',
         key: 'BudgetInfo',
-       }]
+       },
+           {
+               name: '定时轮询',
+               icon: '',
+               key: 'ScheduleInfo',
+           }
+       ]
     },
     {
         name: 'antd',
@@ -80,8 +86,8 @@ const tabs = {
     MessageBoard: <MessageBoard />,
     Chat: <Chat />,
     About: <About />,
-    BudgetInfo:<BudgetInfo/>
-
+    BudgetInfo:<BudgetInfo/>,
+    ScheduleInfo:<ScheduleInfo/>
 }
 
 export {
