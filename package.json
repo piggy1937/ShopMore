@@ -25,7 +25,6 @@
     "redux-thunk": "^2.3.0",
     "screenfull": "^4.2.0"
   },
-  "proxy":"http://localhost:8080/",
   "scripts": {
     "start": "npm run color && react-app-rewired start",
     "build": "react-app-rewired build",

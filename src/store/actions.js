@@ -24,7 +24,7 @@ export async function refreshToken(params)
             'Authorization': 'Basic Y2xpZW50SWQ6Y2xpZW50U2VjcmV0',
         },
         method: 'post',
-        url: '/oauth/token?grant_type=refresh_token',
+        url: '/api/oauth/token?grant_type=refresh_token',
         data: {
             refresh_token: auth.refresh_token
         }

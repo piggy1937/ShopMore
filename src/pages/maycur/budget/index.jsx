@@ -43,7 +43,7 @@ class BudgetInfo extends React.Component {
                 'content-type': 'application/json',
             },
             method: 'post',
-            url: '/maycur/search/budget',
+            url: '/api/maycur/search/budget',
             data: {
                 // current: page - 1,
                 budgetExecDate: fields.execDate? fields.execDate.format("YYYY-MM-DD") : '',   //koa会把参数转换为字符串，undefined也会

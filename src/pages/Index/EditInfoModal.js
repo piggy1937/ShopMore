@@ -2,11 +2,12 @@ import React from 'react'
 import { Modal, Form, Upload, Icon, message, Input, Radio, DatePicker, Alert } from 'antd'
 import { isAuthenticated, authenticateSuccess } from '../../utils/session'
 import moment from 'moment'
-// import { json } from '../../utils/ajax'
+import request from '@/utils/request'
 import { setUser, initWebSocket } from '../../store/actions'
 import { connect, } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { createFormField } from '../../utils/util'
+import { resolve } from 'dns'
 
 
 const RadioGroup = Radio.Group;
@@ -33,6 +34,9 @@ const form = Form.create({
 class EditInfoModal extends React.Component {
     state = {
         uploading: false
+    }
+    componentDidMount(){
+        console.log('#########')
     }
     /**
      * 关闭模态框
@@ -84,13 +88,55 @@ class EditInfoModal extends React.Component {
     /**
      * 转换上传组件表单的值
      */
-    _normFile = (e) => {
-        if (e.file.response && e.file.response.data) {
-            return e.file.response.data.url
+    _normFile =  (e) => {
+        if (e.file.response && e.file.response.success) {
+            var random = Math.ceil(Math.random() * 100000);
+            return e.file.response.result+'?'+random
         } else {
             return ''
         }
     }
+
+  
+    customRequest = async (options) => {
+        const formData = new FormData();
+        const { file } = options
+        formData.append('file', file);
+       const ret = await request({
+            processData: false,
+            contentType: false,
+            method: 'post',
+            url: `/api/file/upload?fileType=image`,
+            data: formData
+        })
+        const { code, result } = ret
+        new Promise(function (resolve, reject) {
+            options.onSuccess(ret, file)
+            resolve('')
+        }).then(ret=>{
+            this.setState({
+                uploading: false
+            })
+            message.success('上传头像成功')
+        })
+       
+
+    }
+    onChange = (info) => {
+        if (info.file.status !== 'uploading') {
+            this.setState({
+                uploading: true
+        })}
+        if (info.file.status === 'done') {
+           
+        } else if (info.file.status === 'error') {
+            this.setState({
+                uploading: false
+            })
+            message.error(info.file.response.message || '上传头像失败')
+        }
+    }
+    
     render() {
         const { uploading } = this.state
         const { visible } = this.props
@@ -106,30 +152,11 @@ class EditInfoModal extends React.Component {
         const uploadProps = {
             name: "avatar",
             listType: "picture-card",
-            headers: {
-                Authorization: `Bearer ${isAuthenticated()}`,
-            },
-            action: `${process.env.REACT_APP_BASE_URL}/upload?isImg=1`,
-            showUploadList: false,
+            customRequest: this.customRequest,
+            showUploadList:false,
+            supportServerRender:true,
             accept: "image/*",
-            onChange: (info) => {
-                if (info.file.status !== 'uploading') {
-                    this.setState({
-                        uploading: true
-                    })
-                }
-                if (info.file.status === 'done') {
-                    this.setState({
-                        uploading: false
-                    })
-                    message.success('上传头像成功')
-                } else if (info.file.status === 'error') {
-                    this.setState({
-                        uploading: false
-                    })
-                    message.error(info.file.response.message || '上传头像失败')
-                }
-            }
+            onChange: this.onChange
         }
         return (
             <Modal

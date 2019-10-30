@@ -70,7 +70,7 @@ class LoginForm extends React.Component {
                         'Authorization': 'Basic Y2xpZW50SWQ6Y2xpZW50U2VjcmV0',
                     },
                     method: 'post',
-                    url: '/oauth/token?grant_type=password',
+                    url: '/api/oauth/token?grant_type=password',
                     data: {
                         username: values.username,
                         password: ciphertext,

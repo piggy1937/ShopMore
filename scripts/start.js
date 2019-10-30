@@ -105,6 +105,8 @@ checkBrowsers(paths.appPath, isInteractive)
       urls.lanUrlForConfig
     );
     const devServer = new WebpackDevServer(compiler, serverConfig);
+    //添加代理
+    require('../src/setupProxy')(devServer);
     // Launch WebpackDevServer.
     devServer.listen(port, HOST, err => {
       if (err) {

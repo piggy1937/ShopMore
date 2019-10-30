@@ -81,9 +81,12 @@ export default function request(options) {
 
   options.url = url
   if (options.method === 'post') {
-    if (url.indexOf('oauth/token') != -1) {
+    if (url&&(url.indexOf('oauth/token') != -1)){
       options.data = qs.stringify(cloneData);
-    } else {
+    }else if(url&&(url.indexOf('file/upload') != -1)){
+      options.data=data
+    }
+     else {
       options.data = cloneData
     }
   } else {
