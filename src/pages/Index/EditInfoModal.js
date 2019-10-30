@@ -63,7 +63,12 @@ class EditInfoModal extends React.Component {
             ...values,
             birth: values.birth && moment(values.birth).valueOf()
         }
-        const res = null;//await json.post('/user/update', param)
+        const res = await request({
+            method:'post',
+            url:'/api/admin/user/update',
+            data:param
+        });
+        
         if (res.status === 0) {
             //修改localStorage，为什么我们在redux中保存了用户信息还要在localStorage中保存？redux刷新就重置了，我们需要username重新去后台获取
             localStorage.setItem('username', values.username)
@@ -213,12 +218,12 @@ class EditInfoModal extends React.Component {
                         </Form.Item>
                         <Form.Item label={'性别'} {...formItemLayout}>
                             {getFieldDecorator('gender', {
-                                initialValue: '男',
+                                initialValue: 'male',
                                 // rules: [{ required: true, message: '请选择性别' }],
                             })(
                                 <RadioGroup>
-                                    <Radio value={'男'}>男</Radio>
-                                    <Radio value={'女'}>女</Radio>
+                                    <Radio value={'male'}>男</Radio>
+                                    <Radio value={'female'}>女</Radio>
                                 </RadioGroup>
                             )}
                         </Form.Item>

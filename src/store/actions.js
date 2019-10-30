@@ -71,8 +71,13 @@ export async function refreshToken(params)
 //异步action，从后台获取用户信息
 export function getUser(param) {
     return async function (dispatch) {
-        const res ={}// await json.get('/user/getUser', param)
-        dispatch(setUser(res.data || {}))
+        const res =await request({
+            method:'get',
+            url:'/api/admin/user/getUser',
+            data:param
+        }) 
+
+        dispatch(setUser(res.result || {}))
     }
 }
 

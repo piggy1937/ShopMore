@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Card, Form, Input, Button, DatePicker, message, Icon, Row, Col, Divider, Modal, Popconfirm, notification } from 'antd'
+import { Table, Card, Form, Input, Button, DatePicker, message, Icon, Row, Col, Divider, Modal, Popconfirm, notification,TreeSelect} from 'antd'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import request  from '@/utils/request'
@@ -22,7 +22,10 @@ class BudgetInfo extends React.Component {
             isShowInfoModal: false,
             userInfo: {},        //当前行的user信息
             selectedRowKeys: [],   //选择中的行keys
-            isShowCreateModal: false
+            isShowCreateModal: false,
+            value: undefined,
+            treeData:[],
+            depTreeData:[]
 
         }
     }
@@ -48,7 +51,7 @@ class BudgetInfo extends React.Component {
                 // current: page - 1,
                 budgetExecDate: fields.execDate? fields.execDate.format("YYYY-MM-DD") : '',   //koa会把参数转换为字符串，undefined也会
                 budgetAccountBizCode: fields.subject || '',
-                deptBizCodes: [fields.department || '']
+                deptBizCodes: [...fields.department || '']
             }
         })
     }catch(e){
@@ -79,9 +82,71 @@ class BudgetInfo extends React.Component {
     onSearch = () => {
         this.getBudgetInfo();
     }
+   
+  
+   async componentDidMount (){
+       
+
+        let p1 = new Promise(async (resolve, reject) => {
+            try{
+                const ret = await request({
+                    method:'get',
+                    url:'/api/admin/subject',
+                    data:{}
+                })
+                resolve(ret)
+            }catch(e){
+                reject(e)
+            }
+           
+          })
+          
+          let p2 = new Promise(async (resolve, reject) => {      
+            try{
+                const ret = await request({
+                    method:'get',
+                    url:'/api/admin/subcompany',
+                    data:{}
+                })
+                resolve(ret)
+            }catch(e){
+                reject(e)
+            }
+
+          })
+         const ret= await Promise.all([p1, p2])
+        if(ret){
+            this.setState({
+                treeData:ret[0].result,
+                depTreeData:ret[1].result
+            })
+        }
+    }
+    /***
+     * 加载部门节点
+     */
+    onLoadDepData = async (treeNode)=>{
+        const { id } = treeNode.props;
+        const ret = await request({
+            method:'get',
+            url:'/api/admin/department',
+            data:{cid:id}
+        })
+        let {depTreeData} = this.state
+        if(ret.success){
+            this.setState({
+                depTreeData:[...depTreeData,...ret.result]
+              });
+        }
+        
+    }
+
+
+
     render() {
         const { getFieldDecorator, selectedRowKeys } = this.props.form
-        const { pagination } = this.state
+        const { pagination ,treeData,depTreeData} = this.state
+        const { SHOW_PARENT } = TreeSelect;
         const columns = [
             {
                 title: '序号',
@@ -156,11 +221,21 @@ class BudgetInfo extends React.Component {
                             <Col span={6}>
                                 <Form.Item label="科目">
                                     {getFieldDecorator('subject')(
-                                        <Input
-                                            onPressEnter={this.onSearch}
-                                            style={{ width: 200 }}
-                                            placeholder="科目"
+                                        <TreeSelect
+                                        showSearch
+                                        treeDataSimpleMode
+                                        treeNodeFilterProp="title"
+                                        style={{ width: 200 }}
+                                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                                        placeholder="请选择科目"
+                                        treeData={treeData}
+                                        onSelect={(value,node,extra)=>{
+                                            const { setFieldsValue } = this.props.form
+                                            setFieldsValue({'subject':value})
+                                            this.onSearch()
+                                           }}
                                         />
+                                       
                                     )}
                                 </Form.Item>
                             </Col>
@@ -186,13 +261,25 @@ class BudgetInfo extends React.Component {
                         </Row>
                         <Row>
                             <Col span={24}>
-                                <Form.Item label="部门1">
+                                <Form.Item label="部门">
                                     {getFieldDecorator('department')(
-                                        <Input
-                                            onPressEnter={this.onSearch}
-                                            style={{ width: 200 }}
-                                            placeholder="部门"
-                                        />
+                                       <TreeSelect
+                                       showSearch
+                                       treeDataSimpleMode
+                                       treeNodeFilterProp="title"
+                                       style={{ width: 200 }}
+                                       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                                       placeholder="请选择部門"
+                                       treeData={depTreeData}
+                                       treeCheckable={true}
+                                       showCheckedStrategy={SHOW_PARENT}
+                                       loadData={this.onLoadDepData}
+                                       onSelect={(value,node,extra)=>{
+                                        const { setFieldsValue } = this.props.form
+                                        setFieldsValue({'department':{...value}})
+                                        this.onSearch()
+                                       }}
+                                       />
                                     )}
                                 </Form.Item>
                             </Col>
