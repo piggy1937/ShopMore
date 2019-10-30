@@ -11,6 +11,7 @@ const Chat = LoadableComponent(import('./Chat/index'), true);
 const About = LoadableComponent(import('./About/index'), true);
 const BudgetInfo = LoadableComponent(import('./maycur/budget'), true);
 const ScheduleInfo = LoadableComponent(import('./maycur/Schedule'), true);
+const SyncInfo = LoadableComponent(import('./maycur/sync'), true);
 const menu = [
     {
        name:'每刻报销',
@@ -25,6 +26,11 @@ const menu = [
                name: '定时轮询',
                icon: '',
                key: 'ScheduleInfo',
+           },
+           {
+               name: '组织架构同步',
+               icon: '',
+               key: 'SyncInfo',
            }
        ]
     },
@@ -87,7 +93,8 @@ const tabs = {
     Chat: <Chat />,
     About: <About />,
     BudgetInfo:<BudgetInfo/>,
-    ScheduleInfo:<ScheduleInfo/>
+    ScheduleInfo:<ScheduleInfo/>,
+    SyncInfo:<SyncInfo/>
 }
 
 export {

@@ -127,7 +127,7 @@ class ScheduleInfo extends React.Component {
                     return
                 }
                  if(res.code!=200){
-                     message.error('删除失败')
+                     message.error(res.messages)
                      this.setState({
                          isLoading: false,
                      })
@@ -145,16 +145,14 @@ class ScheduleInfo extends React.Component {
 
         })
     }
-
-
     /**
-     * 删除函数
+     * 暂停
      */
-    onHandlePause = (props) => {
-        Modal.confirm({
-            title: '请问确定要删除吗？',
-            maskClosable: true,
-            onOk: async () => {
+    onHandlePause = async (props) => {
+        if(props.triggerState=="暂停"){
+            message.warning("已经是暂停状态")
+            return
+        }
                 let res
                 try{
                     res = await request({
@@ -162,7 +160,7 @@ class ScheduleInfo extends React.Component {
                             'content-type': 'application/json',
                         },
                         method: 'post',
-                        url: '/job/resume',
+                        url: 'api/job/pause',
                         data: {
                             jobClassName: props.jobClassName,
                             jobGroupName: props.jobGroup
@@ -174,25 +172,66 @@ class ScheduleInfo extends React.Component {
                     })
                     return
                 }
-                if(res.code!=200){
-                    message.error('删除失败')
-                    this.setState({
-                        isLoading: false,
-                    })
-                    return
-                }else{
-                    message.success("删除成功")
-                    this.getScheduleInfo()
-                    this.setState({
-                        isLoading: true,
-                    })
-                }
 
-
-            },
-
-        })
+        if(res.code!=200){
+            message.error(res.message)
+            this.setState({
+                isLoading: false,
+            })
+            return
+        }else{
+            message.success(res.message)
+            this.getScheduleInfo()
+            this.setState({
+                isLoading: true,
+            })
+        }
     }
+
+    /**
+     * 恢复
+     */
+    onHandleResume = async (props) => {
+        if(props.triggerState=="启动"){
+            message.warning("已经是启动状态")
+            return
+        }
+        let res
+        try{
+            res = await request({
+                headers: {
+                    'content-type': 'application/json',
+                },
+                method: 'post',
+                url: 'api/job/resume',
+                data: {
+                    jobClassName: props.jobClassName,
+                    jobGroupName: props.jobGroup,
+                }
+            })
+        }catch(e){
+            this.setState({
+                isLoading: false,
+            })
+            return
+        }
+
+        if(res.code!=200){
+            message.error(res.message)
+            this.setState({
+                isLoading: false,
+            })
+            return
+        }else{
+            message.success(res.message)
+            this.getScheduleInfo()
+            this.setState({
+                isLoading: true,
+            })
+        }
+    }
+
+
     render() {
         const { getFieldDecorator, selectedRowKeys } = this.props.form
         const { collections, isShowCreateModal } = this.state
@@ -230,16 +269,23 @@ class ScheduleInfo extends React.Component {
                 align: 'center'
             },
             {
+                title: '状态',
+                dataIndex: 'triggerState',
+                align: 'center'
+            },
+            {
                 render: (record) => (
                         <div style={{ textAlign: 'right' }}>
                             <Button type="primary" icon='delete'  type='danger' onClick={()=>{
                                 this.onHandleDelete(record)
                             }}>删除</Button>&emsp;
-                        <Button type="primary" icon='undo' onClick={this.onMaycurDelete}>恢复</Button>&emsp;
-                        <Button type="primary" icon='pause' onClick={()=>
-                            this.onHandlePause(record)
-                        }>暂停</Button>
-                    </div>
+                            <Button type="primary" icon='undo' onClick={()=> {
+                                this.onHandleResume(record)
+                            }}>恢复</Button>&emsp;
+                            <Button type="primary" icon='pause' onClick={()=>
+                                this.onHandlePause(record)
+                             }>暂停</Button>
+                        </div>
                 ),
             }
         ]
