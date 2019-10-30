@@ -63,7 +63,7 @@ class MyContent extends React.Component {
                                         {item.content}
                                     </div>
                                     <Footer style={{ textAlign: 'center', background: '#fff' }}>
-                                        React-Admin ©{new Date().getFullYear()} Created by 137596665@qq.com <a target='_blank' href='https://github.com/zhangZhiHao1996/admin' rel="noopener noreferrer"><Icon type="github" /></a>
+                                        React-Admin ©{new Date().getFullYear()} Created by 604580436@qq.com <a target='_blank' href='https://github.com/piggy1937/ShopMore.git' rel="noopener noreferrer"><Icon type="github" /></a>
                                     </Footer>
                                 </TabPane>))
                             }

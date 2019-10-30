@@ -271,7 +271,14 @@ class ScheduleInfo extends React.Component {
             {
                 title: '状态',
                 dataIndex: 'triggerState',
-                align: 'center'
+                align: 'center',
+                render: (text) => {
+                    if(text=== 'WAITING'){
+                        return '启动'
+                    }
+                    return '暂停'
+                
+                },
             },
             {
                 render: (record) => (
