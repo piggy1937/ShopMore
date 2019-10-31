@@ -11,6 +11,9 @@ function resolve (dir) {
 module.exports = function override(config, env) {
     //do stuff with the webpack config...
 
+    // config =>{
+    //     config.output.publicPath ='/' 
+    // }
     //按需加载
     config = injectBabelPlugin(
         ['import', { libraryName: 'antd', style: true }],
