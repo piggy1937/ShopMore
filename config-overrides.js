@@ -11,6 +11,9 @@ function resolve (dir) {
 module.exports = function override(config, env) {
     //do stuff with the webpack config...
 
+    // config =>{
+    //     config.output.publicPath ='/' 
+    // }
     //按需加载
     config = injectBabelPlugin(
         ['import', { libraryName: 'antd', style: true }],
@@ -28,7 +31,7 @@ module.exports = function override(config, env) {
         '@': resolve('src')
     }
     
-    // config.devtool = false; // 关掉 sourceMap 
+     config.devtool = false; // 关掉 sourceMap 
 
     //启用ES7的修改器语法（babel 7）
     config = injectBabelPlugin(['@babel/plugin-proposal-decorators', { "legacy": true }], config)
