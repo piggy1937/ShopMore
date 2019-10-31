@@ -94,6 +94,8 @@ class LoginForm extends React.Component {
         } catch (e) {
             if (e.statusCode === 404) {
                 message.error(e.message)
+            }else{
+                message.error(e.message)
             }
           
         }

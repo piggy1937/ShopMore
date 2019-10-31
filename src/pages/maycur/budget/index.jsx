@@ -131,6 +131,7 @@ class BudgetInfo extends React.Component {
             }
 
           })
+          try{
          const ret= await Promise.all([p1, p2,p3])
         if(ret){
             this.setState({
@@ -139,12 +140,16 @@ class BudgetInfo extends React.Component {
                 projTreeData:ret[2].result
             })
         }
+        }catch(e){
+            message.error(e.message)
+        }
     }
     /***
      * 加载部门节点
      */
     onLoadDepData = async (treeNode)=>{
         const { id } = treeNode.props;
+        try{
         const ret = await request({
             method:'get',
             url:'/api/admin/department',
@@ -156,6 +161,9 @@ class BudgetInfo extends React.Component {
                 depTreeData:[...depTreeData,...ret.result]
               });
         }
+    }catch(e){
+       message.error(e.message)
+    }
         
     }
 
