@@ -7,15 +7,17 @@ import {connect} from "react-redux";
 @Form.create()
 class CreateModal extends Component {
     state = {
-        inval:''
+        inval:'',
+        required:false
     }
     onCancel = () => {
         this.props.form.resetFields()
         this.props.toggleVisible(false)
     }
     handleOk = () => {
+        this.verifyClass()
         this.props.form.validateFields((errors, values) => {
-            if (!errors) {
+            if (!errors&&this.state.required) {
                 this.onCreate(values)
             }
         })
@@ -29,7 +31,7 @@ class CreateModal extends Component {
                     'content-type': 'application/json',
                 },
                 method: 'get',
-                url: '/job/check',
+                url: '/api/job/check',
                 data: {
                     jobClassName: fields.jobClassName,
                 }
@@ -38,12 +40,23 @@ class CreateModal extends Component {
             return
         }
         if(res.code!=200){
+            this.setState({
+                required:false
+            })
             message.warn("类名不存在")
+        }
+        if(res.code==200){
+            this.setState({
+                required:true
+            })
         }
     }
 
 
     onCreate = async () => {
+        this.setState({
+            required:false
+        })
         const fields = this.props.form.getFieldsValue()
         let res
         try{
@@ -103,6 +116,7 @@ class CreateModal extends Component {
                             ]
                         })(
                             <Input
+                                onPressEnter={this.verifyClass}
                                 maxLength={50}
                                 placeholder='请输入类名称' />
                         )}

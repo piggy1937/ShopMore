@@ -149,7 +149,7 @@ class ScheduleInfo extends React.Component {
      * 暂停
      */
     onHandlePause = async (props) => {
-        if(props.triggerState=="暂停"){
+        if(props.triggerState=="PAUSED"){
             message.warning("已经是暂停状态")
             return
         }
@@ -192,15 +192,14 @@ class ScheduleInfo extends React.Component {
      * 恢复
      */
     onHandleResume = async (props) => {
-        if(props.triggerState=="启动"){
+        if(props.triggerState!="PAUSED"){
             message.warning("已经是启动状态")
             return
         }
         let res
         try{
             res = await request({
-                headers: {
-                    'content-type': 'application/json',
+                headers: {'content-type': 'application/json',
                 },
                 method: 'post',
                 url: 'api/job/resume',
@@ -273,7 +272,7 @@ class ScheduleInfo extends React.Component {
                 dataIndex: 'triggerState',
                 align: 'center',
                 render: (text) => {
-                    if(text=== 'WAITING'){
+                    if(text!= 'PAUSED'){
                         return '启动'
                     }
                     return '暂停'
