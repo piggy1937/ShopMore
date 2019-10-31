@@ -111,45 +111,10 @@ class SyncInfo extends React.Component {
         return
     }
     this.setState({
-        message:res.message
+        message:res.message,
+        loading:false
     })
-        switch (props){
-            case "organization" :
-                this.setState({
-                    loading:{organization:false},
-                })
-                break
-            case "subCompany" :
-                this.setState({
-                    loading:{subCompany:false},
-                })
-                break
-            case "department" :
-                this.setState({
-                    loading:{department:false},
-                })
-                break
-            case "resource" :
-                this.setState({
-                    loading:{resource:false},
-                })
-                break
-            case "role" :
-                this.setState({
-                    loading:{role:false},
-                })
-                break
-            case "costTracking" :
-                this.setState({
-                    loading:{costTracking:false},
-                })
-                break
-            case "productFna" :
-                this.setState({
-                    loading:{productFna:false},
-                })
-                break
-        }
+
     }
     render() {
         return (
