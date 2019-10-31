@@ -13,7 +13,6 @@ class SyncInfo extends React.Component {
         super(props)
         this.state = {
             title:'结果展示',
-            copied:false,
             message:'',
             loading:{
                 subCompany:false,
@@ -26,10 +25,14 @@ class SyncInfo extends React.Component {
             }
     }
     }
+    onCopy=()=>{
+        if(this.state.message!=''){
+            message.success("复制成功")
+        }
+    }
     onReset = ()=>{
         this.setState({
                 title:'结果展示',
-                copied:false,
                 message:'',
                 loading:{
                     subCompany:false,
@@ -46,6 +49,7 @@ class SyncInfo extends React.Component {
      * 组织架构同步
      */
     syncInfo = async (props) => {
+        this.onReset()
         switch (props){
             case "organization" :
                 this.setState({
@@ -161,8 +165,8 @@ class SyncInfo extends React.Component {
                             <Button icon="reload"  onClick={this.onReset}>重置</Button>
                 </div>}>
                     <CopyToClipboard text={this.state.message}
-                                     onCopy={() => this.setState({copied: true})}>
-                        <button type='primary'>复制</button>
+                                     onCopy={this.onCopy}>
+                        <button type='primary' >复制</button>
                     </CopyToClipboard><br/>
                     <textarea style={{marginTop: '1em'}} cols="120" rows="12"value={this.state.message}/>
                 </Card>
