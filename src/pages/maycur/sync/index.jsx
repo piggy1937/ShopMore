@@ -111,7 +111,7 @@ class SyncInfo extends React.Component {
         return
     }
     this.setState({
-        message:res.message,
+        message:res.message ,
         loading:false
     })
 
