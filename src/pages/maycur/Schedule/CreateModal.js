@@ -1,29 +1,39 @@
 import React, { Component } from 'react';
-import { Modal, Form, Input, message } from 'antd'
-import request  from '@/utils/request'
+import { Modal, Form, Input, message } from 'antd';
+import request  from '@/utils/request';
+import Promptbox from '@/components/PromptBox/index'
 import {connect} from "react-redux";
 // import { post } from '../../utils/ajax'
 
 @Form.create()
 class CreateModal extends Component {
-    state = {
-        inval:'',
-        required:false
+    constructor(props) {
+        super(props)
+        this.state = {
+            checkName:'',
+            required:false
+        }
+        this.verifyClass = debounce(this.verifyClass, 1000)
     }
+
+
     onCancel = () => {
         this.props.form.resetFields()
         this.props.toggleVisible(false)
     }
     handleOk = () => {
-        this.verifyClass()
         this.props.form.validateFields((errors, values) => {
             if (!errors&&this.state.required) {
                 this.onCreate(values)
             }
         })
     }
-    verifyClass =async () => {
-        const fields = this.props.form.getFieldsValue()
+    handleKeyUp = (e) => {
+        this.verifyClass(e.target.value) // 对用户输入进行判断
+    }
+
+
+    verifyClass =async (username) => {
         let res
         try {
             res = await request({
@@ -33,7 +43,7 @@ class CreateModal extends Component {
                 method: 'get',
                 url: '/api/job/check',
                 data: {
-                    jobClassName: fields.jobClassName,
+                    jobClassName: username
                 }
             })
         } catch (e) {
@@ -41,16 +51,19 @@ class CreateModal extends Component {
         }
         if(res.code!=200){
             this.setState({
-                required:false
+                required:false,
+                checkName:res.message
             })
             message.warn("类名不存在")
         }
         if(res.code==200){
             this.setState({
+                tip:null,
                 required:true
             })
         }
     }
+
 
 
     onCreate = async () => {
@@ -81,15 +94,23 @@ class CreateModal extends Component {
             })
             return
         }
-        if(res.code!=200){
-            message.error(res.message)
-            this.onCancel()
-            return
-        } else{
+        if(res.code==200){
             this.onCancel()
             this.props.onCreate()
             message.success('添加成功')
-            }
+            return
+        } else if(res.message ==='Cron格式不正确'){
+            message.error(res.message)
+            this.setState({
+                required:true
+            })
+            return
+        }else{
+            message.error(res.message)
+            this.onCancel()
+            return
+        }
+
     }
     render() {
         const { visible } = this.props
@@ -113,10 +134,10 @@ class CreateModal extends Component {
                             rules: [
                                 { required: true, message: '定时类名不能为空' },
                                 { pattern: /^[^\s']+$/, message: '不能输入特殊字符' },
-                            ]
+                            ],
                         })(
                             <Input
-                                onPressEnter={this.verifyClass}
+                                onKeyUp={ this.handleKeyUp }
                                 maxLength={50}
                                 placeholder='请输入类名称' />
                         )}
@@ -164,4 +185,14 @@ class CreateModal extends Component {
         );
     }
 }
+function debounce(fn, ms) {
+    let timeoutId
+    return function () {
+        clearTimeout(timeoutId)
+        timeoutId = setTimeout(() => {
+            fn.apply(this, arguments)
+        }, ms)
+    }
+}
+
 export default CreateModal;
