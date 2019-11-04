@@ -2,7 +2,7 @@
  * 菜单管理界面
  */
 import React from 'react'
-import { Card, Button,Icon, Row, Col,Tree, Input,Form} from 'antd'
+import { Card, Button,Icon, Row, Col,Tree, Input,Form,Select} from 'antd'
 import { withRouter } from 'react-router-dom'
 import Navbar from './navbar'
 import MenuElement from './element'
@@ -14,6 +14,7 @@ class MenuManager extends React.Component{
         this.state={
             formStatus:'',
             formEdit: false,
+            typeOptions: ['MENU', 'DIRT'],
         }
     }
 
@@ -36,17 +37,22 @@ class MenuManager extends React.Component{
      * 添加新菜单
      */
     handleAddMenu = ()=>{
-        this.props.form.validateFields((errors, values) => {
+        this.props.form.validateFields(async (errors, values) => {
             if (!errors) {
-                this.onLogin(values)
+                const ret2= await request({
+                    method:'post',
+                    url: '/api/admin/menu',
+                    data:values
+                })
             }
         });
     }
-
+    
 
     render(){
         const { getFieldDecorator } = this.props.form;
         const { Search } = Input;
+        const { Option } = Select;
         const formItemLayout = {
             labelCol: {
               xs: { span: 24 },
@@ -135,11 +141,19 @@ class MenuManager extends React.Component{
                             </Form.Item>
                             <Form.Item label="类型"> 
                                 {getFieldDecorator('type', {
-                                    rules: [{ required: true, message: 'Please input your username!' }],
+                                    rules: [{ required: true, message: 'Please input your type!' }],
+                                    initialValue: 'MENU' 
                                 })(
-                                    <Input
-                                    placeholder="请输入资源请求类型"
-                                    />,
+                                    <Select
+                                        style={{ width: 180 }}
+                                        placeholder="请选择请求类型"
+                                    >   
+                                    {
+                                        this.state.typeOptions.map(item=>{
+                                            return( <Option key={item} value={item}>{item}</Option>)
+                                        })
+                                    }
+                                    </Select>,
                                 )}
                             </Form.Item>
                             <Form.Item label="排序">
