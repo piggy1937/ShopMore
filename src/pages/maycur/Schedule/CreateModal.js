@@ -9,10 +9,8 @@ import debounce from 'lodash/debounce';
 class CreateModal extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            checkName:'',
-            required:false,
-          
+        this.state={
+            isLoading:false
         }
         this.checkJobclassNamekUniqued = debounce(this.checkJobclassNamekUniqued, 1000);
     }
@@ -21,10 +19,13 @@ class CreateModal extends Component {
     onCancel = () => {
         this.props.form.resetFields()
         this.props.toggleVisible(false)
+        this.setState({
+            isLoading:false
+        })
     }
     handleOk = () => {
         this.props.form.validateFields((errors, values) => {
-            if (!errors&&this.state.required) {
+            if (!errors && !this.state.isLoading) {
                 this.onCreate(values)
             }
         })
@@ -57,16 +58,15 @@ class CreateModal extends Component {
             callback(err);
           console.log(err)
         })
-        
+
     }
 
-    
 
 
     /**创建定时器任务 */
     onCreate = async () => {
         this.setState({
-            required:false
+            isLoading:true
         })
         const fields = this.props.form.getFieldsValue()
         let res
@@ -96,19 +96,15 @@ class CreateModal extends Component {
             this.onCancel()
             this.props.onCreate()
             message.success('添加成功')
-            return
         } else if(res.message ==='Cron格式不正确'){
             message.error(res.message)
-            this.setState({
-                required:true
-            })
-            return
         }else{
             message.error(res.message)
             this.onCancel()
-            return
         }
-
+        this.setState({
+            isLoading:false
+        })
     }
     render() {
         const { visible } = this.props
