@@ -135,9 +135,9 @@ class BudgetInfo extends React.Component {
          const ret= await Promise.all([p1, p2,p3])
         if(ret){
             this.setState({
-                treeData:ret[0].result,
-                depTreeData:ret[1].result,
-                projTreeData:ret[2].result
+                treeData:ret[0].result?ret[0].result:[],
+                depTreeData:ret[1].result?ret[1].result:[],
+                projTreeData:ret[2].result?ret[2].result:[]
             })
         }
         }catch(e){

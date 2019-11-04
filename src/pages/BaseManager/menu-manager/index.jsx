@@ -6,14 +6,44 @@ import { Card, Button,Icon, Row, Col,Tree, Input,Form} from 'antd'
 import { withRouter } from 'react-router-dom'
 import Navbar from './navbar'
 import MenuElement from './element'
+import request from '@/utils/request'
 @withRouter @Form.create()
 class MenuManager extends React.Component{
     constructor(props){
         super(props)
         this.state={
-            formStatus:''
+            formStatus:'',
+            formEdit: false,
         }
     }
+
+
+    changeFormStatus =(value)=>{
+        //修改表单状态
+        let formEdite=false
+         if(value==='create'){
+            this.props.form.resetFields();
+            formEdite =false
+         }else{
+            formEdite = true
+         }
+        this.setState({
+            formStatus:value,
+            formEdit: formEdite,
+        })
+    }
+    /**
+     * 添加新菜单
+     */
+    handleAddMenu = ()=>{
+        this.props.form.validateFields((errors, values) => {
+            if (!errors) {
+                this.onLogin(values)
+            }
+        });
+    }
+
+
     render(){
         const { getFieldDecorator } = this.props.form;
         const { Search } = Input;
@@ -44,8 +74,8 @@ class MenuManager extends React.Component{
                 <Row style={{marginBottom:'18px'}}>
                     <Col span={12}>
                         <div style={{ textAlign: 'left' }}>
-                            <Button type="primary" icon='plus' >添加</Button>&emsp;
-                            <Button type="primary" icon="edit">编辑</Button>&emsp;
+                            <Button type="primary" icon='plus' onClick={()=>{this.changeFormStatus('create')}} >添加</Button>&emsp;
+                            <Button type="primary" icon="edit" onClick={()=>{this.changeFormStatus('update')}}>编辑</Button>&emsp;
                             <Button type="primary" icon="delete">删除</Button>
                         </div>
                     </Col>
@@ -63,7 +93,6 @@ class MenuManager extends React.Component{
                                     rules: [{ required: true, message: 'Please input your username!' }],
                                 })(
                                     <Input
-                                    prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     placeholder="请输入路径编码"
                                     />,
                                 )}
@@ -73,27 +102,24 @@ class MenuManager extends React.Component{
                                     rules: [{ required: true, message: 'Please input your username!' }],
                                 })(
                                     <Input
-                                    prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     placeholder="请输入标题"
                                     />,
                                 )}
                             </Form.Item>
                             <Form.Item label="父级节点">
                                 {getFieldDecorator('parentId', {
-                                    rules: [{ required: true, message: 'Please input your username!' }],
+                                    rules: [],
                                 })(
                                     <Input
-                                    prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     placeholder="请输入父级节点"
                                     />,
                                 )}
                             </Form.Item>
                             <Form.Item label="图标">
                                 {getFieldDecorator('icon', {
-                                    rules: [{ required: true, message: 'Please input your username!' }],
+                                    rules: [],
                                 })(
                                     <Input
-                                    prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     placeholder="请输入图标"
                                     />,
                                 )}
@@ -103,7 +129,6 @@ class MenuManager extends React.Component{
                                     rules: [{ required: true, message: 'Please input your username!' }],
                                 })(
                                     <Input
-                                    prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     placeholder="请输入资源路径"
                                     />,
                                 )}
@@ -113,38 +138,46 @@ class MenuManager extends React.Component{
                                     rules: [{ required: true, message: 'Please input your username!' }],
                                 })(
                                     <Input
-                                    prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     placeholder="请输入资源请求类型"
                                     />,
                                 )}
                             </Form.Item>
                             <Form.Item label="排序">
                                 {getFieldDecorator('order', {
-                                    rules: [{ required: true, message: 'Please input your username!' }],
+                                    rules: [],
                                 })(
                                     <Input
-                                    prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     placeholder="请输入排序"
                                     />,
                                 )}
                             </Form.Item>
                             <Form.Item label="描述">
                                 {getFieldDecorator('description', {
-                                    rules: [{ required: true, message: 'Please input your username!' }],
+                                    rules: [],
                                 })(
                                     <Input
-                                    prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     placeholder="请输入描述"
                                     />,
                                 )}
                             </Form.Item>
-                            <Form.Item {...tailFormItemLayout}>
-                                <Button type="primary" htmlType="submit">
-                                    保存
-                                </Button>&emsp;
-                                <Button type="primary" htmlType="submit">
-                                   取消
-                                </Button>
+                            
+                            <Form.Item {...tailFormItemLayout} >
+                                <div style={{display: this.state.formStatus==='create'?'inline-block':'none'}}>
+                                    <Button type="primary" htmlType="submit" onClick={this.handleAddMenu}>
+                                        保存
+                                    </Button>&emsp;
+                                    <Button type="primary" htmlType="submit">
+                                        取消
+                                    </Button>
+                                </div>
+                                <div  style={{display: this.state.formStatus==='update'?'inline-block':'none'}}>
+                                    <Button type="primary" htmlType="submit">
+                                    更新
+                                    </Button>&emsp;
+                                    <Button type="primary" htmlType="submit">
+                                    取消
+                                    </Button>
+                                </div>
                             </Form.Item>
                         </Form>    
                         </Card>

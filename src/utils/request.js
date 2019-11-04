@@ -121,7 +121,7 @@ export default function request(options) {
       })
     })
     .catch(error => {
-      const { response, message } = error
+      const { response, message} = error
 
       if (String(message) === CANCEL_REQUEST_MESSAGE) {
         return {
@@ -136,6 +136,9 @@ export default function request(options) {
         const { data, statusText } = response
         statusCode = response.status
         msg = data.message || statusText
+      }else if(error.data['error'] === 'invalid_grant'){
+        statusCode = 601
+        msg = error.data.error_description || '用户名或密码错误'
       } else {
         statusCode = 600
         msg = error.message || 'Network Error'

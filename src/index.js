@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Router } from 'react-router-dom'
-import { LocaleProvider } from 'antd'
+import { ConfigProvider } from 'antd'
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -17,9 +17,9 @@ moment.locale('zh-cn');
 ReactDOM.render(
     <Provider store={store}>
         <Router history={history}>
-            <LocaleProvider locale={zh_CN}>
+            <ConfigProvider locale={zh_CN}>
                 <App />
-            </LocaleProvider>
+            </ConfigProvider>
         </Router>
     </Provider >,
     document.getElementById('root'));
