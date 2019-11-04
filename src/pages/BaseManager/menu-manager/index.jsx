@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom'
 import Navbar from './navbar'
 import MenuElement from './element'
 import request from '@/utils/request'
+import debounce from 'lodash/debounce';
 @withRouter @Form.create()
 class MenuManager extends React.Component{
     constructor(props){
@@ -16,6 +17,7 @@ class MenuManager extends React.Component{
             formEdit: false,
             typeOptions: ['MENU', 'DIRT'],
         }
+        this.checkCodeUniqued = debounce(this.checkCodeUniqued, 500);
     }
 
 
@@ -47,7 +49,33 @@ class MenuManager extends React.Component{
             }
         });
     }
-    
+    /**
+    * 检测路径编码是否存在
+    */
+   checkCodeUniqued =  (rule, value, callback)=>{
+      
+       request({
+           headers: {
+               'content-type': 'application/json',
+           },
+           method: 'get',
+           url: '/api/admin/menu/check_code',
+           data: {
+               code: value
+           }
+       }).then(data=>{
+           console.log(data)
+           const {code,message} = data
+         if(code===200){
+           callback();
+         }else{
+           callback(message); 
+         }
+       }).catch(err=>{
+           callback(err);
+       })
+       
+   }
 
     render(){
         const { getFieldDecorator } = this.props.form;
@@ -96,7 +124,9 @@ class MenuManager extends React.Component{
                         <Form  {...formItemLayout}>
                             <Form.Item label="路径编码">
                                 {getFieldDecorator('code', {
-                                    rules: [{ required: true, message: 'Please input your username!' }],
+                                    rules: [{ required: true, message: 'Please input your username!' },
+                                            {validator:this.checkCodeUniqued}
+                                            ],
                                 })(
                                     <Input
                                     placeholder="请输入路径编码"
