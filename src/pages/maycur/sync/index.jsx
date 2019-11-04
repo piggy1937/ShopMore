@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import request  from '@/utils/request'
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 const store = connect(
-    (state) => ({ user: state.user })
+     (state) => ({ user: state.user })
 )
 @withRouter @store @Form.create()
 class SyncInfo extends React.Component {
@@ -119,7 +119,7 @@ class SyncInfo extends React.Component {
     render() {
         return (
             <div>
-                <Card title={this.state.title}  extra={<div style={{ textAlign: 'left',marginRight: 0, width: '100%' }} wrapperCol={{ span: 48 }}>
+                <Card title={this.state.title}  extra={<div style={{ textAlign: 'left',marginRight: 0, width: '100%' }}>
                             <Button type='primary'  loading = {this.state.loading.organization}  onClick={()=> {this.syncInfo('organization')}}>组织架构同步</Button>&emsp;
                             <Button type='primary' loading = {this.state.loading.subCompany}  onClick={()=> {this.syncInfo('subCompany')}}>公司同步</Button>&emsp;
                             <Button type='primary' loading = {this.state.loading.department}  onClick={()=> {this.syncInfo('department')}}>部门同步</Button>&emsp;
@@ -133,7 +133,8 @@ class SyncInfo extends React.Component {
                                      onCopy={this.onCopy}>
                         <button type='primary' >复制</button>
                     </CopyToClipboard><br/>
-                    <textarea style={{marginTop: '1em'}} cols="120" rows="12"value={this.state.message}/>
+                    <textarea style={{marginTop: '1em'}} cols="120" rows="12"  defaultValue={this.state.message} >
+                    </textarea>
                 </Card>
             </div>
         );
