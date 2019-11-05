@@ -59,11 +59,33 @@ export async function refreshToken(params)
         logout()
         history.push('/login')
     }
-     
-
-
-
-
+}
+//修改菜单页表单状态
+export const CHANGE_FORM_STATUS = 'change_form_status'
+export function changeFormStatus(param){
+    return {
+        type: CHANGE_FORM_STATUS,
+        param
+    }
+}
+//设置菜单
+export const SET_MENU = 'set_menu'
+export function setMenu(param){
+    return {
+        type: SET_MENU,
+        param
+    }
+}
+//异步获取菜单，从后台获取菜单信息
+export function fetchMenu(param) {
+    return async function (dispatch) {
+        const res = await request({
+            methos: 'get',
+            url: '/api/admin/menu/tree',
+            data: {}
+          })
+        dispatch(setMenu(res.result || []))
+    }
 }
 
 
@@ -80,6 +102,12 @@ export function getUser(param) {
         dispatch(setUser(res.result || {}))
     }
 }
+
+
+
+
+
+
 
 export const SET_WEBSOCKET = 'SET_WEBSOCKET'  //设置websocket对象
 export function setWebsocket(websocket) {

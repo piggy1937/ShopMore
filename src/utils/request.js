@@ -80,7 +80,7 @@ export default function request(options) {
   }
 
   options.url = url
-  if (options.method === 'post') {
+  if (options.method === 'post' || options.method === 'put'  ) {
     if (url&&(url.indexOf('oauth/token') != -1)){
       options.data = qs.stringify(cloneData);
     }else if(url&&(url.indexOf('file/upload') != -1)){
@@ -92,6 +92,9 @@ export default function request(options) {
   } else {
     options.params = cloneData
   }
+
+  
+
   options.cancelToken = new CancelToken(cancel => {
     window.cancelRequest.set(Symbol(Date.now()), {
       pathname: window.location.pathname,
@@ -121,7 +124,7 @@ export default function request(options) {
       })
     })
     .catch(error => {
-      const { response, message } = error
+      const { response, message} = error
 
       if (String(message) === CANCEL_REQUEST_MESSAGE) {
         return {
@@ -136,9 +139,12 @@ export default function request(options) {
         const { data, statusText } = response
         statusCode = response.status
         msg = data.message || statusText
+      }else if(error&&error.data['error'] === 'invalid_grant'){
+        statusCode = 601
+        msg = error.data.error_description || '用户名或密码错误'
       } else {
         statusCode = 600
-        msg = error.message || 'Network Error'
+        msg = (error&&error.message) || 'Network Error'
       }
 
       /* eslint-disable */

@@ -156,7 +156,7 @@ class Chat extends Component {
         }
     }
     //节流函数优化
-    onMouseMove = throttle((e) => {
+    onMouseMove = (e) => {
         if (!this.isDown) {
             return
         }
@@ -170,7 +170,7 @@ class Chat extends Component {
 
         this.chatBox.style.left = offsetLeft + 'px';
         this.chatBox.style.top = offsetTop + 'px';
-    }, 10)
+    }
     onMouseUp = () => {
         this.isDown = false
         this.chatHeader.style.cursor = 'default'

@@ -12,6 +12,8 @@ const About = LoadableComponent(import('./About/index'), true);
 const BudgetInfo = LoadableComponent(import('./maycur/budget'), true);
 const ScheduleInfo = LoadableComponent(import('./maycur/Schedule'), true);
 const SyncInfo = LoadableComponent(import('./maycur/sync'), true);
+const MenuManager = LoadableComponent(import('./BaseManager/menu-manager'), true);
+const RoleTypeInfo = LoadableComponent(import('./role/type/index'), true);
 const menu = [
     {
        name:'每刻报销',
@@ -35,24 +37,24 @@ const menu = [
        ]
     },
     {
-        name: 'antd',
-        icon: 'ant-design',
-        key: 'antd',
+        name: '基础配置管理',
+        icon: 'setting',
+        key: 'baseManager',
         children: [
             {
-                name: '按钮',
-                icon: '',
-                key: 'ButtonDemo',
+                name: '菜单管理',
+                icon: 'usergroup-add',
+                key: 'menuManager',
             },
             {
-                name: '图标',
-                icon: '',
+                name: '角色权限管理',
+                icon: 'usergroup-add',
                 key: 'IconDemo',
             },
             {
-                name: '反馈',
-                icon: '',
-                key: 'FeedbackDemo',
+                name: '角色类型管理',
+                icon: 'usergroup-add',
+                key: 'RoleTypeInfo',
             },
         ]
     },
@@ -94,7 +96,9 @@ const tabs = {
     About: <About />,
     BudgetInfo:<BudgetInfo/>,
     ScheduleInfo:<ScheduleInfo/>,
-    SyncInfo:<SyncInfo/>
+    SyncInfo:<SyncInfo/>,
+    menuManager:<MenuManager/>, //菜单管理界面
+    RoleTypeInfo:<RoleTypeInfo/>
 }
 
 export {

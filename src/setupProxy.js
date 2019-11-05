@@ -5,7 +5,7 @@ module.exports = function(app) {
     proxy("/api", {
       target: "http://localhost:8080/",
       changeOrigin: true, // needed for virtual hosted sites
-      ws: true, // proxy websockets
+      ws: true, // proxy websocketsn
       pathRewrite: {
         "^/api": ""
       }

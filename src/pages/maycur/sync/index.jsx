@@ -3,23 +3,17 @@ import { Table, Card, Form, Input, Button, DatePicker, message, Icon, Row, Col, 
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import request  from '@/utils/request'
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 const store = connect(
-    (state) => ({ user: state.user })
+     (state) => ({ user: state.user })
 )
 @withRouter @store @Form.create()
 class SyncInfo extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            message:{
-                subCompany:"",
-                organization:"",
-                department:"",
-                resource:"",
-                role:"",
-                costTracking:"",
-                productFna:""
-            },
+            title:'结果展示',
+            message:'',
             loading:{
                 subCompany:false,
                 organization:false,
@@ -31,17 +25,15 @@ class SyncInfo extends React.Component {
             }
     }
     }
+    onCopy=()=>{
+        if(this.state.message!=''){
+            message.success("复制成功")
+        }
+    }
     onReset = ()=>{
         this.setState({
-                message:{
-                    subCompany:"",
-                    organization:"",
-                    department:"",
-                    resource:"",
-                    role:"",
-                    costTracking:"",
-                    productFna:""
-                },
+                title:'结果展示',
+                message:'',
                 loading:{
                     subCompany:false,
                     organization:false,
@@ -57,39 +49,47 @@ class SyncInfo extends React.Component {
      * 组织架构同步
      */
     syncInfo = async (props) => {
+        this.onReset()
         switch (props){
             case "organization" :
                 this.setState({
+                    title:'组织架构同步结果',
                     loading:{organization:true}
                 })
                 break
             case "subCompany" :
                 this.setState({
+                    title:'公司同步结果',
                     loading:{subCompany:true}
                 })
                 break
             case "department" :
                 this.setState({
+                    title:'部门同步结果',
                     loading:{department:true}
                 })
                 break
             case "resource" :
                 this.setState({
+                    title:'人员同步结果',
                     loading:{resource:true}
                 })
                 break
             case "role" :
                 this.setState({
+                    title:'角色同步结果',
                     loading:{role:true}
                 })
                 break
             case "costTracking" :
                 this.setState({
+                    title:'辅助核算同步结果',
                     loading:{costTracking:true}
                 })
                 break
             case "productFna" :
                 this.setState({
+                    title:'项目预算结果',
                     loading:{productFna:true}
                 })
                 break
@@ -107,59 +107,19 @@ class SyncInfo extends React.Component {
          }
         })
     }catch(e){
-            message.error("前端同步异常")
+            message.error("同步异常")
         return
     }
-        switch (props){
-            case "organization" :
-                this.setState({
-                    loading:{organization:false},
-                    message:{organization :res.message}
-                })
-                break
-            case "subCompany" :
-                this.setState({
-                    loading:{subCompany:false},
-                    message:{subCompany :res.message}
+    this.setState({
+        message:res.message ,
+        loading:false
+    })
 
-                })
-                break
-            case "department" :
-                this.setState({
-                    loading:{department:false},
-                    message:{department :res.message}
-                })
-                break
-            case "resource" :
-                this.setState({
-                    loading:{resource:false},
-                    message:{resource :res.message}
-                })
-                break
-            case "role" :
-                this.setState({
-                    loading:{role:false},
-                    message:{role :res.message}
-                })
-                break
-            case "costTracking" :
-                this.setState({
-                    loading:{costTracking:false},
-                    message:{costTracking :res.message}
-                })
-                break
-            case "productFna" :
-                this.setState({
-                    loading:{productFna:false},
-                    message:{productFna :res.message}
-                })
-                break
-        }
     }
     render() {
         return (
             <div>
-                <Card title="同步结果展示" extra={<div style={{ textAlign: 'left',marginRight: 0, width: '100%' }} wrapperCol={{ span: 48 }}>
+                <Card title={this.state.title}  extra={<div style={{ textAlign: 'left',marginRight: 0, width: '100%' }}>
                             <Button type='primary'  loading = {this.state.loading.organization}  onClick={()=> {this.syncInfo('organization')}}>组织架构同步</Button>&emsp;
                             <Button type='primary' loading = {this.state.loading.subCompany}  onClick={()=> {this.syncInfo('subCompany')}}>公司同步</Button>&emsp;
                             <Button type='primary' loading = {this.state.loading.department}  onClick={()=> {this.syncInfo('department')}}>部门同步</Button>&emsp;
@@ -169,13 +129,12 @@ class SyncInfo extends React.Component {
                             <Button type='primary' loading = {this.state.loading.productFna}  onClick={()=> {this.syncInfo('productFna')}}>项目预算同步</Button>&emsp;
                             <Button icon="reload"  onClick={this.onReset}>重置</Button>
                 </div>}>
-                    <div>组织架构同步：{this.state.message.organization}</div><br/>
-                    <div>公司同步：{this.state.message.subCompany}</div><br/>
-                    <div>部门同步：{this.state.message.department}</div><br/>
-                    <div>人员同步：{this.state.message.resource}</div><br/>
-                    <div>角色同步：{this.state.message.role}</div><br/>
-                    <div>辅助核算同步：{this.state.message.costTracking}</div><br/>
-                    <div>项目预算同步：{this.state.message.productFna}</div><br/>
+                    <CopyToClipboard text={this.state.message}
+                                     onCopy={this.onCopy}>
+                        <button type='primary' >复制</button>
+                    </CopyToClipboard><br/>
+                    <textarea style={{marginTop: '1em'}} cols="120" rows="12"  defaultValue={this.state.message} >
+                    </textarea>
                 </Card>
             </div>
         );

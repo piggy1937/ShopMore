@@ -131,13 +131,17 @@ class BudgetInfo extends React.Component {
             }
 
           })
+          try{
          const ret= await Promise.all([p1, p2,p3])
         if(ret){
             this.setState({
-                treeData:ret[0].result,
-                depTreeData:ret[1].result,
-                projTreeData:ret[2].result
+                treeData:ret[0].result?ret[0].result:[],
+                depTreeData:ret[1].result?ret[1].result:[],
+                projTreeData:ret[2].result?ret[2].result:[]
             })
+        }
+        }catch(e){
+            message.error(e.message)
         }
     }
     /***
@@ -145,6 +149,7 @@ class BudgetInfo extends React.Component {
      */
     onLoadDepData = async (treeNode)=>{
         const { id } = treeNode.props;
+        try{
         const ret = await request({
             method:'get',
             url:'/api/admin/department',
@@ -156,6 +161,9 @@ class BudgetInfo extends React.Component {
                 depTreeData:[...depTreeData,...ret.result]
               });
         }
+    }catch(e){
+       message.error(e.message)
+    }
         
     }
 

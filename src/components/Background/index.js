@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { TweenLite, Circ } from "gsap/all";
-import { throttle } from '@/utils/util'
 import Loading from '@/components/Loading'
 const bg1 = require('@/assets/images/bg1.jpg')
 class Background extends React.Component {
@@ -197,7 +196,7 @@ class Background extends React.Component {
         this.ctx = this.canvas.getContext('2d')
         this._createPoints()
         this.start()
-        window.onmousemove = throttle(this.handleMouseMove, 50)   //函数节流优化
+        window.onmousemove = this.handleMouseMove   //函数节流优化
     }
     destory = () => {
         window.cancelAnimationFrame(this.myReq)

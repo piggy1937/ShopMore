@@ -1,10 +1,10 @@
 import React from 'react'
 // import './style.less'   //没有设置模块化所以这里可以不用引，index中已经引入了
-import { Form, Input, Row, Col,message } from 'antd'
+import { Form, Input, Row, Col, message } from 'antd'
 import { randomNum } from '@/utils/util'
 import Promptbox from '@/components/PromptBox/index'
 import request from '@/utils/request'
-import { encrypt ,decrypt} from '@/utils/util'
+import { encrypt, decrypt } from '@/utils/util'
 import { authenticateSuccess } from '@/utils/session'
 import { withRouter } from 'react-router-dom'
 
@@ -61,8 +61,8 @@ class LoginForm extends React.Component {
         // }
         //加密密码
         const ciphertext = encrypt(values.password)
-       let newpassword = decrypt(ciphertext)
-        console.log(values.password,':',ciphertext,':',newpassword)
+        let newpassword = decrypt(ciphertext)
+        console.log(values.password, ':', ciphertext, ':', newpassword)
         try {
             const res2 = await request(
                 {
@@ -74,28 +74,38 @@ class LoginForm extends React.Component {
                     data: {
                         username: values.username,
                         password: ciphertext,
-                        scope:'all',
-                        grant_type:'password'
+                        scope: 'all',
+                        grant_type: 'password'
                     }
                 }
 
             )
-            if(!res2.access_token){
+            if (!res2.access_token) {
                 this._createCode()
                 this.props.form.resetFields('captcha')
                 return
             }
 
             localStorage.setItem('username', values.username)
-            let currentTime =  Date.now()/1000;
-            localStorage.setItem('expires_time',currentTime +res2.expires_in)
+            let currentTime = Date.now() / 1000;
+            localStorage.setItem('expires_time', currentTime + res2.expires_in)
             authenticateSuccess(JSON.stringify(res2))
             this.props.history.push('/')
         } catch (e) {
-            if (e.statusCode === 404) {
-                message.error(e.message)
+            switch (e.statusCode) {
+                case 404:
+                    message.error('所请求的页面不存在或已被删除');
+                    break;
+                case 600:
+                    message.error('网络错误!');
+                    break;
+                case 601:
+                    message.error(e.message);
+                    break;
+                default:
+                    message.error(e.message)
             }
-          
+
         }
 
 

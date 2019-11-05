@@ -1,61 +1,72 @@
 import React, { Component } from 'react';
-import { Modal, Form, Input, message } from 'antd'
-import request  from '@/utils/request'
+import { Modal, Form, Input, message } from 'antd';
+import request  from '@/utils/request';
+import Promptbox from '@/components/PromptBox/index'
 import {connect} from "react-redux";
-// import { post } from '../../utils/ajax'
+import debounce from 'lodash/debounce';
 
 @Form.create()
 class CreateModal extends Component {
-    state = {
-        inval:'',
-        required:false
+    constructor(props) {
+        super(props)
+        this.state={
+            isLoading:false
+        }
+        this.checkJobclassNamekUniqued = debounce(this.checkJobclassNamekUniqued, 1000);
     }
+
+
     onCancel = () => {
         this.props.form.resetFields()
         this.props.toggleVisible(false)
+        this.setState({
+            isLoading:false
+        })
     }
     handleOk = () => {
-        this.verifyClass()
         this.props.form.validateFields((errors, values) => {
-            if (!errors&&this.state.required) {
+            if (!errors && !this.state.isLoading) {
                 this.onCreate(values)
             }
         })
     }
-    verifyClass =async () => {
-        const fields = this.props.form.getFieldsValue()
-        let res
-        try {
-            res = await request({
-                headers: {
-                    'content-type': 'application/json',
-                },
-                method: 'get',
-                url: '/api/job/check',
-                data: {
-                    jobClassName: fields.jobClassName,
-                }
-            })
-        } catch (e) {
-            return
-        }
-        if(res.code!=200){
-            this.setState({
-                required:false
-            })
-            message.warn("类名不存在")
-        }
-        if(res.code==200){
-            this.setState({
-                required:true
-            })
-        }
+
+
+    /**
+     * 检测类目是否存在
+     */
+    checkJobclassNamekUniqued =  (rule, value, callback)=>{
+       
+        request({
+            headers: {
+                'content-type': 'application/json',
+            },
+            method: 'get',
+            url: '/api/job/check',
+            data: {
+                jobClassName: value
+            }
+        }).then(data=>{
+            console.log(data)
+            const {code,message} = data
+          if(code===200){
+            callback();
+          }else{
+            callback(message); 
+          }
+        }).catch(err=>{
+            callback(err);
+          console.log(err)
+        })
+
     }
 
 
+
+    /**创建定时器任务 */
     onCreate = async () => {
         this.setState({
-            required:false
+            isLoading:true
         })
         const fields = this.props.form.getFieldsValue()
         let res
@@ -81,15 +92,19 @@ class CreateModal extends Component {
             })
             return
         }
-        if(res.code!=200){
-            message.error(res.message)
-            this.onCancel()
-            return
-        } else{
+        if(res.code==200){
             this.onCancel()
             this.props.onCreate()
             message.success('添加成功')
-            }
+        } else if(res.message ==='Cron格式不正确'){
+            message.error(res.message)
+        }else{
+            message.error(res.message)
+            this.onCancel()
+        }
+        this.setState({
+            isLoading:false
+        })
     }
     render() {
         const { visible } = this.props
@@ -99,6 +114,7 @@ class CreateModal extends Component {
             wrapperCol: { span: 14 },
         }
         return (
+            
             <Modal
                 onCancel={this.onCancel}
                 visible={visible}
@@ -113,10 +129,11 @@ class CreateModal extends Component {
                             rules: [
                                 { required: true, message: '定时类名不能为空' },
                                 { pattern: /^[^\s']+$/, message: '不能输入特殊字符' },
-                            ]
+                                {validator:this.checkJobclassNamekUniqued}
+                            ],
+                           
                         })(
                             <Input
-                                onPressEnter={this.verifyClass}
                                 maxLength={50}
                                 placeholder='请输入类名称' />
                         )}
@@ -164,4 +181,6 @@ class CreateModal extends Component {
         );
     }
 }
+
+
 export default CreateModal;
