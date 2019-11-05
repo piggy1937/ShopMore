@@ -13,6 +13,32 @@ const store = connect(
      menuData:state.menu.menuData }),
   (dispatch) => bindActionCreators({ changeFormStatus,fetchMenu }, dispatch)
 )
+
+const dataList = [];
+const generateList = data => {
+  for (let i = 0; i < data.length; i++) {
+    const node = data[i];
+    const { key,title } = node;
+    dataList.push({ key, title: title });
+    if (node.children) {
+      generateList(node.children);
+    }
+  }
+};
+const getParentKey = (key, tree) => {
+  let parentKey;
+  for (let i = 0; i < tree.length; i++) {
+    const node = tree[i];
+    if (node.children) {
+      if (node.children.some(item => item.key === key)) {
+        parentKey = node.key;
+      } else if (getParentKey(key, node.children)) {
+        parentKey = getParentKey(key, node.children);
+      }
+    }
+  }
+  return parentKey;
+};
 @store
 class Navbar extends React.Component {
   constructor(props) {
@@ -26,7 +52,8 @@ class Navbar extends React.Component {
 
   }
   async componentDidMount() {
-    this.props.fetchMenu()
+    await this.props.fetchMenu()
+    generateList(this.props.menuData);
   }
   //处理树形图点击事件
   onHandleNodeSelect = (selectedKeys, obj) => {
@@ -70,6 +97,26 @@ onHandleAddcChildMenu(e){
   
 
 }
+
+/**
+ * 搜索框更新
+ */
+onSearchChange = (e) => {
+  const { value } = e.target;
+  const expandedKeys = dataList
+    .map(item => {
+      if (item.title.indexOf(value) > -1) {
+        return getParentKey(item.key, this.props.menuData);
+      }
+      return null;
+    })
+    .filter((item, i, self) => item && self.indexOf(item) === i);
+  this.setState({
+    expandedKeys,
+    searchValue: value,
+    autoExpandParent: true,
+  });
+};
 
 getNodeTreeMenu = ()=>{
   const {pageX,pageY} = this.state.nodeTreeItem
@@ -116,10 +163,12 @@ getNodeTreeMenu = ()=>{
       });
     return (
       <div >
-        <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChange} />
+        <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onSearchChange} />
         <Tree
           showLine
           switcherIcon={<Icon type="down" />}
+          expandedKeys={expandedKeys}
+          autoExpandParent={autoExpandParent}
           onSelect={this.onHandleNodeSelect}
           onRightClick={this.onHandleNodeRightClick}
         >
