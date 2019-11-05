@@ -4,7 +4,10 @@ import request  from '@/utils/request';
 import Promptbox from '@/components/PromptBox/index'
 import {connect} from "react-redux";
 import debounce from 'lodash/debounce';
-
+const store = connect(
+    (state) => ({ user: state.user})
+  )
+@store
 @Form.create()
 class CreateModal extends Component {
     constructor(props) {
@@ -63,7 +66,6 @@ class CreateModal extends Component {
             wrapperCol: { span: 14 },
         }
         return (
-            
             <Modal
                 onCancel={this.onCancel}
                 visible={visible}
