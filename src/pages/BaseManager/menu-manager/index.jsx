@@ -2,39 +2,33 @@
  * 菜单管理界面
  */
 import React from 'react'
+import { connect, } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { Card, Button,Icon, Row, Col,Tree, Input,Form,Select} from 'antd'
 import { withRouter } from 'react-router-dom'
 import Navbar from './navbar'
 import MenuElement from './element'
 import request from '@/utils/request'
 import debounce from 'lodash/debounce';
+import { changeFormStatus} from '@/store/actions'
+const store = connect(
+    (state) => ({formStatus:state.menu.formStatus,formEdit:state.menu.formEdit}),
+    (dispatch) => bindActionCreators({changeFormStatus}, dispatch)
+)
 @withRouter @Form.create()
+@store
 class MenuManager extends React.Component{
     constructor(props){
         super(props)
-        this.state={
-            formStatus:'',
-            formEdit: false,
+        this.state={ 
             typeOptions: ['MENU', 'DIRT'],
         }
         this.checkCodeUniqued = debounce(this.checkCodeUniqued, 500);
+        this.checkCodeUniquedForUpdate = debounce(this.checkCodeUniquedForUpdate, 500);
     }
 
 
-    changeFormStatus =(value)=>{
-        //修改表单状态
-        let formEdite=false
-         if(value==='create'){
-            this.props.form.resetFields();
-            formEdite =false
-         }else{
-            formEdite = true
-         }
-        this.setState({
-            formStatus:value,
-            formEdit: formEdite,
-        })
-    }
+   
     /**
      * 添加新菜单
      */
@@ -48,6 +42,48 @@ class MenuManager extends React.Component{
                 })
             }
         });
+    }
+    /**
+     * 更新菜单
+     */
+    handleUpdateMenu = ()=>{
+        this.props.form.validateFields(async (errors, values) => {
+            if (!errors) {
+                const ret2= await request({
+                    method:'put',
+                    url: '/api/admin/menu',
+                    data:values
+                })
+            }
+        });
+    }
+
+    /***
+     * 获取菜单信息
+     */
+    fetchMenuInfo= (id)=>{
+        request({
+            method:'get',
+            url:'/api/admin/menu',
+            data:{id}
+        }).then(res=>{
+            if(res.code===200){
+              const {setFieldsValue} =this.props.form
+              const {id,code,title,icon,href,type,order,description} = res.result
+              setFieldsValue({
+                  id,
+                code,
+                title,
+                icon,
+                href,
+                type,
+                order,
+                description
+              })
+            }   
+        }).catch(err=>{
+            console.log(err)
+        })
     }
     /**
     * 检测路径编码是否存在
@@ -69,7 +105,48 @@ class MenuManager extends React.Component{
          if(code===200){
            callback();
          }else{
-           callback(message); 
+            
+            if(this.props.formStatus === 'create'){
+                callback(message); 
+            } else{
+                callback();
+            }
+           
+         }
+       }).catch(err=>{
+           callback(err);
+       })
+       
+   }
+    /**
+    * 检测路径编码用于更新是否存在
+    */
+   checkCodeUniquedForUpdate =  (rule, value, callback)=>{
+      const {getFieldValue} = this.props.form
+       let id = getFieldValue('id')
+       request({
+           headers: {
+               'content-type': 'application/json',
+           },
+           method: 'get',
+           url: '/api/admin/menu/check_code',
+           data: {
+               code: value,
+               id:id
+           }
+       }).then(data=>{
+           console.log(data)
+           const {code,message} = data
+         if(code===200){
+           callback();
+         }else{
+            
+            if(this.props.formStatus === 'create'){
+                callback(message); 
+            } else{
+                callback();
+            }
+           
          }
        }).catch(err=>{
            callback(err);
@@ -79,6 +156,7 @@ class MenuManager extends React.Component{
 
     render(){
         const { getFieldDecorator } = this.props.form;
+        const {formStatus} = this.props
         const { Search } = Input;
         const { Option } = Select;
         const formItemLayout = {
@@ -108,8 +186,12 @@ class MenuManager extends React.Component{
                 <Row style={{marginBottom:'18px'}}>
                     <Col span={12}>
                         <div style={{ textAlign: 'left' }}>
-                            <Button type="primary" icon='plus' onClick={()=>{this.changeFormStatus('create')}} >添加</Button>&emsp;
-                            <Button type="primary" icon="edit" onClick={()=>{this.changeFormStatus('update')}}>编辑</Button>&emsp;
+                            <Button type="primary" icon='plus' onClick={()=>{this.props.changeFormStatus({
+                                formStatus:'create'
+                            })}} >添加</Button>&emsp;
+                            <Button type="primary" icon="edit" onClick={()=>{this.props.changeFormStatus({
+                                formStatus:'update'
+                            })}}>编辑</Button>&emsp;
                             <Button type="primary" icon="delete">删除</Button>
                         </div>
                     </Col>
@@ -117,15 +199,21 @@ class MenuManager extends React.Component{
                 <Card bordered={true}>
                 <Row style={{marginTop:'10px'}}>
                     <Col span={8}>
-                         <Navbar></Navbar>
+                         <Navbar getMenuInfo={this.fetchMenuInfo}></Navbar>
                     </Col>
                     <Col span={15} offset={1}>
                         <Card bordered={true}>
                         <Form  {...formItemLayout}>
+                             <Form.Item >
+                                {getFieldDecorator('id')(
+                                    <Input type='hidden'/>,
+                                )}
+                            </Form.Item>
                             <Form.Item label="路径编码">
                                 {getFieldDecorator('code', {
                                     rules: [{ required: true, message: 'Please input your username!' },
-                                            {validator:this.checkCodeUniqued}
+                                            this.props.formStatus==='create'&&{validator:this.checkCodeUniqued},
+                                            this.props.formStatus === 'update'&&{validator:this.checkCodeUniquedForUpdate}
                                             ],
                                 })(
                                     <Input
@@ -206,7 +294,7 @@ class MenuManager extends React.Component{
                             </Form.Item>
                             
                             <Form.Item {...tailFormItemLayout} >
-                                <div style={{display: this.state.formStatus==='create'?'inline-block':'none'}}>
+                                <div style={{display: formStatus==='create'?'inline-block':'none'}}>
                                     <Button type="primary" htmlType="submit" onClick={this.handleAddMenu}>
                                         保存
                                     </Button>&emsp;
@@ -214,8 +302,8 @@ class MenuManager extends React.Component{
                                         取消
                                     </Button>
                                 </div>
-                                <div  style={{display: this.state.formStatus==='update'?'inline-block':'none'}}>
-                                    <Button type="primary" htmlType="submit">
+                                <div  style={{display: formStatus==='update'?'inline-block':'none'}}>
+                                    <Button type="primary" htmlType="submit" onClick={this.handleUpdateMenu}>
                                     更新
                                     </Button>&emsp;
                                     <Button type="primary" htmlType="submit">

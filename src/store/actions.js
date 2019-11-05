@@ -59,12 +59,17 @@ export async function refreshToken(params)
         logout()
         history.push('/login')
     }
-     
-
-
-
-
 }
+//修改菜单页表单状态
+export const CHANGE_FORM_STATUS = 'change_form_status'
+export function changeFormStatus(param){
+    return {
+        type: CHANGE_FORM_STATUS,
+        param
+    }
+}
+
+
 
 
 
@@ -80,6 +85,12 @@ export function getUser(param) {
         dispatch(setUser(res.result || {}))
     }
 }
+
+
+
+
+
+
 
 export const SET_WEBSOCKET = 'SET_WEBSOCKET'  //设置websocket对象
 export function setWebsocket(websocket) {

@@ -80,7 +80,7 @@ export default function request(options) {
   }
 
   options.url = url
-  if (options.method === 'post') {
+  if (options.method === 'post' || options.method === 'put'  ) {
     if (url&&(url.indexOf('oauth/token') != -1)){
       options.data = qs.stringify(cloneData);
     }else if(url&&(url.indexOf('file/upload') != -1)){
@@ -92,6 +92,9 @@ export default function request(options) {
   } else {
     options.params = cloneData
   }
+
+  
+
   options.cancelToken = new CancelToken(cancel => {
     window.cancelRequest.set(Symbol(Date.now()), {
       pathname: window.location.pathname,
