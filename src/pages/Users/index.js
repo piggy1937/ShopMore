@@ -40,8 +40,8 @@ class Users extends Component {
         }
     }
     /**
-     * 虽然后台可以一次把所有数据返回给我，但是为了学习,前后台还是做了一个分页
-     */
+    * 虽然后台可以一次把所有数据返回给我，但是为了学习,前后台还是做了一个分页
+*/
     getUsers = async (page = 1) => {
         const { pagination } = this.state
         const fields = this.props.form.getFieldsValue()

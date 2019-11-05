@@ -13,6 +13,7 @@ const BudgetInfo = LoadableComponent(import('./maycur/budget'), true);
 const ScheduleInfo = LoadableComponent(import('./maycur/Schedule'), true);
 const SyncInfo = LoadableComponent(import('./maycur/sync'), true);
 const MenuManager = LoadableComponent(import('./BaseManager/menu-manager'), true);
+const RoleTypeInfo = LoadableComponent(import('./role/type/index'), true);
 const menu = [
     {
        name:'每刻报销',
@@ -53,7 +54,7 @@ const menu = [
             {
                 name: '角色类型管理',
                 icon: 'usergroup-add',
-                key: 'FeedbackDemo',
+                key: 'RoleTypeInfo',
             },
         ]
     },
@@ -96,7 +97,8 @@ const tabs = {
     BudgetInfo:<BudgetInfo/>,
     ScheduleInfo:<ScheduleInfo/>,
     SyncInfo:<SyncInfo/>,
-    menuManager:<MenuManager/> //菜单管理界面
+    menuManager:<MenuManager/>, //菜单管理界面
+    RoleTypeInfo:<RoleTypeInfo/>
 }
 
 export {
