@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { SET_USER, SET_WEBSOCKET, SET_ONLINELIST, SET_CHATLIST, ADD_CHAT,REFRESH_TOKEN,CHANGE_FORM_STATUS } from './actions'
+import { SET_USER, SET_WEBSOCKET, SET_ONLINELIST, SET_CHATLIST, ADD_CHAT,REFRESH_TOKEN,CHANGE_FORM_STATUS ,SET_MENU} from './actions'
 
 /**
  * 用户信息
@@ -23,19 +23,25 @@ function user(state = {}, action) {
  * 菜单信息信息
  * @param {*} state 
  * @param {*} action 
+ * @param menuData 树形列表信息
  */
-const defaultMenu = {formStatus:'',formEdit: false}
+const defaultMenu = {formStatus:'',formEdit: true,currentId:-1, menuData: []}
 function menu(state=defaultMenu,action){
     switch (action.type) {
         case CHANGE_FORM_STATUS:{
             let tmpState = {}
-            if(action.param.formStatus){
-                tmpState=Object.assign({},tmpState,{formStatus: action.param.formStatus})
-            }
-            if(action.param.formEdit){
-                tmpState=Object.assign({},tmpState,{formEdit: action.param.formEdit})
-            }
+           
+            tmpState=Object.assign({},tmpState,{
+                formStatus: action.param.formStatus,
+                formEdit: action.param.formEdit,
+                currentId:action.param.currentId
+            })
             return Object.assign({}, state, tmpState)
+        }
+        case SET_MENU:{
+            return Object.assign({}, state, {
+                menuData:action.param
+            })
         }
         default:
             return state

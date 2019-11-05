@@ -1,15 +1,17 @@
 import React from 'react'
 import { Tree, Input,Icon,Button,Tooltip} from 'antd'
 import request from '@/utils/request'
-import { changeFormStatus } from '@/store/actions'
+import { changeFormStatus ,fetchMenu} from '@/store/actions'
 import { connect, } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import './navbar.css'
 const { TreeNode } = Tree;
 const { Search } = Input;
 const store = connect(
-  (state) => ({ formStatus: state.menu.formStatus, formEdit: state.menu.formEdit }),
-  (dispatch) => bindActionCreators({ changeFormStatus }, dispatch)
+  (state) => ({ formStatus: state.menu.formStatus,
+     formEdit: state.menu.formEdit,
+     menuData:state.menu.menuData }),
+  (dispatch) => bindActionCreators({ changeFormStatus,fetchMenu }, dispatch)
 )
 @store
 class Navbar extends React.Component {
@@ -20,34 +22,26 @@ class Navbar extends React.Component {
       searchValue: '',
       autoExpandParent: true,
       nodeTreeItem:null,
-      menuData: []
     };
 
   }
   async componentDidMount() {
-    const ret2 = await request({
-      methos: 'get',
-      url: '/api/admin/menu/tree',
-      data: {}
-    })
-    if (ret2) {
-      this.setState({
-        menuData: [...this.state.menuData, ...ret2.result || '']
-      })
-    }
+    this.props.fetchMenu()
   }
   //处理树形图点击事件
   onHandleNodeSelect = (selectedKeys, obj) => {
     this.clearRightMenu();
-    if (!this.props.formEdit) {
-      this.props.changeFormStatus({
-        formStatus: 'update'
-      })
-    }
     let id = obj.node.props.eventKey
     if(!id){
-     return
-    }
+      return
+     }
+    if (!this.props.formEdit) {
+      this.props.changeFormStatus({
+        formStatus: 'update',
+        formEdit:this.props.formEdit,
+        currentId:this.props.currentId
+      })
+    }    
     this.props.getMenuInfo(id);
   }
   clearRightMenu=()=>{
@@ -69,12 +63,20 @@ onHandleNodeRightClick = ({event, node})=>{
     });
 
 }
+/**新增子菜单 */
+onHandleAddcChildMenu(e){
+  const {id} = this.state.nodeTreeItem
+
+  
+
+}
+
 getNodeTreeMenu = ()=>{
   const {pageX,pageY} = this.state.nodeTreeItem
   return (
      <div style={{position:"absolute",top:pageY+'px',left:pageX+'px',width:'100px',marginLeft:'20px'}}>
         <Tooltip title="子菜单">
-          <Button className="icon-btn">
+          <Button className="icon-btn" onClick={this.onHandleAddcChildMenu}>
           
             <Icon type="plus" />
           </Button>
@@ -85,7 +87,9 @@ getNodeTreeMenu = ()=>{
 
 
   render() {
-    const { searchValue, expandedKeys, autoExpandParent, menuData } = this.state;
+    const { searchValue, expandedKeys, autoExpandParent } = this.state;
+    const {menuData} = this.props
+    console.log('aaaa',menuData)
     const loop = data =>
       data.map(item => {
         const index = item.title.indexOf(searchValue);
@@ -114,9 +118,8 @@ getNodeTreeMenu = ()=>{
       <div >
         <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChange} />
         <Tree
-          onExpand={this.onExpand}
-          expandedKeys={expandedKeys}
-          autoExpandParent={autoExpandParent}
+          showLine
+          switcherIcon={<Icon type="down" />}
           onSelect={this.onHandleNodeSelect}
           onRightClick={this.onHandleNodeRightClick}
         >

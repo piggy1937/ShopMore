@@ -4,16 +4,19 @@
 import React from 'react'
 import { connect, } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Card, Button,Icon, Row, Col,Tree, Input,Form,Select} from 'antd'
+import { Card, Button,Icon, Row, Col, Input,Form,Select,Popconfirm,message} from 'antd'
 import { withRouter } from 'react-router-dom'
 import Navbar from './navbar'
 import MenuElement from './element'
 import request from '@/utils/request'
 import debounce from 'lodash/debounce';
-import { changeFormStatus} from '@/store/actions'
+import { changeFormStatus,fetchMenu} from '@/store/actions'
 const store = connect(
-    (state) => ({formStatus:state.menu.formStatus,formEdit:state.menu.formEdit}),
-    (dispatch) => bindActionCreators({changeFormStatus}, dispatch)
+    (state) => ({formStatus:state.menu.formStatus,
+        formEdit:state.menu.formEdit,
+        currentId:state.menu.currentId
+     }),
+    (dispatch) => bindActionCreators({changeFormStatus,fetchMenu}, dispatch)
 )
 @withRouter @Form.create()
 @store
@@ -40,6 +43,10 @@ class MenuManager extends React.Component{
                     url: '/api/admin/menu',
                     data:values
                 })
+                if(ret2.code === 200){
+                    //刷新树
+                    this.props.fetchMenu()
+                }
             }
         });
     }
@@ -54,6 +61,9 @@ class MenuManager extends React.Component{
                     url: '/api/admin/menu',
                     data:values
                 })
+                if(ret2.code === 200){
+                    this.props.fetchMenu()
+                }
             }
         });
     }
@@ -69,7 +79,7 @@ class MenuManager extends React.Component{
         }).then(res=>{
             if(res.code===200){
               const {setFieldsValue} =this.props.form
-              const {id,code,title,icon,href,type,order,description} = res.result
+              const {id,code,title,icon,href,type,order,description,parentId} = res.result
               setFieldsValue({
                   id,
                 code,
@@ -78,7 +88,13 @@ class MenuManager extends React.Component{
                 href,
                 type,
                 order,
+                parentId,
                 description
+              })
+              this.props.changeFormStatus({
+                formStatus:this.props.formStatus,
+                formEdit:this.props.formEdit,
+                currentId:id
               })
             }   
         }).catch(err=>{
@@ -153,7 +169,44 @@ class MenuManager extends React.Component{
        })
        
    }
+   /**取消 */
+   handleCancle =()=>{
+    this.props.changeFormStatus({
+        formStatus:'',
+        formEdit:true
+       })
+   }
+   /**重置表单 */
+   restForm =()=>{
+    const {resetFields,setFieldsValue}  = this.props.form
+    resetFields();
+    setFieldsValue({parentId:this.props.currentId})
+      
+   }
+   /**删除菜单项 */
+   handleDeleteconfirm = ()=>{
+     request({
+         method:'delete',
+         url:'/api/admin/menu',
+         data:{
+             id:this.props.currentId
+         }
+     }).then(res=>{
 
+          if(res.code === 200){
+            message.success('删除成功');
+            this.props.fetchMenu()
+          }else{
+            message.error('删除失败');
+          }
+
+     }).catch(err=>{
+          console.log(err)
+     })
+
+
+   
+   }
     render(){
         const { getFieldDecorator } = this.props.form;
         const {formStatus} = this.props
@@ -186,13 +239,29 @@ class MenuManager extends React.Component{
                 <Row style={{marginBottom:'18px'}}>
                     <Col span={12}>
                         <div style={{ textAlign: 'left' }}>
-                            <Button type="primary" icon='plus' onClick={()=>{this.props.changeFormStatus({
-                                formStatus:'create'
-                            })}} >添加</Button>&emsp;
-                            <Button type="primary" icon="edit" onClick={()=>{this.props.changeFormStatus({
-                                formStatus:'update'
+                            <Button type="primary" icon='plus' onClick={()=>{
+                                this.restForm()
+                                this.props.changeFormStatus({
+                                  formStatus:'create',
+                                  currentId:this.props.currentId,
+                                  formEdit:false
+                                 })
+                            }} >添加</Button>&emsp;
+                            <Button type="primary" icon="edit" onClick={()=>{   
+                            this.props.changeFormStatus({
+                                formStatus:'update',
+                                currentId:this.props.currentId,
+                                formEdit:false
                             })}}>编辑</Button>&emsp;
-                            <Button type="primary" icon="delete">删除</Button>
+                             <Popconfirm
+                                placement="rightBottom"
+                                title="此操作将永久删除, 是否继续?"
+                                onConfirm={this.handleDeleteconfirm}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                            <Button type="primary" icon="delete" >删除</Button>
+                            </Popconfirm>
                         </div>
                     </Col>
                 </Row>
@@ -217,6 +286,7 @@ class MenuManager extends React.Component{
                                             ],
                                 })(
                                     <Input
+                                    disabled={this.props.formEdit}
                                     placeholder="请输入路径编码"
                                     />,
                                 )}
@@ -226,6 +296,7 @@ class MenuManager extends React.Component{
                                     rules: [{ required: true, message: 'Please input your username!' }],
                                 })(
                                     <Input
+                                    disabled={this.props.formEdit}
                                     placeholder="请输入标题"
                                     />,
                                 )}
@@ -235,7 +306,9 @@ class MenuManager extends React.Component{
                                     rules: [],
                                 })(
                                     <Input
+                                    disabled={this.props.formEdit}
                                     placeholder="请输入父级节点"
+                                    readOnly
                                     />,
                                 )}
                             </Form.Item>
@@ -244,6 +317,7 @@ class MenuManager extends React.Component{
                                     rules: [],
                                 })(
                                     <Input
+                                    disabled={this.props.formEdit}
                                     placeholder="请输入图标"
                                     />,
                                 )}
@@ -253,6 +327,7 @@ class MenuManager extends React.Component{
                                     rules: [{ required: true, message: 'Please input your username!' }],
                                 })(
                                     <Input
+                                    disabled={this.props.formEdit}
                                     placeholder="请输入资源路径"
                                     />,
                                 )}
@@ -263,6 +338,7 @@ class MenuManager extends React.Component{
                                     initialValue: 'MENU' 
                                 })(
                                     <Select
+                                        disabled={this.props.formEdit}
                                         style={{ width: 180 }}
                                         placeholder="请选择请求类型"
                                     >   
@@ -279,6 +355,7 @@ class MenuManager extends React.Component{
                                     rules: [],
                                 })(
                                     <Input
+                                    disabled={this.props.formEdit}
                                     placeholder="请输入排序"
                                     />,
                                 )}
@@ -288,6 +365,7 @@ class MenuManager extends React.Component{
                                     rules: [],
                                 })(
                                     <Input
+                                    disabled={this.props.formEdit}
                                     placeholder="请输入描述"
                                     />,
                                 )}
@@ -298,7 +376,7 @@ class MenuManager extends React.Component{
                                     <Button type="primary" htmlType="submit" onClick={this.handleAddMenu}>
                                         保存
                                     </Button>&emsp;
-                                    <Button type="primary" htmlType="submit">
+                                    <Button type="primary"  onClick={this.handleCancle}>
                                         取消
                                     </Button>
                                 </div>
@@ -306,7 +384,7 @@ class MenuManager extends React.Component{
                                     <Button type="primary" htmlType="submit" onClick={this.handleUpdateMenu}>
                                     更新
                                     </Button>&emsp;
-                                    <Button type="primary" htmlType="submit">
+                                    <Button type="primary"  onClick={this.handleCancle}>
                                     取消
                                     </Button>
                                 </div>
