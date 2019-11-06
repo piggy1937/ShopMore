@@ -1,23 +1,37 @@
 import React from 'react'
 import { Menu, Icon } from 'antd'
-import { tabs, menu } from '../tabs'
-
+import { tabs, constantMenuMap } from '../tabs'
+import { connect, } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { fetchMenu } from '@/store/actions'
+const store = connect(
+    (state) => ({ asyncMenuData:state.menu.menuData }),
+    (dispatch) => bindActionCreators({ fetchMenu}, dispatch)
+)
+@store
 class MySider extends React.Component {
     /**
      * 生成侧边栏菜单
      */
+    constructor(props){
+        super(props)
+        this.state={
+            menus:[]
+        }
+    }
+   
     renderMenu = (menu) => {
         if (Array.isArray(menu)) {
             return menu.map(item => {
                 if (!item.children || !item.children.length) {
                     return (
-                        <Menu.Item key={item.key || item.name}>
-                            <div onClick={() => this.addPane(item)}>{item.icon && <Icon type={item.icon} />}<span>{item.name}</span></div>
+                        <Menu.Item key={item.key || item.title}>
+                            <div onClick={() => this.addPane(item)}>{item.icon && <i className={item.icon} ></i>}<span>{item.title}</span></div>
                         </Menu.Item>
                     )
                 } else {
                     return (
-                        <Menu.SubMenu key={item.key} title={<span>{item.icon && <Icon type={item.icon} />}<span>{item.name}</span></span>}>
+                        <Menu.SubMenu key={item.key} title={<span>{item.icon && <i className={item.icon} ></i>}<span>{item.title}</span></span>}>
                             {this.renderMenu(item.children)}
                         </Menu.SubMenu>
                     )
@@ -30,19 +44,29 @@ class MySider extends React.Component {
      */
     addPane = (item) => {
         const panes = this.props.panes.slice()
-        const activeMenu = item.key
+        const activeMenu = item.code
         //如果标签页不存在就添加一个
         if (!panes.find(i => i.key === activeMenu)) {
             panes.push({
-                name: item.name,
-                key: item.key,
-                content: tabs[item.key] || item.name
+                name: item.title,
+                key: item.code,
+                content: tabs[item.code] || item.title
             })
         }
         this.props.onChangeState({
             panes,
             activeMenu
         })
+    }
+    
+    
+    async componentDidMount(){
+        await this.props.fetchMenu()//获取所有的菜单
+        let menu = this.props.asyncMenuData.concat(constantMenuMap)
+        this.setState({
+            menus:menu
+        })
+        console.log(this.props.asyncMenuData)
     }
     render() {
         const { activeMenu, theme } = this.props
@@ -55,7 +79,7 @@ class MySider extends React.Component {
                     </a>
                 </div>
                 <Menu theme={theme} mode="inline" selectedKeys={[activeMenu]} style={{ paddingTop: 16 }}>
-                    {this.renderMenu(menu)}
+                    {this.renderMenu(this.state.menus)}
                 </Menu>
             </div >
         )

@@ -13,21 +13,21 @@ const BudgetInfo = LoadableComponent(import('./maycur/budget'), true);
 const ScheduleInfo = LoadableComponent(import('./maycur/Schedule'), true);
 const SyncInfo = LoadableComponent(import('./maycur/sync'), true);
 const MenuManager = LoadableComponent(import('./BaseManager/menu-manager'), true);
-const RoleTypeInfo = LoadableComponent(import('./role/type/index'), true);
+const RoleTypeManager = LoadableComponent(import('./role/type/index'), true);
 const menu = [
     {
        name:'每刻报销',
        icon: 'ant-design',
-       key: 'budget',
+       key: 'maycurManager',
        children:[{
         name: '获取预算',
         icon: '',
-        key: 'BudgetInfo',
+        key: 'buggetManager',
        },
            {
                name: '定时轮询',
                icon: '',
-               key: 'ScheduleInfo',
+               key: 'scheduleManager',
            },
            {
                name: '组织架构同步',
@@ -40,51 +40,56 @@ const menu = [
         name: '基础配置管理',
         icon: 'setting',
         key: 'baseManager',
+        authority: 'baseManager',
         children: [
             {
                 name: '菜单管理',
                 icon: 'usergroup-add',
                 key: 'menuManager',
+                authority: 'menuManager',
             },
             {
                 name: '角色权限管理',
                 icon: 'usergroup-add',
                 key: 'IconDemo',
+                authority: 'groupManager'
             },
             {
                 name: '角色类型管理',
                 icon: 'usergroup-add',
                 key: 'RoleTypeInfo',
+                authority: 'groupTypeManager'
             },
         ]
     },
     {
         name: '用户管理',
         icon: 'user',
-        key: 'Users'
-    },
-    {
-        name: '作品集',
-        icon: 'bulb',
-        key: 'Collection'
-    },
-    {
-        name: '留言板',
-        icon: 'message',
-        key: 'MessageBoard'
-    },
-    {
-        name: '聊天室',
-        icon: 'qq',
-        key: 'Chat'
-    },
-    {
-        name: '关于',
-        icon: 'info-circle',
-        key: 'About'
+        key: 'Users',
+        authority: 'userManager'
     }
 ]
-
+const constantMenuMap=[
+    {
+    title: '作品集',
+    icon: 'bulb',
+    key: 'Collection'
+},
+{
+    title: '留言板',
+    icon: 'message',
+    key: 'MessageBoard'
+},
+{
+    title: '聊天室',
+    icon: 'qq',
+    key: 'Chat'
+},
+{
+    title: '关于',
+    icon: 'info-circle',
+    key: 'About'
+}]
 const tabs = {
     ButtonDemo: <ButtonDemo />,
     IconDemo: <IconDemo />,
@@ -94,14 +99,15 @@ const tabs = {
     MessageBoard: <MessageBoard />,
     Chat: <Chat />,
     About: <About />,
-    BudgetInfo:<BudgetInfo/>,
-    ScheduleInfo:<ScheduleInfo/>,
-    SyncInfo:<SyncInfo/>,
+    buggetManager:<BudgetInfo/>,
+    scheduleManager:<ScheduleInfo/>,
+    orgManager:<SyncInfo/>,
     menuManager:<MenuManager/>, //菜单管理界面
-    RoleTypeInfo:<RoleTypeInfo/>
+    roleTypeManager:<RoleTypeManager/>
 }
 
 export {
     menu,
-    tabs
+    tabs,
+    constantMenuMap
 }
