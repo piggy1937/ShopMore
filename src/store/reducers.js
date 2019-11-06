@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
-import { SET_USER, SET_WEBSOCKET, SET_ONLINELIST, SET_CHATLIST, ADD_CHAT,REFRESH_TOKEN,CHANGE_FORM_STATUS ,SET_MENU} from './actions'
+import { SET_USER, SET_WEBSOCKET, SET_ONLINELIST, SET_CHATLIST, ADD_CHAT,REFRESH_TOKEN,
+    CHANGE_FORM_STATUS ,SET_MENU,SET_ELEMENT} from './actions'
 
 /**
  * 用户信息
@@ -43,6 +44,19 @@ function menu(state=defaultMenu,action){
                 menuData:action.param
             })
         }
+        default:
+            return state
+    }
+    console.log(state,action)
+}
+/***按钮或资源 */
+const defaultElement = { list:null,total:null}
+function element(state=defaultElement,action){
+    switch (action.type) {
+        case SET_ELEMENT:{
+           
+        }
+       
         default:
             return state
     }
@@ -101,6 +115,7 @@ function chatList(state = [], action) {
 const rootReducer = combineReducers({
     user,
     menu,
+    element,
     websocket,
     onlineList,
     chatList,

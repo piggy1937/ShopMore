@@ -10,13 +10,13 @@ import Navbar from './navbar'
 import MenuElement from './element'
 import request from '@/utils/request'
 import debounce from 'lodash/debounce';
-import { changeFormStatus,fetchMenu} from '@/store/actions'
+import { changeFormStatus,fetchMenu,fetchElement} from '@/store/actions'
 const store = connect(
     (state) => ({formStatus:state.menu.formStatus,
         formEdit:state.menu.formEdit,
         currentId:state.menu.currentId
      }),
-    (dispatch) => bindActionCreators({changeFormStatus,fetchMenu}, dispatch)
+    (dispatch) => bindActionCreators({changeFormStatus,fetchMenu,fetchElement}, dispatch)
 )
 @withRouter @Form.create()
 @store
@@ -24,6 +24,7 @@ class MenuManager extends React.Component{
     constructor(props){
         super(props)
         this.state={ 
+            showElement:false,
             typeOptions: ['MENU', 'DIRT'],
         }
         this.checkCodeUniqued = debounce(this.checkCodeUniqued, 500);
@@ -96,10 +97,17 @@ class MenuManager extends React.Component{
                 formEdit:this.props.formEdit,
                 currentId:id
               })
+              this.setState({
+                showElement:true
+              })
             }   
         }).catch(err=>{
             console.log(err)
         })
+        //获取按钮或资源
+        this.props.fetchElement({
+            menuId:id
+        });
     }
     /**
     * 检测路径编码是否存在
@@ -391,8 +399,8 @@ class MenuManager extends React.Component{
                             </Form.Item>
                         </Form>    
                         </Card>
-                        <Card bordered={true} title="按钮或资源">
-                            <MenuElement></MenuElement>
+                        <Card bordered={true} title="按钮或资源" style={this.state.showElement?{display:'inline-block'}:{display:'none'}}>
+                            <MenuElement   ref="menuElement"></MenuElement>
                         </Card>    
 
                      </Col>   

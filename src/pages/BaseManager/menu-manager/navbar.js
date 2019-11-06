@@ -97,6 +97,12 @@ onHandleAddcChildMenu(e){
   
 
 }
+onExpand = expandedKeys => {
+  this.setState({
+    expandedKeys,
+    autoExpandParent: false,
+  });
+};
 
 /**
  * 搜索框更新
@@ -167,6 +173,7 @@ getNodeTreeMenu = ()=>{
         <Tree
           showLine
           switcherIcon={<Icon type="down" />}
+          onExpand={this.onExpand}
           expandedKeys={expandedKeys}
           autoExpandParent={autoExpandParent}
           onSelect={this.onHandleNodeSelect}

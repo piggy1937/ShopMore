@@ -90,6 +90,27 @@ export function fetchMenu(param) {
 
 
 
+//设置资源或按钮
+export const SET_ELEMENT = 'set_element'
+export function setElement(param){
+    return {
+        type: SET_ELEMENT,
+        param
+    }
+}
+//异步获取按钮或资源，从后台获取信息
+export function fetchElement(param) {
+    return async function (dispatch) {
+        const res = await request({
+            methos: 'get',
+            url: '/api/admin/element/list',
+            data: {}
+          })
+        dispatch(setElement(res.result || []))
+    }
+}
+
+
 //异步action，从后台获取用户信息
 export function getUser(param) {
     return async function (dispatch) {
