@@ -159,18 +159,19 @@ getNodeTreeMenu = ()=>{
             );
         if (item.children) {
           return (
-            <TreeNode key={item.key} title={title}>
+            <TreeNode icon={<i className={item.icon}></i>} key={item.key} title={title}>
               {loop(item.children)}
             </TreeNode>
           );
         }
-        return <TreeNode key={item.key} title={title} />;
+        return <TreeNode icon={item.icon} key={item.key} title={title} />;
       });
     return (
       <div >
         <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onSearchChange} />
         <Tree
-          showLine
+          showLine={false}
+          showIcon={true}
           switcherIcon={<Icon type="down" />}
           onExpand={this.onExpand}
           expandedKeys={expandedKeys}

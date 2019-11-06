@@ -63,6 +63,7 @@ class MenuManager extends React.Component{
                     data:values
                 })
                 if(ret2.code === 200){
+                    message.success('修改成功')
                     this.props.fetchMenu()
                 }
             }
@@ -214,6 +215,13 @@ class MenuManager extends React.Component{
 
 
    
+   }
+   componentWillUnmount(){
+    this.props.changeFormStatus({
+        formStatus:'',
+        formEdit:true,
+        currentId:-1
+      })
    }
     render(){
         const { getFieldDecorator } = this.props.form;
