@@ -5,7 +5,7 @@ import {
     Form,
     Input,
     Button,
-    Icon,
+    Pagination,
     Row,
     Col,
 } from 'antd'
@@ -13,7 +13,8 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import CreateModal from './CreateModal'
 import request  from '@/utils/request'
-
+import {logicalExpression} from "@babel/types";
+const { Search } = Input;
 const store = connect(
     (state) => ({ user: state.user })
 )
@@ -29,14 +30,15 @@ class RoleTypeInfo extends React.Component {
                 total: 0,
                 current: 1,  //前台分页是从1开始的，后台分页是从0开始的，所以要注意一下
                 pageSize: 10,
-                showQuickJumper: true
+                showQuickJumper: true,
+                totalPages:0
             },
             isShowInfoModal: false,
             isShowCreateModal: false,
         }
     }
-    componentDidMount() {
-        this.getRoleTypeInfo();
+    componentWillMount() {
+        this.getRoleTypeInfo(this.state.pagination.current-1);
     }
 
     /**
@@ -50,14 +52,20 @@ class RoleTypeInfo extends React.Component {
      openCreateModal = () => {
         this.toggleShowCreateModal(true)
     }
-    onSearch=()=>{
-        this.getRoleTypeInfo()
-}
+
+    onChangePage=(page,pageSize)=>{
+        this.getRoleTypeInfo(page-1)
+        this.setState({
+            pagination:{
+                current: (page-1)*pageSize
+            }
+        })
+    }
 
      /***
      * 获取角色信息
      */
-     getRoleTypeInfo = async (page = 1) => {
+     getRoleTypeInfo = async (page) => {
          const fields = this.props.form.getFieldsValue()
         this.setState({
             isLoading: true,
@@ -71,8 +79,8 @@ class RoleTypeInfo extends React.Component {
                 method: 'get',
                 url: '/api/admin/role/page',
                 data: {
-                    pageNum:1,
-                    pageSize:this.state.pagination.pageSize,
+                    pageNum:page,
+                    pageSize:10
                 }
             })
         }catch(e){
@@ -86,11 +94,16 @@ class RoleTypeInfo extends React.Component {
                 isLoading: false,
             })
             return
+        }else{
+            this.setState({
+                isLoading: false,
+                items: res.result.content,
+                pagination:{
+                    total:res.result.totalElements,
+                    current:(page)*res.result.pageable.pageSize
+                }
+            })
         }
-        this.setState({
-            isLoading: false,
-            items: res.result.content
-        })
     }
 
     render() {
@@ -102,16 +115,13 @@ class RoleTypeInfo extends React.Component {
                 key: 'num',
                 align: 'center',
                 render: (text, record, index) => {
-                    let num = (pagination.current - 1) * 10 + index + 1
-                    if (num < 10) {
-                        num = '0' + num
-                    }
+                    let num = index + 1 +this.state.pagination.current
                     return num
                 }
             },
             {
-                title: '角色名称',
-                dataIndex: 'name',
+                title: '角色编码',
+                dataIndex: 'code',
                 align: 'center'
             },
             {
@@ -156,26 +166,18 @@ class RoleTypeInfo extends React.Component {
                 <Card bordered={false}>
                     <Form layout='inline' style={{ marginBottom: 16 }}>
                         <Row>
-                            <Col span={6}>
-                                <Form.Item>
-                                    {getFieldDecorator('username')(
-                                        <Input
-                                            onPressEnter={this.onSearch}
-                                            style={{ width: 200 }}
-                                            placeholder="角色名称"
-                                        />
-                                    )}
-                                </Form.Item>
-                            </Col>
                             <Col span={10}>
                                 <Form.Item style={{ marginRight: 0, width: '100%' }} wrapperCol={{ span: 48 }}>
                                     <div style={{ textAlign: 'left' }}>
-                                        <Button type="primary" icon='search' onClick={this.onSearch}>搜索</Button>&emsp;
+                                         <Search
+                                            placeholder="input search text"
+                                            onSearch={value => console.log(value)}
+                                            style={{ width: 200 }}
+                                        />&emsp;
                                         <Button icon='plus' onClick={this.openCreateModal}>创建</Button>
                                     </div>
                                 </Form.Item>
                             </Col>
-
                         </Row>
                     </Form>
                     <Table
@@ -184,9 +186,13 @@ class RoleTypeInfo extends React.Component {
                         columns={columns}
                         dataSource={this.state.items}
                         loading={this.state.isLoading}
-                        rowSelection={this.state.rowSelection}
-                        pagination={this.state.pagination}
-                    />
+                        pagination={
+                            false
+                        }
+                    /><br/>
+                    <div style={{textAlign: 'right'}}>
+                       <Pagination defaultCurrent={1} total={this.state.pagination.total} onChange={this.onChangePage} />
+                    </div>
                 </Card>
                 <CreateModal
                     visible={isShowCreateModal}

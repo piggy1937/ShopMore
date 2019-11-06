@@ -74,18 +74,18 @@ class CreateModal extends Component {
                 onOk={this.handleOk}
             >
                 <Form {...formItemLayout}>
-                    <Form.Item label={'角色名称'}>
-                        {getFieldDecorator('name', {
+                    <Form.Item label={'角色编码'}>
+                        {getFieldDecorator('code', {
                             validateFirst: true,
                             rules: [
-                                { required: true, message: '角色名称不能为空' },
+                                { required: true, message: '角色编码不能为空' },
                                 { pattern: /^[^\s']+$/, message: '不能输入特殊字符' }
                             ],
                            
                         })(
                             <Input
                                 maxLength={50}
-                                placeholder='请输入角色名称' />
+                                placeholder='请输入角色编码' />
                         )}
                     </Form.Item>
                     <Form.Item label={'角色类型'}>
