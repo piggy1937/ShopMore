@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { Modal, Form, Input, message, Select } from 'antd'
 import { connect, } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { fetchElement} from '@/store/actions'
 import request from '@/utils/request'
 const { Option } = Select;
 const store = connect(
     (state) => ({
         currentId: state.menu.currentId
     }),
-    (dispatch) => bindActionCreators({}, dispatch)
+    (dispatch) => bindActionCreators({fetchElement}, dispatch)
 )
 @store
 @Form.create()
@@ -27,20 +28,72 @@ class CreateElementModal extends Component {
         this.props.toggleVisible(false)
     }
     handleOk = () => {
+      
         this.props.form.validateFields((errors, values) => {
             if (!errors) {
-                this.handleAddElement(values)
+                if(this.state.dialogStatus==='update'){
+                   this.handleUpdateElement(values);
+                }else{
+                    this.handleAddElement(values)
+                }
+               
             }
         })
     }
     /**新增按钮或资源 */
     handleAddElement = async (values) => {
+        try{
         const ret = await request({
             method: 'post',
             url: '/api/admin/element',
             data: values
             });
-            console.log(ret)
+            if(ret.code === 200){
+                this.props.form.resetFields()
+                this.props.toggleVisible(false)
+                this.props.fetchElement({ menuId:this.props.currentId})
+            }else{
+                message.error((ret.message))
+            }
+        }catch(err){
+            console.log(err)
+        }
+           
+    }
+    /**修改按钮或资源 */
+    handleUpdateElement = async (values) => {
+        try{
+        const ret = await request({
+            method: 'put',
+            url: '/api/admin/element',
+            data: values
+            });
+            if(ret.code === 200){
+                this.props.form.resetFields()
+                this.props.toggleVisible(false)
+                this.props.fetchElement({ menuId:this.props.currentId})
+            }else{
+                message.error((ret.message))
+            }
+        }catch(err){
+            console.log(err)
+        }
+           
+    }
+   /**初始化表格 */
+   initForm=(data)=>{
+       const {setFieldsValue} = this.props.form
+       const {id,code,type,name,url,method} = data
+       setFieldsValue({
+        id,code,type,name,url,method,
+        menuId:this.props.currentId
+       })
+       this.props.toggleVisible(true)
+       this.setState({dialogStatus:'update'})
+   }
+
+    componentDidMount(){
+        this.props.onRef(this)
     }
     render() {
         const { visible } = this.props
@@ -70,6 +123,11 @@ class CreateElementModal extends Component {
                             <Input placeholder='请选择菜单' hidden />
                         )}
                     </Form.Item>
+                    <Form.Item >
+                        {getFieldDecorator('id')(
+                            <Input  hidden />
+                        )}
+                    </Form.Item>
                     <Form.Item label={'资源编码'}>
                         {getFieldDecorator('code', {
                             validateFirst: true,
@@ -80,7 +138,7 @@ class CreateElementModal extends Component {
                             ]
                         })(
                             <Input
-                                maxLength={16}
+                                maxLength={50}
                                 placeholder='请输入资源编码' />
                         )}
                     </Form.Item>

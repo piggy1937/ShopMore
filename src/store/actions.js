@@ -95,7 +95,7 @@ export const SET_ELEMENT = 'set_element'
 export function setElement(param){
     return {
         type: SET_ELEMENT,
-        param
+        data:param
     }
 }
 //异步获取按钮或资源，从后台获取信息
@@ -104,9 +104,9 @@ export function fetchElement(param) {
         const res = await request({
             methos: 'get',
             url: '/api/admin/element/list',
-            data: {}
+            data: param
           })
-        dispatch(setElement(res.result || []))
+        dispatch(setElement(res.result||{}))
     }
 }
 

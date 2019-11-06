@@ -142,7 +142,6 @@ getNodeTreeMenu = ()=>{
   render() {
     const { searchValue, expandedKeys, autoExpandParent } = this.state;
     const {menuData} = this.props
-    console.log('aaaa',menuData)
     const loop = data =>
       data.map(item => {
         const index = item.title.indexOf(searchValue);

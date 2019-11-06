@@ -50,11 +50,21 @@ function menu(state=defaultMenu,action){
     console.log(state,action)
 }
 /***按钮或资源 */
-const defaultElement = { list:null,total:null}
+const defaultElement = { content:[],totalPages:1,number:1,size:10,pageIndex:0}
 function element(state=defaultElement,action){
     switch (action.type) {
         case SET_ELEMENT:{
-           
+            let {number,size} = action.data
+           if( number<1)
+             {number=1}
+          let mstate = {
+              content:action.data.content,
+              totalPages:action.data.totalPages,
+              number,
+              size,
+              pageIndex:(number-1)*size
+          }
+          return mstate;
         }
        
         default:
