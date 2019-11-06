@@ -7,12 +7,13 @@ import {
     Button,
     Pagination,
     Row,
-    Col,
+    Col, message, Popconfirm,
 } from 'antd'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import CreateModal from './CreateModal'
 import request  from '@/utils/request'
+import { changeFormStatus,fetchMenu,fetchElement} from '@/store/actions'
 import {logicalExpression} from "@babel/types";
 const { Search } = Input;
 const store = connect(
@@ -33,26 +34,35 @@ class RoleTypeInfo extends React.Component {
                 showQuickJumper: true,
                 totalPages:0
             },
-            isShowInfoModal: false,
-            isShowCreateModal: false,
+            modal:{
+                title:'',
+                isShowInfoModal: false,
+                isShowCreateModal: false,
+            }
         }
     }
     componentWillMount() {
-        this.getRoleTypeInfo(this.state.pagination.current-1);
+        this.getRoleTypeInfo(0);
     }
 
     /**
      * 打开/关闭创建模态框
      */
-    toggleShowCreateModal = (visible) => {
+    toggleShowCreateModal = (visible,title) => {
         this.setState({
-            isShowCreateModal: visible
+            isShowCreateModal: visible,
+            title:title
      })
      }
-     openCreateModal = () => {
-        this.toggleShowCreateModal(true)
+     openCreateModal = (title) => {
+        this.toggleShowCreateModal(true,title)
     }
 
+    /**
+     * 分页取数据
+     * @param page
+     * @param pageSize
+     */
     onChangePage=(page,pageSize)=>{
         this.getRoleTypeInfo(page-1)
         this.setState({
@@ -62,10 +72,17 @@ class RoleTypeInfo extends React.Component {
         })
     }
 
-     /***
+    /**
+     *根据name类型产找
+     */
+    onSearch=(value)=>{
+        this.getRoleTypeInfo(this.state.pagination.current,value);
+    }
+
+    /***
      * 获取角色信息
      */
-     getRoleTypeInfo = async (page) => {
+     getRoleTypeInfo = async (page=0,name) => {
          const fields = this.props.form.getFieldsValue()
         this.setState({
             isLoading: true,
@@ -77,16 +94,18 @@ class RoleTypeInfo extends React.Component {
                     'content-type': 'application/json',
                 },
                 method: 'get',
-                url: '/api/admin/role/page',
+                url: '/api/admin/role_type/page',
                 data: {
                     pageNum:page,
-                    pageSize:10
+                    pageSize:this.state.pagination.pageSize,
+                    name:name
                 }
             })
         }catch(e){
             this.setState({
                 isLoading: false,
             })
+            message.error("获取角色类型异常")
             return
         }
         if (res.code!=200) {
@@ -100,15 +119,62 @@ class RoleTypeInfo extends React.Component {
                 items: res.result.content,
                 pagination:{
                     total:res.result.totalElements,
-                    current:(page)*res.result.pageable.pageSize
+                    current:(page)*res.result.pageable.pageSize,
+                    pageSize:res.result.pageable.pageSize
                 }
             })
         }
     }
 
+    /**删除菜单项 */
+    handleDeleteconfirm = (id)=>{
+        request({
+            method:'delete',
+            url:'/api/admin/role_type',
+            data:{
+                id:id
+            }
+        }).then(res=>{
+            if(res.code === 200){
+                message.success('删除成功');
+                this.getRoleTypeInfo(0);
+            }else{
+                message.error('删除失败');
+            }
+
+        }).catch(err=>{
+           message.error(err)
+        })
+    }
+
+    /**
+     * 修改按钮
+     * @returns {*}
+     */
+    handleUpdate = (id) =>{
+        request({
+            method:'get',
+            url:'/api/admin/role_type',
+            data:{id}
+        }).then(data=>{
+            if(data.code===200){
+                this.elementRef.initForm(data.result);
+            }else if(data.code === 100){
+                message.error('非法请求参数')
+            }else{
+                message.error(data.mesage)
+            }
+        }).catch(err=>{
+              console.log(err)
+            })
+    }
+    /**父子组件调用 */
+    onElementRef = (ref) => {
+        this.elementRef = ref
+    }
+
     render() {
-        const { pagination, isShowCreateModal } = this.state
-        const { getFieldDecorator } = this.props.form
+        const { pagination, isShowCreateModal,title } = this.state
         const columns = [
             {
                 title: '序号',
@@ -126,7 +192,7 @@ class RoleTypeInfo extends React.Component {
             },
             {
                 title: '角色类型',
-                dataIndex: 'type',
+                dataIndex: 'name',
                 align: 'center'
             },{
                 title: '角色描述',
@@ -150,13 +216,20 @@ class RoleTypeInfo extends React.Component {
             },
             {
                 render: (record) => (
-                        <div style={{ textAlign: 'right' }}>
-                            <Button type="primary" icon='delete'  type='danger' onClick={()=>{
-
-                            }}>删除</Button>&emsp;
+                        <div style={{ textAlign: 'left' }}>
+                            <Popconfirm
+                                placement="rightBottom"
+                                title="此操作将永久删除, 是否继续?"
+                                onConfirm={()=>{
+                                    this.handleDeleteconfirm(record.id)
+                                }}
+                                okText="Yes"
+                                cancelText="No">
+                                <Button icon="delete"  type='danger' >删除</Button>
+                            </Popconfirm>&emsp;
                             <Button type="primary" icon='undo' onClick={()=> {
-
-                            }}>修改</Button>&emsp;
+                                this.handleUpdate(record.id,"修改角色")
+                            }}>修改</Button>
                         </div>
                 ),
             }
@@ -171,10 +244,12 @@ class RoleTypeInfo extends React.Component {
                                     <div style={{ textAlign: 'left' }}>
                                          <Search
                                             placeholder="input search text"
-                                            onSearch={value => console.log(value)}
+                                            onSearch={this.onSearch}
                                             style={{ width: 200 }}
                                         />&emsp;
-                                        <Button icon='plus' onClick={this.openCreateModal}>创建</Button>
+                                        <Button icon='plus' onClick={()=>{
+                                            this.openCreateModal("创建角色")
+                                        }}>创建</Button>
                                     </div>
                                 </Form.Item>
                             </Col>
@@ -186,9 +261,7 @@ class RoleTypeInfo extends React.Component {
                         columns={columns}
                         dataSource={this.state.items}
                         loading={this.state.isLoading}
-                        pagination={
-                            false
-                        }
+                        pagination={false}
                     /><br/>
                     <div style={{textAlign: 'right'}}>
                        <Pagination defaultCurrent={1} total={this.state.pagination.total} onChange={this.onChangePage} />
@@ -198,10 +271,11 @@ class RoleTypeInfo extends React.Component {
                     visible={isShowCreateModal}
                     toggleVisible={this.toggleShowCreateModal}
                     onCreate={this.getRoleTypeInfo}
+                    onRef={this.onElementRef}
+                    title={title}
                    />
             </div>
         );
     }
-
 }
 export default RoleTypeInfo
