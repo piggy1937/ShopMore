@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Button, Row, Col, Table,Divider, message } from 'antd';
+import { Input, Button, Row, Col, Table,Divider, message,Popconfirm } from 'antd';
 import CreateElementModal from './createElementModal'
 import { connect, } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -56,7 +56,22 @@ class Element extends React.Component {
  }
  /**删除 */
  handleDelete=(id)=>{
-   
+  request({
+    method:'delete',
+    url:'/api/admin/element',
+    data:{id}
+  }).then(data=>{
+    if(data.code===200){
+      this.props.fetchElement({ menuId:this.props.currentId})
+    }else if(data.code === 100){
+      message.error('非法请求参数')
+    }else{
+      message.error(data.mesage)
+    }
+  })
+  .catch(err=>{
+    console.log(err)
+  })
  }
  /**父子组件调用 */
  onElementRef = (ref) => {
@@ -109,9 +124,17 @@ class Element extends React.Component {
               this.handleUpdate(record.id)
             }}>修改</Button>
             <Divider type="vertical" />
-            <Button type="link" style={{padding:0}} onClick={()=>{
-              this.handleDelete(record.id)
-            }}>删除</Button>
+            <Popconfirm
+                                placement="rightBottom"
+                                title="此操作将永久删除, 是否继续?"
+                                onConfirm={()=>{
+                                  this.handleDelete(record.id)
+                                }}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+            <Button type="link" style={{padding:0}} >删除</Button>
+            </Popconfirm>
           </span>
         ),
       }
