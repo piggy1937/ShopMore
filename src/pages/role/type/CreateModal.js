@@ -12,9 +12,10 @@ const store = connect(
 @Form.create()
 class CreateModal extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             dialogStatus: '',
+            currentId:''
         }
         this.checkCodeUniqued = debounce(this.checkCodeUniqued, 500);
     }
@@ -30,7 +31,6 @@ class CreateModal extends Component {
                 }else{
                     this.handleAddElement(values)
                 }
-
             }
         })
     }
@@ -46,7 +46,8 @@ class CreateModal extends Component {
         })
         this.props.toggleVisible(true)
         this.setState({
-            description:'update'
+            dialogStatus:'update',
+            currentId:id
         })
     }
 
@@ -85,18 +86,23 @@ class CreateModal extends Component {
             const ret = await request({
                 method: 'put',
                 url: '/api/admin/role_type',
-                code:fields.code,
-                name:fields.name,
-                description:fields.description,
-                modifiedUser:this.props.user.username
+                data:{
+                    code:fields.code,
+                    name:fields.name,
+                    description:fields.description,
+                    modifiedUser:this.props.user.username,
+                    id:this.state.currentId
+                }
             });
             if(ret.code === 200){
                 this.props.form.resetFields()
                 this.props.toggleVisible(false)
-                this.props.onChange()
+                this.props.onCreate()
                 message.success("更新成功")
+                return
             }else{
                 message.error((ret.message))
+                return
             }
         }catch(err){
             console.log(err)
