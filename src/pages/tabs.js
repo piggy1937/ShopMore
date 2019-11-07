@@ -14,6 +14,7 @@ const ScheduleInfo = LoadableComponent(import('./maycur/Schedule'), true);
 const SyncInfo = LoadableComponent(import('./maycur/sync'), true);
 const MenuManager = LoadableComponent(import('./BaseManager/menu-manager'), true);
 const RoleTypeManager = LoadableComponent(import('./role/type/index'), true);
+const RoleManager     = LoadableComponent(import('./role/role/index'), true);
 const menu = [
     {
        name:'每刻报销',
@@ -103,7 +104,8 @@ const tabs = {
     scheduleManager:<ScheduleInfo/>,
     orgManager:<SyncInfo/>,
     menuManager:<MenuManager/>, //菜单管理界面
-    roleTypeManager:<RoleTypeManager/>
+    roleTypeManager:<RoleTypeManager/>,
+    roleManager:<RoleManager/>
 }
 
 export {
