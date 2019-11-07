@@ -4,6 +4,7 @@ import { tabs, constantMenuMap } from '../tabs'
 import { connect, } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchMenu } from '@/store/actions'
+import {List} from 'immutable'
 const store = connect(
     (state) => ({ asyncMenuData:state.menu.menuData }),
     (dispatch) => bindActionCreators({ fetchMenu}, dispatch)
@@ -15,9 +16,6 @@ class MySider extends React.Component {
      */
     constructor(props){
         super(props)
-        this.state={
-            menus:[]
-        }
     }
    
     renderMenu = (menu) => {
@@ -58,18 +56,25 @@ class MySider extends React.Component {
             activeMenu
         })
     }
-    
-    
+
+    shouldComponentUpdate(nextProps, nextState){
+        const list = List(this.props.asyncMenuData)
+        const list2 = List(nextProps.asyncMenuData)
+        if(list.equals(list2)){
+            return false;
+        }
+        return true;
+    }
+    componentDidUpdate(){
+        console.log('update')
+    }
     async componentDidMount(){
         await this.props.fetchMenu()//获取所有的菜单
-        let menu = this.props.asyncMenuData.concat(constantMenuMap)
-        this.setState({
-            menus:menu
-        })
-        console.log(this.props.asyncMenuData)
     }
-    render() {
-        const { activeMenu, theme } = this.props
+    render() { 
+        const { activeMenu, theme, asyncMenuData} = this.props
+        const list = List(this.props.asyncMenuData ||[])
+        const menu =list.merge(constantMenuMap)
         return (
             <div className={`my-sider ${theme}`}>
                 <div className={`sider-menu-logo ${theme}`}>
@@ -79,7 +84,7 @@ class MySider extends React.Component {
                     </a>
                 </div>
                 <Menu theme={theme} mode="inline" selectedKeys={[activeMenu]} style={{ paddingTop: 16 }}>
-                    {this.renderMenu(this.state.menus)}
+                    {this.renderMenu(menu.toJS())}
                 </Menu>
             </div >
         )
