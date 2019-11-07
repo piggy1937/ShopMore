@@ -8,7 +8,7 @@ class Error extends React.Component{
             status="500"
             title="500"
             subTitle="Sorry, the server is wrong."
-            extra={<Button type="primary">Back Home</Button>}
+            extra={<Button type="primary" onClick={()=>{this.props.history.push('/')}}>Back Home</Button>}
           /></div>)
     }
 }
