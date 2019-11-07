@@ -1,4 +1,4 @@
-const LOGIN_COOKIE_NAME = 'sessionId'
+const LOGIN_COOKIE_NAME = 'react_admin_session_id'
 
 export function isAuthenticated() {
   let data = _getCookie(LOGIN_COOKIE_NAME);
@@ -9,6 +9,7 @@ export function isAuthenticated() {
 }
 
 export function authenticateSuccess(token) {
+  _setCookie(LOGIN_COOKIE_NAME, '', 0)
   _setCookie(LOGIN_COOKIE_NAME, token)
 }
 
