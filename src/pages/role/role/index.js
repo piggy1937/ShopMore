@@ -1,21 +1,34 @@
 import React  from 'react'
 import { Tabs } from 'antd';
+import {tabContentMaps}  from './tabs'
 const { TabPane } = Tabs;
 class RoleManager extends React.Component{
+    constructor(props){
+        super(props)
+        this.state={
+            tabs:[{
+              title:'角色类型',
+              key:'roleType'
+            },{
+                title:'部门类型',
+                key:'departmentType'
+            }]
+        }
+    }
     render(){
         return (<div>
 
 
         <Tabs defaultActiveKey="1" >
-                        <TabPane tab="Tab 1" key="1">
-                        Content of Tab Pane 1
-                        </TabPane>
-                        <TabPane tab="Tab 2" key="2">
-                        Content of Tab Pane 2
-                        </TabPane>
-                        <TabPane tab="Tab 3" key="3">
-                        Content of Tab Pane 3
-                        </TabPane>
+            {
+                this.state.tabs.map(e=>{
+                    return ( <TabPane tab={e.title} key={e.key}>
+                            {tabContentMaps[e.key]}
+                    </TabPane>)
+                })
+
+
+            }
         </Tabs>
 
         </div>)

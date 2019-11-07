@@ -13,8 +13,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import CreateModal from './CreateModal'
 import request  from '@/utils/request'
-import { changeFormStatus,fetchMenu,fetchElement} from '@/store/actions'
-import {logicalExpression} from "@babel/types";
 const { Search } = Input;
 const store = connect(
     (state) => ({ user: state.user })
@@ -218,9 +216,22 @@ class RoleTypeInfo extends React.Component {
                 align: 'center'
             },
             {
+                title: '是否内置',
+                dataIndex: 'isSystem',
+                align: 'center',
+                render:(text)=>{
+                    if(text){
+                        return '是'
+                    }else{
+                        return '否'
+                    }
+                },
+            },
+            {
                 render: (record) => (
                         <div style={{ textAlign: 'left' }}>
                             <Popconfirm
+                                disabled={record.isSystem}
                                 placement="rightBottom"
                                 title="此操作将永久删除, 是否继续?"
                                 onConfirm={()=>{
@@ -228,9 +239,9 @@ class RoleTypeInfo extends React.Component {
                                 }}
                                 okText="Yes"
                                 cancelText="No">
-                                <Button icon="delete"  type='danger' >删除</Button>
+                                <Button icon="delete"  type='danger' disabled={record.isSystem}>删除</Button>
                             </Popconfirm>&emsp;
-                            <Button type="primary" icon='undo' onClick={()=> {
+                            <Button type="primary" icon='undo' disabled={record.isSystem} onClick={()=> {
                                 this.handleUpdate(record.id,"修改角色")
                             }}>修改</Button>
                         </div>
