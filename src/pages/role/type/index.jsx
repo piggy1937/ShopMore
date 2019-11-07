@@ -165,8 +165,11 @@ class RoleTypeInfo extends React.Component {
                 message.error(data.mesage)
             }
         }).catch(err=>{
-              console.log(err)
-            })
+            if(err&&!err.success){
+              message.error(err.message)
+            }else{
+                console.log(err)
+            }})
     }
     /**父子组件调用 */
     onElementRef = (ref) => {
