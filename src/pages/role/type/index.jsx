@@ -186,16 +186,16 @@ class RoleTypeInfo extends React.Component {
                 }
             },
             {
-                title: '角色编码',
+                title: '编码',
                 dataIndex: 'code',
                 align: 'center'
             },
             {
-                title: '角色类型',
+                title: '类型名称',
                 dataIndex: 'name',
                 align: 'center'
             },{
-                title: '角色描述',
+                title: '描述',
                 dataIndex: 'description',
                 align: 'center'
             },
