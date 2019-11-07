@@ -23,6 +23,7 @@ const store = connect(
 class MenuManager extends React.Component{
     constructor(props){
         super(props)
+        this.myRef=React.createRef();
         this.state={ 
             showElement:false,
             typeOptions: ['MENU', 'DIRT'],
@@ -408,7 +409,7 @@ class MenuManager extends React.Component{
                         </Form>    
                         </Card>
                         <Card bordered={true} title="按钮或资源" style={this.state.showElement?{display:'inline-block'}:{display:'none'}}>
-                            <MenuElement   ref="menuElement"></MenuElement>
+                            <MenuElement  rer={ this.myRef}></MenuElement>
                         </Card>    
 
                      </Col>   

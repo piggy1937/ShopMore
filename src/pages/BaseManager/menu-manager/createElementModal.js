@@ -154,7 +154,7 @@ class CreateElementModal extends Component {
 
                                 {
                                     this.state.typeOptions.map(e => {
-                                        return (<Option value={e}>{e}</Option>)
+                                        return (<Option key={e}  value={e}>{e}</Option>)
                                     })
                                 }
 
@@ -189,7 +189,7 @@ class CreateElementModal extends Component {
 
                                 {
                                     this.state.methodOptions.map(e => {
-                                        return (<Option value={e}>{e}</Option>)
+                                        return (<Option key={e} value={e}>{e}</Option>)
                                     })
                                 }
 
