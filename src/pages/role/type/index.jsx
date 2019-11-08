@@ -92,7 +92,7 @@ class RoleTypeInfo extends React.Component {
                     'content-type': 'application/json',
                 },
                 method: 'get',
-                url: '/api/admin/role_type/page',
+                url: '/api/admin/role/type/page',
                 data: {
                     pageNum:page,
                     pageSize:this.state.pagination.pageSize,
@@ -128,7 +128,7 @@ class RoleTypeInfo extends React.Component {
     handleDeleteconfirm = (id)=>{
         request({
             method:'delete',
-            url:'/api/admin/role_type',
+            url:'/api/admin/role/type',
             data:{
                 id:id
             }
@@ -152,7 +152,7 @@ class RoleTypeInfo extends React.Component {
     handleUpdate = (id) =>{
         request({
             method:'get',
-            url:'/api/admin/role_type',
+            url:'/api/admin/role/type',
             data:{id}
         }).then(data=>{
             if(data.code===200){

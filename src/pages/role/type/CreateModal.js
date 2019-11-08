@@ -4,7 +4,6 @@ import request  from '@/utils/request';
 import { fetchRoleType} from '@/store/actions'
 import {connect} from "react-redux";
 import debounce from 'lodash/debounce';
-import {bindActionCreators} from "redux";
 const store = connect(
     (state) => ({ user: state.user, websocket: state.websocket })
 )
@@ -61,7 +60,7 @@ class CreateModal extends Component {
                 'content-type': 'application/json',
             },
             method: 'get',
-            url: '/api/admin/role_type/check_code',
+            url: '/api/admin/role/type/check_code',
             data: {
                 code: value
             }
@@ -85,7 +84,7 @@ class CreateModal extends Component {
             const fields = this.props.form.getFieldsValue()
             const ret = await request({
                 method: 'put',
-                url: '/api/admin/role_type',
+                url: '/api/admin/role/type',
                 data:{
                     code:fields.code,
                     name:fields.name,
@@ -119,7 +118,7 @@ class CreateModal extends Component {
                     'content-type': 'application/json',
                 },
                 method: 'post',
-                url: '/api/admin/role_type',
+                url: '/api/admin/role/type',
                 data:{
                     code:fields.code,
                     name:fields.name,
