@@ -74,7 +74,8 @@ class RoleTypeInfo extends React.Component {
      *根据name类型产找
      */
     onSearch=(value)=>{
-        this.getRoleTypeInfo(this.state.pagination.current,value);
+        const {current}= this.state.pagination
+        this.getRoleTypeInfo(current,value);
     }
 
     /***
@@ -85,9 +86,10 @@ class RoleTypeInfo extends React.Component {
         this.setState({
             isLoading: true,
         })
-        let res
+       
+        const {current}= this.state.pagination
         try{
-            res = await request({
+         const   res = await request({
                 headers: {
                     'content-type': 'application/json',
                 },
@@ -96,9 +98,28 @@ class RoleTypeInfo extends React.Component {
                 data: {
                     pageNum:page,
                     pageSize:this.state.pagination.pageSize,
-                    name:name
+                    name
                 }
             })
+            const {totalElements ,pageable:{pageSize} } = res.result.pageable
+            if (res.code!=200) {
+                this.setState({
+                    isLoading: false,
+                })
+                return
+            }
+            this.setState({
+                isLoading: false,
+                items: res.result.content,
+                pagination:{
+                    total:totalElements,
+                    current:(page)*pageSize,
+                    pageSize:pageSize
+                }
+            })
+
+
+
         }catch(e){
             this.setState({
                 isLoading: false,
@@ -106,22 +127,7 @@ class RoleTypeInfo extends React.Component {
             message.error("获取角色类型异常")
             return
         }
-        if (res.code!=200) {
-            this.setState({
-                isLoading: false,
-            })
-            return
-        }else{
-            this.setState({
-                isLoading: false,
-                items: res.result.content,
-                pagination:{
-                    total:res.result.totalElements,
-                    current:(page)*res.result.pageable.pageSize,
-                    pageSize:res.result.pageable.pageSize
-                }
-            })
-        }
+       
     }
 
     /**删除菜单项 */
