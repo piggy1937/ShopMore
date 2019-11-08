@@ -74,22 +74,22 @@ const constantMenuMap=[
     {
     title: '作品集',
     icon: 'bulb',
-    key: 'Collection'
+    code: 'Collection'
 },
 {
     title: '留言板',
     icon: 'message',
-    key: 'MessageBoard'
+    code: 'MessageBoard'
 },
 {
     title: '聊天室',
     icon: 'qq',
-    key: 'Chat'
+    code: 'Chat'
 },
 {
     title: '关于',
     icon: 'info-circle',
-    key: 'About'
+    code: 'About'
 }]
 const tabs = {
     ButtonDemo: <ButtonDemo />,
