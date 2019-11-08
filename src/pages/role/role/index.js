@@ -1,36 +1,52 @@
+
 import React  from 'react'
-import { Tabs } from 'antd';
+import {Form, message, Tabs} from 'antd'
 import {tabContentMaps}  from './tabs'
+import {fetchRoleType} from '@/store/actions'
+import { withRouter } from 'react-router-dom'
+import request  from '@/utils/request'
 const { TabPane } = Tabs;
+
+@withRouter @Form.create()
 class RoleManager extends React.Component{
     constructor(props){
         super(props)
         this.state={
-            tabs:[{
-              title:'角色类型',
-              key:'roleType'
-            },{
-                title:'部门类型',
-                key:'departmentType'
-            }]
+            tabs:[]
         }
     }
+   async componentDidMount() {
+       try{
+          const res = await request({
+               headers: {
+                   'content-type': 'application/json',
+               },
+               method: 'get',
+               url: '/api/admin/role/type/all',
+               data: {}
+           })
+           if (res.code===200) {
+                this.setState({
+                    tabs:res.result
+                })
+               return
+           }
+       }catch(e){
+           message.error("获取角色类型异常")
+           return
+       }
+   }
     render(){
-        return (<div>
-
-
+        return(<div>
         <Tabs defaultActiveKey="1" >
             {
                 this.state.tabs.map(e=>{
-                    return ( <TabPane tab={e.title} key={e.key}>
-                            {tabContentMaps[e.key]}
+                    return ( <TabPane tab={e.name} key={e.code}>
+                            {tabContentMaps[e.code]}
                     </TabPane>)
                 })
-
-
             }
         </Tabs>
-
         </div>)
     }
 }
