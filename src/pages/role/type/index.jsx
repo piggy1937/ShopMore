@@ -86,8 +86,6 @@ class RoleTypeInfo extends React.Component {
         this.setState({
             isLoading: true,
         })
-       
-        const {current}= this.state.pagination
         try{
          const   res = await request({
                 headers: {
@@ -101,7 +99,7 @@ class RoleTypeInfo extends React.Component {
                     name
                 }
             })
-            const {totalElements ,pageable:{pageSize} } = res.result.pageable
+            const {totalElements ,pageable:{pageSize} } = res.result
             if (res.code!=200) {
                 this.setState({
                     isLoading: false,
@@ -112,14 +110,11 @@ class RoleTypeInfo extends React.Component {
                 isLoading: false,
                 items: res.result.content,
                 pagination:{
-                    total:totalElements,
-                    current:(page)*pageSize,
-                    pageSize:pageSize
+                    total:res.result.totalElements,
+                    current:(page)*res.result.pageable.pageSize,
+                    pageSize:res.result.pageable.pageSize
                 }
             })
-
-
-
         }catch(e){
             this.setState({
                 isLoading: false,
