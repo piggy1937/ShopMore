@@ -17,7 +17,6 @@ const store = connect(
 
 const dataList = [];
 const generateList = data => {
-    console.log(data)
   for (let i = 0; i < data.length; i++) {
     const node = data[i];
     const { key,title } = node;
@@ -116,7 +115,7 @@ onSearchChange = (e) => {
   const expandedKeys = dataList
     .map(item => {
       if (item.title.indexOf(value) > -1) {
-        return getParentKey(item.key, this.props.menuData);
+        return getParentKey(item.key, this.props.roleData);
       }
       return null;
     })
