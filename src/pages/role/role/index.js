@@ -5,7 +5,10 @@ import {tabContentMaps}  from './tabs'
 import {fetchRoleType} from '@/store/actions'
 import { withRouter } from 'react-router-dom'
 import request  from '@/utils/request'
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
 const { TabPane } = Tabs;
+
 
 @withRouter @Form.create()
 class RoleManager extends React.Component{

@@ -39,7 +39,7 @@ class RoleTypeInfo extends React.Component {
             }
         }
     }
-    componentWillMount() {
+    componentDidMount() {
         this.getRoleTypeInfo(0);
     }
 
@@ -99,7 +99,6 @@ class RoleTypeInfo extends React.Component {
                     name
                 }
             })
-            const {totalElements ,pageable:{pageSize} } = res.result
             if (res.code!=200) {
                 this.setState({
                     isLoading: false,

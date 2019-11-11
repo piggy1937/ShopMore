@@ -16,7 +16,7 @@ export function setUser(user) {
 export const REFRESH_TOKEN = 'refresh_token'
 export async function refreshToken(params)
 {
-   let auth = isAuthenticated()
+   let auth = isAuthenticated()``
      let  res
      try{
      res =  await request({
@@ -85,6 +85,47 @@ export function fetchMenu(param) {
             data: {}
           })
         dispatch(setMenu(res.result || []))
+    }
+}
+
+//修改角色状态
+export const CHANGE_ROLE_STATUS = 'change_role_status'
+export function changeRoleStatus(param){
+    return {
+        type: CHANGE_ROLE_STATUS,
+        param
+    }
+}
+//设置角色
+export const SET_ROLE = 'set_role'
+export function setROLE(param){
+    return {
+        type: SET_ROLE,
+        param
+    }
+}
+
+//设置角色
+export const SET_ROLE_DEPARTMENT = 'set_role_department'
+export function setDepartRole(param){
+    return {
+        type: SET_ROLE_DEPARTMENT,
+        param
+    }
+}
+//异步获取角色
+export function fetchRole(param) {
+    return async function (dispatch) {
+        const res = await request({
+            methos: 'get',
+            url: '/api/admin/role/tree',
+            data: { code:param}
+        })
+        if(param==='roleType'){
+            dispatch(setROLE(res.result || []))
+        }else if(param==='departmentType'){
+            dispatch(setDepartRole(res.result || []))
+        }
     }
 }
 

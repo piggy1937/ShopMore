@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import { Map } from 'immutable';
 import {
     SET_USER, SET_WEBSOCKET, SET_ONLINELIST, SET_CHATLIST, ADD_CHAT, REFRESH_TOKEN,
-    CHANGE_FORM_STATUS, SET_MENU, SET_ELEMENT
+    CHANGE_FORM_STATUS, SET_MENU, SET_ELEMENT, CHANGE_ROLE_STATUS, SET_ROLE,SET_ROLE_DEPARTMENT
 } from './actions'
 
 /**
@@ -66,6 +66,36 @@ function element(state = defaultElement, action) {
 }
 
 /**
+ * 角色信息
+ * @param {*} state
+ * @param {*} action
+ * @param menuData 树形列表信息
+ */
+const defaultRole = { formStatus: '', formEdit: true, currentId: -1, roleData: [] ,departData:[]}
+function role(state = defaultRole, action) {
+    switch (action.type) {
+        case CHANGE_ROLE_STATUS: {
+            const map = Map(state)
+            const ret = map.merge(action.param);
+            return ret.toJS()
+        }
+        case SET_ROLE: {
+            const map = Map(state)
+            const ret = map.set('roleData', action.param)
+            return ret.toJS()
+    }
+        case SET_ROLE_DEPARTMENT: {
+            const map = Map(state)
+            const ret = map.set('departData', action.param)
+            return ret.toJS()
+        }
+        default:
+            return state
+    }
+    console.log(state, action)
+}
+
+/**
  * websocket对象
  * @param {*} state 
  * @param {*} action 
@@ -117,6 +147,7 @@ function chatList(state = [], action) {
 const rootReducer = combineReducers({
     user,
     menu,
+    role,
     element,
     websocket,
     onlineList,

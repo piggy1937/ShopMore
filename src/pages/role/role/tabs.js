@@ -1,7 +1,7 @@
 import React from 'react'
 import LoadableComponent from '@/utils/LoadableComponent'
-const RoleType   = LoadableComponent(import('./tableContent/roleType'), true);
-const DepartmentType   = LoadableComponent(import('./tableContent/departmentType'), true);
+const RoleType   = LoadableComponent(import('./tableContent/roletype/roleType'), true);
+const DepartmentType   = LoadableComponent(import('./tableContent/department/departmentType'), true);
 const tabContentMaps={
    'roleType':<RoleType/>,
    'departmentType':<DepartmentType/>
