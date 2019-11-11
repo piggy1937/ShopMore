@@ -98,7 +98,7 @@ export function changeRoleStatus(param){
 }
 //设置角色
 export const SET_ROLE = 'set_role'
-export function setROLE(param){
+export function setRole(param){
     return {
         type: SET_ROLE,
         param
@@ -122,7 +122,7 @@ export function fetchRole(param) {
             data: { code:param}
         })
         if(param==='roleType'){
-            dispatch(setROLE(res.result || []))
+            dispatch(setRole(res.result || []))
         }else if(param==='departmentType'){
             dispatch(setDepartRole(res.result || []))
         }

@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux'
 const store = connect(
     (state) => ({formStatus:state.role.formStatus,
         formEdit:state.role.formEdit,
-        currentId:state.role.currentId
+        currentId:state.role.currentId,
     }),
     (dispatch) => bindActionCreators({changeRoleStatus,fetchRole}, dispatch)
 )
@@ -21,6 +21,7 @@ class RoleType extends React.Component {
         this.state= {
             type:"roleType",
             showElement: false,
+            roleTypeId:""
         }
     }
 
@@ -32,6 +33,30 @@ class RoleType extends React.Component {
         setFieldsValue({parentId:this.props.currentId})
 
     }
+
+    /**
+     * 获取角色类型id
+     */
+    componentDidMount() {
+        request({
+            headers: {
+                'content-type': 'application/json',
+            },
+            method: 'get',
+            url: '/api/admin/role/type/code',
+            data: {
+                code:"roleType"
+            }
+        }).then(res=>{
+            if(res.data.code===200){
+                this.setState({
+                    roleTypeId:res.data.result.id
+                })
+            }
+        })
+    }
+
+
     /**
      * 检测路径编码用于更新是否存在
      */
@@ -101,26 +126,119 @@ class RoleType extends React.Component {
         })
 
     }
+    /**
+     * 检测路径编码用于更新是否存在
+     */
+    checkCodeUniquedForUpdate =  (rule, value, callback)=>{
+        const {getFieldValue} = this.props.form
+        let id = getFieldValue('id')
+        request({
+            headers: {
+                'content-type': 'application/json',
+            },
+            method: 'get',
+            url: '/api/admin/role/check_code',
+            data: {
+                code: value,
+                id:id
+            }
+        }).then(data=>{
+            const {code,message} = data
+            if(code===200){
+                callback();
+            }else{
+
+                if(this.props.formStatus === 'create'){
+                    callback(message);
+                } else{
+                    callback();
+                }
+
+            }
+        }).catch(err=>{
+            callback(err);
+        })
+
+    }
 
     /**
-     * 添加新新角色
+     * 添加新角色
      */
     handleAddRole = ()=>{
+        console.log("1111111111111111111hhh"+this.state.roleTypeId)
         this.props.form.validateFields(async (errors, values) => {
             if (!errors) {
                 const ret2= await request({
                     method:'post',
                     url: '/api/admin/role',
-                    data:values
+                    data:{
+                        id:values.id,
+                        name:values.name,
+                        code:values.code,
+                        parentId:values.parentId,
+                        description:values.description,
+                        roleTypeId:this.state.roleTypeId
+                    }
                 })
                 if(ret2.code === 200){
                     //刷新树
+                    message.success("添加成功")
                     this.props.fetchRole("roleType")
+                }else{
+                    message.error(ret2.message)
                 }
             }
         });
     }
 
+    /**删除菜单项 */
+    handleDeleteconfirm = ()=>{
+        request({
+            method:'delete',
+            url:'/api/admin/role',
+            data:{
+                id:this.props.currentId
+            }
+        }).then(res=>{
+
+            if(res.code === 200){
+                message.success('删除成功');
+                this.props.fetchRole("roleType")
+            }else{
+                message.error('删除失败');
+            }
+
+        }).catch(err=>{
+            console.log(err)
+        })
+    }
+
+    /**
+     * 更新菜单
+     */
+    handleUpdateRole = ()=>{
+        this.props.form.validateFields(async (errors, values) => {
+            if (!errors) {
+                const ret2 = await request({
+                    method: 'put',
+                    url: '/api/admin/role',
+                    data: values
+                })
+                if (ret2.code === 200) {
+                    message.success('修改成功')
+                    this.props.fetchRole("roleType")
+                }
+            }
+        })
+    }
+
+    /**取消 */
+    handleCancle =()=>{
+        this.props.changeRoleStatus({
+            formStatus:'',
+            formEdit:true
+        })
+    }
     /***
      * 获取角色信息
      */
@@ -193,7 +311,7 @@ class RoleType extends React.Component {
                                 })
                             }} >添加</Button>&emsp;
                             <Button type="primary" icon="edit" onClick={()=>{
-                                this.props.changeFormStatus({
+                                this.props.changeRoleStatus({
                                     formStatus:'update',
                                     currentId:this.props.currentId,
                                     formEdit:false
@@ -278,7 +396,7 @@ class RoleType extends React.Component {
                                             </Button>
                                         </div>
                                         <div  style={{display: formStatus==='update'?'inline-block':'none'}}>
-                                            <Button type="primary" htmlType="submit" onClick={this.handleUpdateMenu}>
+                                            <Button type="primary" htmlType="submit" onClick={this.handleUpdateRole}>
                                                 更新
                                             </Button>&emsp;
                                             <Button type="primary"  onClick={this.handleCancle}>
@@ -292,7 +410,6 @@ class RoleType extends React.Component {
                     </Row>
                 </Card>
             </div>
-
         )
     }
 }
