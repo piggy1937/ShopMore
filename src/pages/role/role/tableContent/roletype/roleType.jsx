@@ -22,10 +22,7 @@ class RoleType extends React.Component {
         super(props)
         this.state= {
             type:"roleType",
-            showElement: false,
-            roleTypeId:"",
-            isShowCreateModal:false,
-            modelTitle:''
+            showElement: false
         }
     }
 
@@ -33,32 +30,10 @@ class RoleType extends React.Component {
     restForm =()=>{
         const {resetFields,setFieldsValue}  = this.props.form
         resetFields();
-        console.log(this.props.currentId)
         setFieldsValue({parentId:this.props.currentId})
 
     }
 
-    /**
-     * 获取角色类型id
-     */
-    componentDidMount() {
-        request({
-            headers: {
-                'content-type': 'application/json',
-            },
-            method: 'get',
-            url: '/api/admin/role/type/code',
-            data: {
-                code:"roleType"
-            }
-        }).then(res=>{
-            if(res.data.code===200){
-                this.setState({
-                    roleTypeId:res.data.result.id
-                })
-            }
-        })
-    }
 
 
     /**
@@ -180,7 +155,7 @@ class RoleType extends React.Component {
                         code:values.code,
                         parentId:values.parentId,
                         description:values.description,
-                        roleTypeId:this.state.roleTypeId
+                        roleTypeId:6
                     }
                 })
                 if(ret2.code === 200){
@@ -206,6 +181,7 @@ class RoleType extends React.Component {
 
             if(res.code === 200){
                 message.success('删除成功');
+                this.restForm()
                 this.props.fetchRole("roleType")
             }else{
                 message.error('删除失败');
