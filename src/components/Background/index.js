@@ -3,6 +3,27 @@ import PropTypes from 'prop-types'
 import { TweenLite, Circ } from "gsap/all";
 import Loading from '@/components/Loading'
 const bg1 = require('@/assets/images/bg1.jpg')
+window.requestAnimFrame= (function () {
+    return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function (callback) {
+            window.setTimeout(callback, 1000 / 60);
+        };
+})();
+
+
+
+window.cancelRequestAnimFrame = window.cancelRequestAnimationFrame
+    || window.webkitCancelAnimationFrame
+    || window.webkitCancelRequestAnimationFrame
+    || window.mozCancelRequestAnimationFrame
+    || window.oCancelRequestAnimationFrame
+    || window.msCancelRequestAnimationFrame
+    || clearTimeout;
+
 class Background extends React.Component {
     static propTypes = {
         url: PropTypes.string
@@ -190,7 +211,7 @@ class Background extends React.Component {
             this._drawLines(point, ctx)
             this._drawPoint(point, ctx);
         }
-        this.myReq = window.requestAnimationFrame(() => this.start());
+        this.myReq = window.requestAnimFrame(() => this.start());
     }
     initPage = () => {
         this.ctx = this.canvas.getContext('2d')
