@@ -16,7 +16,7 @@ export function setUser(user) {
 export const REFRESH_TOKEN = 'refresh_token'
 export async function refreshToken(params)
 {
-   let auth = isAuthenticated()``
+   let auth = isAuthenticated()
      let  res
      try{
      res =  await request({

@@ -6,9 +6,9 @@ import PrivateRoute from './components/PrivateRoute'
 import './assets/iconfont/iconfont.css'
 import LoadableComponent from '@/utils/LoadableComponent'
 
-const Index = LoadableComponent(import('./pages/Index'))
-const Login = LoadableComponent(import('./pages/Login'))
-const ErrorPage = LoadableComponent(import('./pages/Error'))
+const Index = LoadableComponent(import('@/pages/Index'))
+const Login = LoadableComponent(import('@/pages/Login'))
+const ErrorPage = LoadableComponent(import('@/pages/Error'))
 
 @withRouter
 class App extends React.Component {

@@ -7,6 +7,8 @@ import request from '@/utils/request'
 import {connect} from "react-redux";
 import { changeRoleStatus ,fetchRole} from '@/store/actions'
 import { bindActionCreators } from 'redux'
+import ButtonGroup from 'antd/lib/button/button-group'
+import CreateDraw from './draw/index'
 const store = connect(
     (state) => ({formStatus:state.role.formStatus,
         formEdit:state.role.formEdit,
@@ -21,7 +23,9 @@ class RoleType extends React.Component {
         this.state= {
             type:"roleType",
             showElement: false,
-            roleTypeId:""
+            roleTypeId:"",
+            isShowCreateModal:false,
+            modelTitle:''
         }
     }
 
@@ -165,7 +169,6 @@ class RoleType extends React.Component {
      * 添加新角色
      */
     handleAddRole = ()=>{
-        console.log("1111111111111111111hhh"+this.state.roleTypeId)
         this.props.form.validateFields(async (errors, values) => {
             if (!errors) {
                 const ret2= await request({
@@ -271,6 +274,15 @@ class RoleType extends React.Component {
             console.log(err)
         })
     }
+      /**
+     * 打开/关闭创建模态框
+     */
+    toggleShowCreateModal = (visible,title) => {
+        this.setState({
+            isShowCreateModal: visible,
+            modelTitle:title
+     })
+     }
 
     render(){
         const { getFieldDecorator } = this.props.form;
@@ -302,6 +314,7 @@ class RoleType extends React.Component {
                 <Row style={{marginBottom:'18px'}}>
                     <Col span={12}>
                         <div style={{ textAlign: 'left' }}>
+                            <ButtonGroup>
                             <Button type="primary" icon='plus' onClick={()=>{
                                 this.restForm()
                                 this.props.changeRoleStatus({
@@ -309,13 +322,13 @@ class RoleType extends React.Component {
                                     currentId:this.props.currentId,
                                     formEdit:false
                                 })
-                            }} >添加</Button>&emsp;
+                            }} >添加</Button>
                             <Button type="primary" icon="edit" onClick={()=>{
                                 this.props.changeRoleStatus({
                                     formStatus:'update',
                                     currentId:this.props.currentId,
                                     formEdit:false
-                                })}}>编辑</Button>&emsp;
+                                })}}>编辑</Button>
                             <Popconfirm
                                 placement="rightBottom"
                                 title="此操作将永久删除, 是否继续?"
@@ -325,6 +338,11 @@ class RoleType extends React.Component {
                             >
                                 <Button type="primary" icon="delete" >删除</Button>
                             </Popconfirm>
+
+                            <Button type="primary" icon="gateway" onClick={()=>{
+                                this.toggleShowCreateModal(true,'关联资源')
+                            }}>权限分配</Button>
+                            </ButtonGroup>
                         </div>
                     </Col>
                 </Row>
@@ -409,6 +427,9 @@ class RoleType extends React.Component {
                         </Col>
                     </Row>
                 </Card>
+                <CreateDraw visible={this.state.isShowCreateModal}
+                    toggleVisible={this.toggleShowCreateModal}
+                    title={this.state.modelTitle}></CreateDraw>
             </div>
         )
     }
