@@ -254,6 +254,11 @@ class RoleType extends React.Component {
      * 打开/关闭创建模态框
      */
     toggleShowCreateModal = (visible,title) => {
+        console.log('#########',this.props.currentId)
+        if(this.props.currentId&&this.props.currentId===-1){
+            message.error('请选中角色再执行此操作')
+            return
+        }
         this.setState({
             isShowCreateModal: visible,
             modelTitle:title
