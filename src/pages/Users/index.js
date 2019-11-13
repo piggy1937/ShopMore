@@ -20,13 +20,10 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import request  from '@/utils/request'
 import CreateDrawer from "./CreateDrawer";
+import {bindActionCreators} from "redux";
 const { Search } = Input;
-const store = connect(
-    (state) => ({ user: state.user })
-)
 
-
-@withRouter @store @Form.create()
+@withRouter @Form.create()
 class UsersManager extends Component {
     constructor(props) {
         super(props)
@@ -41,7 +38,8 @@ class UsersManager extends Component {
                 showQuickJumper: true,
                 totalPages:0
             },
-            visible:false
+            visible:false,
+            title:''
         }
     }
     componentDidMount() {
@@ -128,12 +126,13 @@ class UsersManager extends Component {
     }
 
     /**
-     * 修改按钮
+     * 添加按钮
      * @returns {*}
      */
-    handleUpdate = (id) =>{
+    handleAdd = () =>{
         this.setState({
-            visible:true
+            visible:true,
+            title:"添加人员"
         })
     }
 
@@ -259,7 +258,7 @@ class UsersManager extends Component {
                                     <div style={{ textAlign: 'left' }}>
                                         <Button type="primary" icon='search' onClick={this.onSearch}>搜索</Button>&emsp;
                                         <Button icon="reload" onClick={this.onReset}>重置</Button>&emsp;
-                                        <Button icon="plus" onClick={this.onReset}>添加</Button>
+                                        <Button icon="plus" onClick={this.handleAdd}>添加</Button>
                                     </div>
                                 </Form.Item>
                             </Col>
@@ -279,6 +278,7 @@ class UsersManager extends Component {
                 </Card>
                 <CreateDrawer  visible={visible}
                                toggleVisible={this.toggleShowCreateDrawer}
+                               title={title}
                 />
             </div>
         );

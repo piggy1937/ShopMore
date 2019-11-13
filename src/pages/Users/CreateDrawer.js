@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
-import {Form, Drawer, Button, Col, Row, Input, Select, Upload, Icon, message,TreeSelect } from 'antd';
+import {Form, Drawer, Button, Col, Row, Input, Select, Upload, Icon, message, TreeSelect, Tree} from 'antd';
 import request  from '@/utils/request';
 import { fetchRoleType} from '@/store/actions'
 import {connect} from "react-redux";
-import debounce from 'lodash/debounce';
+import { bindActionCreators } from 'redux'
+import { changeRoleStatus ,fetchRole} from '@/store/actions'
 const { Option } = Select;
 const { TreeNode } = TreeSelect;
 const store = connect(
-    (state) => ({ user: state.user, websocket: state.websocket })
+    (state) => ({
+        roleData:state.role.roleData
+    }),
+    (dispatch) => bindActionCreators({ fetchRole }, dispatch)
 )
+
 @store
 @Form.create()
 class CreateDrawer extends Component {
@@ -16,7 +21,12 @@ class CreateDrawer extends Component {
         super(props);
         this.state={
             uploading: false
+
         }
+    }
+
+    async componentDidMount() {
+        await this.props.fetchRole("roleType")
     }
 
     onClose = () => {
@@ -72,9 +82,18 @@ class CreateDrawer extends Component {
         }
     }
 
+    /**
+     * 保存人员
+     * @returns {*}
+     */
+    handleSave=()=>{
+        const fields = this.props.form.getFieldsValue()
+    }
+
     render() {
         const { visible } = this.props
         const { uploading } = this.state
+         const {roleData} = this.props
         const { getFieldDecorator, getFieldValue } = this.props.form
         const avatar = getFieldValue('avatar')
         const uploadProps = {
@@ -90,9 +109,21 @@ class CreateDrawer extends Component {
             labelCol: { span: 6 },
             wrapperCol: { span: 14 },
         }
+        const loop = data =>
+            data.map(item => {
+             if(item.children) {
+                    return (
+                        <TreeNode  key={item.key} title={item.title} value={item.key}>
+                            {loop(item.children)}
+                        </TreeNode>
+                    );
+                }
+                return <TreeNode  value= {item.key} key={item.key} title={item.title} />;
+            });
+
         return (
             <Drawer
-                title="编辑"
+                title={this.props.title}
                 width={720}
                 onClose={this.onClose}
                 visible={visible}
@@ -144,23 +175,13 @@ class CreateDrawer extends Component {
                                     <TreeSelect
                                         showSearch
                                         style={{ width: '100%' }}
-                                        value={this.state.value}
                                         dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                        placeholder="Please select"
+                                        placeholder="请分配角色"
                                         allowClear
                                         multiple
                                         treeDefaultExpandAll
-                                        onChange={this.onChange}
                                     >
-                                        <TreeNode value="parent 1" title="parent 1" key="0-1">
-                                            <TreeNode value="parent 1-0" title="parent 1-0" key="0-1-1">
-                                                <TreeNode value="leaf1" title="my leaf" key="random" />
-                                                <TreeNode value="leaf2" title="your leaf" key="random1" />
-                                            </TreeNode>
-                                            <TreeNode value="parent 1-1" title="parent 1-1" key="random2">
-                                                <TreeNode value="sss" title={<b style={{ color: '#08c' }}>sss</b>} key="random3" />
-                                            </TreeNode>
-                                        </TreeNode>
+                                        {loop(roleData)}
                                     </TreeSelect>
                                 )}
                             </Form.Item>
@@ -179,7 +200,7 @@ class CreateDrawer extends Component {
                         textAlign: 'right',
                     }}
                 >
-                    <Button onClick={this.onClose} style={{ marginRight: 8 }}>
+                    <Button onClick={this.handleSave} style={{ marginRight: 8 }}>
                         Cancel
                     </Button>
                     <Button onClick={this.onClose} type="primary">
