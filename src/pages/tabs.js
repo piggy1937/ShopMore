@@ -4,7 +4,7 @@ import LoadableComponent from '../utils/LoadableComponent'
 const ButtonDemo = LoadableComponent(import('./ButtonDemo/index'), true);
 const IconDemo = LoadableComponent(import('./IconDemo/index'), true);
 const FeedbackDemo = LoadableComponent(import('./FeedbackDemo/index'), true);
-const Users = LoadableComponent(import('./Users/index'), true);
+const UsersManager = LoadableComponent(import('./Users/index'), true);
 const Collection = LoadableComponent(import('./Collection/index'), true);
 const MessageBoard = LoadableComponent(import('./MessageBoard/index'), true);
 const Chat = LoadableComponent(import('./Chat/index'), true);
@@ -66,8 +66,8 @@ const menu = [
     {
         name: '用户管理',
         icon: 'user',
-        key: 'Users',
-        authority: 'userManager'
+        key: 'UsersManager',
+
     }
 ]
 const constantMenuMap=[
@@ -95,7 +95,7 @@ const tabs = {
     ButtonDemo: <ButtonDemo />,
     IconDemo: <IconDemo />,
     FeedbackDemo: <FeedbackDemo />,
-    Users: <Users />,
+    usersManager: <UsersManager />,
     Collection: <Collection />,
     MessageBoard: <MessageBoard />,
     Chat: <Chat />,
