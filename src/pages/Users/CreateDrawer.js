@@ -86,8 +86,24 @@ class CreateDrawer extends Component {
      * 保存人员
      * @returns {*}
      */
-    handleSave=()=>{
-        const fields = this.props.form.getFieldsValue()
+    handleSave=async()=>{
+        const {username,sex,avatar,roles} = this.props.form.getFieldsValue()
+        console.log(username,sex,avatar,roles+"111")
+        const res=await request({
+            headers: {
+                'content-type': 'application/json',
+            },
+            method: 'post',
+            url: '/api/admin/user',
+            data: {
+                username,sex,avatar,roles
+            }
+        })
+        if(res.code===200){
+            this.props.form.resetFields()
+            this.onClose();
+        }
+
     }
 
     render() {
@@ -170,7 +186,6 @@ class CreateDrawer extends Component {
                         <Col span={12}>
                             <Form.Item label="角色">
                                 {getFieldDecorator('roles', {
-                                    rules: [{ required: true, message: 'Please select an owner' }],
                                 })(
                                     <TreeSelect
                                         showSearch
@@ -200,10 +215,10 @@ class CreateDrawer extends Component {
                         textAlign: 'right',
                     }}
                 >
-                    <Button onClick={this.handleSave} style={{ marginRight: 8 }}>
+                    <Button onClick={this.onClose} style={{ marginRight: 8 }}>
                         Cancel
                     </Button>
-                    <Button onClick={this.onClose} type="primary">
+                    <Button onClick={this.handleSave} type="primary">
                         Submit
                     </Button>
                 </div>
