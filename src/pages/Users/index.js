@@ -70,7 +70,7 @@ class UsersManager extends Component {
      *根据name类型产找
      */
     onSearch=(value)=>{
-        const {current}= this.state.pagination
+
 
     }
 
@@ -279,6 +279,7 @@ class UsersManager extends Component {
                 <CreateDrawer  visible={visible}
                                toggleVisible={this.toggleShowCreateDrawer}
                                title={title}
+                               onCreate={this.getUsersInfo}
                 />
             </div>
         );

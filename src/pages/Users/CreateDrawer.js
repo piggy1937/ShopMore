@@ -4,6 +4,7 @@ import request  from '@/utils/request';
 import { fetchRoleType} from '@/store/actions'
 import {connect} from "react-redux";
 import { bindActionCreators } from 'redux'
+import debounce from 'lodash/debounce';
 import { changeRoleStatus ,fetchRole} from '@/store/actions'
 const { Option } = Select;
 const { TreeNode } = TreeSelect;
@@ -21,8 +22,8 @@ class CreateDrawer extends Component {
         super(props);
         this.state={
             uploading: false
-
         }
+        this.checkNameUniqued = debounce(this.checkNameUniqued,500);
     }
 
     async componentDidMount() {
@@ -45,6 +46,11 @@ class CreateDrawer extends Component {
         }
     }
 
+    /**
+     * 上传图片
+     * @param options
+     * @returns {Promise<void>}
+     */
     customRequest = async (options) => {
         const formData = new FormData();
         const { file } = options
@@ -88,7 +94,6 @@ class CreateDrawer extends Component {
      */
     handleSave=async()=>{
         const {username,sex,avatar,roles} = this.props.form.getFieldsValue()
-        console.log(username,sex,avatar,roles+"111")
         const res=await request({
             headers: {
                 'content-type': 'application/json',
@@ -101,9 +106,36 @@ class CreateDrawer extends Component {
         })
         if(res.code===200){
             this.props.form.resetFields()
+            message.success("添加成功")
+            this.props.onCreate()
             this.onClose();
         }
+    }
 
+    /**
+     * 检查用户名是否存在
+     * @returns {*}
+     */
+    checkNameUniqued =  (rule, value, callback)=>{
+        request({
+            headers: {
+                'content-type': 'application/json',
+            },
+            method: 'get',
+            url: '/api/admin/user/check_name',
+            data: {
+                username: value
+            }
+        }).then(data=>{
+            const {code,message} = data
+            if(code===200){
+                callback();
+            }else{
+                callback(message);
+            }
+        }).catch(error=>{
+            callback(error);
+        })
     }
 
     render() {
@@ -149,8 +181,20 @@ class CreateDrawer extends Component {
                         <Col span={12}>
                             <Form.Item label="账号姓名">
                                 {getFieldDecorator('username', {
-                                    rules: [{ required: true, message: 'Please enter user name' }],
+                                    rules: [{ required: true, message: 'Please enter user name' },
+                                        {validator:this.checkNameUniqued}
+                                    ],
                                 })(<Input placeholder="Please enter user name" />)}
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={16}>
+                        <Col span={12}>
+                            <Form.Item label="密码">
+                                {getFieldDecorator('password', {
+                                    rules: [{ required: true, message: '请输入密码' }
+                                    ],
+                                })(<Input placeholder="Please enter password" type="password"/>)}
                             </Form.Item>
                         </Col>
                     </Row>
