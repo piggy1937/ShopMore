@@ -61,7 +61,7 @@ class Index extends React.Component {
                }
                const accessedMenus = filterAsyncRouter(asyncMenus,menuMaps,allMenuMaps)  //用户能够访问的菜单
               this.props.setMenu({
-                menuData:result,
+                menuData:treeResult,
                 accessedMenus
               })
              
