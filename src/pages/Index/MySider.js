@@ -3,11 +3,10 @@ import { Menu, Icon } from 'antd'
 import { tabs, constantMenuMap } from '../tabs'
 import { connect, } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchMenu } from '@/store/actions'
 import {List} from 'immutable'
 const store = connect(
-    (state) => ({ asyncMenuData:state.menu.menuData }),
-    (dispatch) => bindActionCreators({ fetchMenu}, dispatch)
+    (state) => ({ accessedMenus:state.menu.accessedMenus }),
+    (dispatch) => bindActionCreators({ }, dispatch)
 )
 @store
 class MySider extends React.Component {
@@ -58,8 +57,8 @@ class MySider extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState){
-        const list = List(this.props.asyncMenuData)
-        const list2 = List(nextProps.asyncMenuData)
+        const list = List(this.props.accessedMenus)
+        const list2 = List(nextProps.accessedMenus)
         if(list.equals(list2)){
             return false;
         }
@@ -68,12 +67,9 @@ class MySider extends React.Component {
     componentDidUpdate(){
         console.log('update')
     }
-    async componentDidMount(){
-        await this.props.fetchMenu()//获取所有的菜单
-    }
     render() { 
-        const { activeMenu, theme, asyncMenuData} = this.props
-        const list = List(this.props.asyncMenuData ||[])
+        const { activeMenu, theme, accessedMenus} = this.props
+        const list = List(this.props.accessedMenus ||[])
         const menu =list.merge(constantMenuMap)
         return (
             <div className={`my-sider ${theme}`}>

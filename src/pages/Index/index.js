@@ -3,15 +3,20 @@ import { Layout } from 'antd'
 import MySider from './MySider'
 import MyHeader from './MyHeader'
 import MyContent from './MyContent'
-import { getUser, initWebSocket,fetchMenu } from '@/store/actions'
+import { getUser, initWebSocket,setMenu } from '@/store/actions'
 import { connect, } from 'react-redux'
 import { bindActionCreators } from 'redux'
-
+import { Map } from 'immutable';
+import request from '@/utils/request'
+import {menu as asyncMenus} from '@/pages/tabs'
+import {filterAsyncRouter} from '@/utils/permission'
+import {treeTransArray} from '@/utils/util'
+import { menu } from '../tabs'
 const { Header, Sider, Content } = Layout;
 
 const store = connect(
     (state) => ({ user: state.user, websocket: state.websocket }),
-    (dispatch) => bindActionCreators({ getUser, initWebSocket,fetchMenu }, dispatch)
+    (dispatch) => bindActionCreators({ getUser, initWebSocket ,setMenu}, dispatch)
 )
 
 @store
@@ -36,7 +41,33 @@ class Index extends React.Component {
     init = async () => {
         const username = localStorage.getItem('username')
         await this.props.getUser({ username })
-        
+        const ret = await request({
+            methos: 'get',
+            url: '/api/admin/menu/tree',
+            data: {}
+          })
+        if(ret.code === 200){
+            const treeResult = ret.result||[];
+            const result = treeTransArray(treeResult,-1)
+            let allMenuMaps = Map({}); //所有菜单
+            for (let i = 0; i < result.length; i++) {
+                allMenuMaps= allMenuMaps.set(result[i].code, result[i])
+              }
+             const {menus} = this.props.user //用户可以访问的菜单
+
+             let menuMaps = Map({}); //所有菜单
+             for (let i = 0; i < menus.length; i++) {
+                menuMaps= menuMaps.set(menus[i].code, menus[i])
+               }
+               const accessedMenus = filterAsyncRouter(asyncMenus,menuMaps,allMenuMaps)  //用户能够访问的菜单
+              this.props.setMenu({
+                menuData:result,
+                accessedMenus
+              })
+             
+             
+        }
+
         //this.props.initWebSocket(this.props.user)
     }
     _setState = (obj) => {

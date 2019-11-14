@@ -10,7 +10,7 @@ const { Search } = Input;
 const store = connect(
   (state) => ({ formStatus: state.menu.formStatus,
      formEdit: state.menu.formEdit,
-     menuData:state.menu.menuData }),
+     accessedMenus:state.menu.menuData }),
   (dispatch) => bindActionCreators({ changeFormStatus,fetchMenu }, dispatch)
 )
 
@@ -53,7 +53,7 @@ class Navbar extends React.Component {
   }
   async componentDidMount() {
     await this.props.fetchMenu()
-    generateList(this.props.menuData);
+    generateList(this.props.accessedMenus);
   }
   //处理树形图点击事件
   onHandleNodeSelect = (selectedKeys, obj) => {
@@ -112,7 +112,7 @@ onSearchChange = (e) => {
   const expandedKeys = dataList
     .map(item => {
       if (item.title.indexOf(value) > -1) {
-        return getParentKey(item.key, this.props.menuData);
+        return getParentKey(item.key, this.props.accessedMenus);
       }
       return null;
     })
@@ -141,7 +141,7 @@ getNodeTreeMenu = ()=>{
 
   render() {
     const { searchValue, expandedKeys, autoExpandParent } = this.state;
-    const {menuData} = this.props
+    const {accessedMenus} = this.props
     const loop = data =>
       data.map(item => {
         const index = item.title.indexOf(searchValue);
@@ -164,7 +164,7 @@ getNodeTreeMenu = ()=>{
             </TreeNode>
           );
         }
-        return <TreeNode icon={item.icon} key={item.key} title={title} />;
+        return <TreeNode icon={<i className={item.icon}></i>} key={item.key} title={title} />;
       });
     return (
       <div >
@@ -179,7 +179,7 @@ getNodeTreeMenu = ()=>{
           onSelect={this.onHandleNodeSelect}
           onRightClick={this.onHandleNodeRightClick}
         >
-          {loop(menuData)}
+          {loop(accessedMenus)}
         </Tree>
         {this.state.nodeTreeItem != null ? this.getNodeTreeMenu() : ""}
       </div>

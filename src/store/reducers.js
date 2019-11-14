@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import { Map } from 'immutable';
 import {
     SET_USER, SET_WEBSOCKET, SET_ONLINELIST, SET_CHATLIST, ADD_CHAT, REFRESH_TOKEN,
-    CHANGE_FORM_STATUS, SET_MENU, SET_ELEMENT, CHANGE_ROLE_STATUS, SET_ROLE,SET_ROLE_DEPARTMENT
+    CHANGE_FORM_STATUS, SET_MENU,SET_ACCESSED_MENU, SET_ELEMENT, CHANGE_ROLE_STATUS, SET_ROLE,SET_ROLE_DEPARTMENT
 } from './actions'
 
 /**
@@ -27,9 +27,10 @@ function user(state = {}, action) {
  * 菜单信息信息
  * @param {*} state 
  * @param {*} action 
- * @param menuData 树形列表信息
+ * @param menuData 全部树形列表信息
+ * @param accessedMenus 可访问树形菜单
  */
-const defaultMenu = { formStatus: '', formEdit: true, currentId: -1, menuData: [] }
+const defaultMenu = { formStatus: '', formEdit: true, currentId: -1, menuData: [] ,accessedMenus:[]}
 function menu(state = defaultMenu, action) {
     switch (action.type) {
         case CHANGE_FORM_STATUS: {
@@ -39,9 +40,13 @@ function menu(state = defaultMenu, action) {
         }
         case SET_MENU: {
             const map = Map(state)
-            const ret = map.set('menuData', action.param)
+            let ret = map.set('menuData', action.param.menuData)
+            if(action.param.accessedMenus){
+                ret = ret.set('accessedMenus',action.param.accessedMenus)
+            }
             return ret.toJS()
         }
+    
         default:
             return state
     }

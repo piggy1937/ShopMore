@@ -84,7 +84,9 @@ export function fetchMenu(param) {
             url: '/api/admin/menu/tree',
             data: {}
           })
-        dispatch(setMenu(res.result || []))
+        dispatch(setMenu({
+            menuData:res.result || []
+        }))
     }
 }
 
@@ -147,7 +149,17 @@ export function fetchElement(param) {
             url: '/api/admin/element/list',
             data: param
           })
-        dispatch(setElement(res.result||{}))
+          if(res.code === 200){
+              //获取到菜单
+              const allMenus =  res.result
+              
+             
+
+
+
+          } 
+        
+         // dispatch(setElement(||{}))
     }
 }
 
@@ -164,11 +176,6 @@ export function getUser(param) {
         dispatch(setUser(res.result || {}))
     }
 }
-
-
-
-
-
 
 
 export const SET_WEBSOCKET = 'SET_WEBSOCKET'  //设置websocket对象
