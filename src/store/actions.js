@@ -84,10 +84,90 @@ export function fetchMenu(param) {
             url: '/api/admin/menu/tree',
             data: {}
           })
-        dispatch(setMenu(res.result || []))
+        dispatch(setMenu({
+            menuData:res.result || []
+        }))
     }
 }
 
+//修改角色状态
+export const CHANGE_ROLE_STATUS = 'change_role_status'
+export function changeRoleStatus(param){
+    return {
+        type: CHANGE_ROLE_STATUS,
+        param
+    }
+}
+//设置角色
+export const SET_ROLE = 'set_role'
+export function setRole(param){
+    return {
+        type: SET_ROLE,
+        param
+    }
+}
+
+//设置角色
+export const SET_ROLE_DEPARTMENT = 'set_role_department'
+export function setDepartRole(param){
+    return {
+        type: SET_ROLE_DEPARTMENT,
+        param
+    }
+}
+//异步获取角色
+export function fetchRole(param) {
+    return async function (dispatch) {
+        const res = await request({
+            methos: 'get',
+            url: '/api/admin/role/tree',
+            data: { code:param}
+        })
+        if(param==='roleType'){
+            dispatch(setRole(res.result || []))
+        }else if(param==='departmentType'){
+            dispatch(setDepartRole(res.result || []))
+        }
+    }
+}
+//设置权限
+export const SET_PERMISSION = 'set_permission'
+export function setPermission(param){
+    return {
+        type: SET_PERMISSION,
+        param
+    }
+}
+
+//设置资源或按钮
+export const SET_ELEMENT = 'set_element'
+export function setElement(param){
+    return {
+        type: SET_ELEMENT,
+        data:param
+    }
+}
+//异步获取按钮或资源，从后台获取信息
+export function fetchElement(param) {
+    return async function (dispatch) {
+        const res = await request({
+            methos: 'get',
+            url: '/api/admin/element/list',
+            data: param
+          })
+          if(res.code === 200){
+              //获取到菜单
+              const allMenus =  res.result
+              
+             
+
+
+
+          } 
+        
+         // dispatch(setElement(||{}))
+    }
+}
 
 
 //异步action，从后台获取用户信息
@@ -102,11 +182,6 @@ export function getUser(param) {
         dispatch(setUser(res.result || {}))
     }
 }
-
-
-
-
-
 
 
 export const SET_WEBSOCKET = 'SET_WEBSOCKET'  //设置websocket对象

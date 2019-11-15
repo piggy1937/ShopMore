@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
 import { Modal, Form, Input, message } from 'antd';
 import request  from '@/utils/request';
-import Promptbox from '@/components/PromptBox/index'
+import { fetchRoleType} from '@/store/actions'
 import {connect} from "react-redux";
 import debounce from 'lodash/debounce';
 const store = connect(
-    (state) => ({ user: state.user})
-  )
+    (state) => ({ user: state.user, websocket: state.websocket })
+)
 @store
 @Form.create()
 class CreateModal extends Component {
     constructor(props) {
-        super(props)
+        super(props);
+        this.state = {
+            dialogStatus: '',
+            currentId:''
+        }
+        this.checkCodeUniqued = debounce(this.checkCodeUniqued, 500);
     }
-
-
     onCancel = () => {
         this.props.form.resetFields()
         this.props.toggleVisible(false)
@@ -22,18 +25,91 @@ class CreateModal extends Component {
     handleOk = () => {
         this.props.form.validateFields((errors, values) => {
             if (!errors) {
-                this.onCreate(values)
+                if(this.state.dialogStatus==='update'){
+                    this.handleUpdateElement(values);
+                }else{
+                    this.handleAddElement(values)
+                }
             }
         })
     }
 
+    /**
+     * 初始化数据
+     */
+    initForm=(data)=>{
+        const {setFieldsValue} = this.props.form
+        const {id,code,name,description} = data
+        setFieldsValue({
+            code,name,description
+        })
+        this.props.toggleVisible(true)
+        this.setState({
+            dialogStatus:'update',
+            currentId:id
+        })
+    }
 
+
+    /**
+     * 检查code 是否存在
+     */
+    checkCodeUniqued =  (rule, value, callback)=>{
+        request({
+            headers: {
+                'content-type': 'application/json',
+            },
+            method: 'get',
+            url: '/api/admin/role/type/check_code',
+            data: {
+                code: value
+            }
+        }).then(data=>{
+            const {code,message} = data
+            if(code===200){
+                callback();
+            }else{
+                callback(message);
+            }
+        }).catch(err=>{
+            callback(err);
+        })
+
+    }
+    /**
+     * 修改角色
+     */
+    handleUpdateElement=async () =>{
+        try{
+            const fields = this.props.form.getFieldsValue()
+            const ret = await request({
+                method: 'put',
+                url: '/api/admin/role/type',
+                data:{
+                    code:fields.code,
+                    name:fields.name,
+                    description:fields.description,
+                    modifiedUser:this.props.user.username,
+                    id:this.state.currentId
+                }
+            });
+            if(ret.code === 200){
+                this.props.form.resetFields()
+                this.props.toggleVisible(false)
+                this.props.onCreate()
+                message.success("更新成功")
+                return
+            }else{
+                message.error((ret.message))
+                return
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
 
     /**添加角色 */
-    onCreate = async () => {
-        this.setState({
-            isLoading:true
-        })
+    handleAddElement = async () => {
         const fields = this.props.form.getFieldsValue()
         let res
         try{
@@ -42,15 +118,21 @@ class CreateModal extends Component {
                     'content-type': 'application/json',
                 },
                 method: 'post',
-                url: '/api/admin/role',
-                data:fields
+                url: '/api/admin/role/type',
+                data:{
+                    code:fields.code,
+                    name:fields.name,
+                    description:fields.description,
+                    modifiedUser:this.props.user.username,
+                }
             })
         }catch(e){
             this.onCancel()
             return
         }
         if(res.code==200){
-            this.onCancel()
+            this.props.form.resetFields()
+            this.props.toggleVisible(false)
             this.props.onCreate()
             message.success('添加成功')
         } else{
@@ -58,8 +140,12 @@ class CreateModal extends Component {
             this.onCancel()
         }
     }
+
+    componentDidMount(){
+        this.props.onRef(this)
+    }
     render() {
-        const { visible } = this.props
+        const { visible , title } = this.props
         const { getFieldDecorator, getFieldValue } = this.props.form
         const formItemLayout = {
             labelCol: { span: 6 },
@@ -69,41 +155,42 @@ class CreateModal extends Component {
             <Modal
                 onCancel={this.onCancel}
                 visible={visible}
-                title='新增角色'
+                title='按钮或资源'
                 centered
                 onOk={this.handleOk}
             >
                 <Form {...formItemLayout}>
-                    <Form.Item label={'角色名称'}>
-                        {getFieldDecorator('name', {
+                    <Form.Item label={'编码'}>
+                        {getFieldDecorator('code', {
                             validateFirst: true,
                             rules: [
-                                { required: true, message: '角色名称不能为空' },
-                                { pattern: /^[^\s']+$/, message: '不能输入特殊字符' }
+                                { required: true, message: '编码不能为空' },
+                                { pattern: /^[^\s']+$/, message: '不能输入特殊字符' },
+                                this.state.dialogStatus===''&&{validator:this.checkCodeUniqued}
                             ],
                            
                         })(
                             <Input
                                 maxLength={50}
-                                placeholder='请输入角色名称' />
+                                placeholder='请输入编码' />
                         )}
                     </Form.Item>
-                    <Form.Item label={'角色类型'}>
-                        {getFieldDecorator('type', {
+                    <Form.Item label={'类型名称'}>
+                        {getFieldDecorator('name', {
                             validateFirst: true,
                             rules: [
-                                { required: true, message: '角色类型不能为空' },
+                                { required: true, message: '类型名称不能为空' },
                                 { pattern: /^[^\s']+$/, message: '不能输入特殊字符' },
-                                { min: 3, message: '角色类型至少为3位' }
+                                { min: 3, message: '类型名称至少为3位' }
                             ]
                         })(
                             <Input
                                 maxLength={16}
-                                placeholder='请输入角色类型' />
+                                placeholder='请输入类型名称' />
                         )}
                     </Form.Item>
 
-                    <Form.Item label={'角色描述'}>
+                    <Form.Item label={'描述'}>
                         {getFieldDecorator('description', {
                             validateFirst: true,
                             rules: [
@@ -111,7 +198,7 @@ class CreateModal extends Component {
                             ]
                         })(
                             <Input
-                                placeholder='请输入角色描述' />
+                                placeholder='请输入描述' />
                         )}
                     </Form.Item>
                 </Form>

@@ -1,23 +1,34 @@
 import React from 'react'
 import { Menu, Icon } from 'antd'
-import { tabs, menu } from '../tabs'
-
+import { tabs, constantMenuMap } from '../tabs'
+import { connect, } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import {List} from 'immutable'
+const store = connect(
+    (state) => ({ accessedMenus:state.menu.accessedMenus }),
+    (dispatch) => bindActionCreators({ }, dispatch)
+)
+@store
 class MySider extends React.Component {
     /**
      * 生成侧边栏菜单
      */
+    constructor(props){
+        super(props)
+    }
+   
     renderMenu = (menu) => {
         if (Array.isArray(menu)) {
             return menu.map(item => {
                 if (!item.children || !item.children.length) {
                     return (
-                        <Menu.Item key={item.key || item.name}>
-                            <div onClick={() => this.addPane(item)}>{item.icon && <Icon type={item.icon} />}<span>{item.name}</span></div>
+                        <Menu.Item key={item.key || item.title}>
+                            <div onClick={() => this.addPane(item)}>{item.icon && <i className={item.icon} ></i>}<span>{item.title}</span></div>
                         </Menu.Item>
                     )
                 } else {
                     return (
-                        <Menu.SubMenu key={item.key} title={<span>{item.icon && <Icon type={item.icon} />}<span>{item.name}</span></span>}>
+                        <Menu.SubMenu key={item.key} title={<span>{item.icon && <i className={item.icon} ></i>}<span>{item.title}</span></span>}>
                             {this.renderMenu(item.children)}
                         </Menu.SubMenu>
                     )
@@ -30,13 +41,13 @@ class MySider extends React.Component {
      */
     addPane = (item) => {
         const panes = this.props.panes.slice()
-        const activeMenu = item.key
+        const activeMenu = item.code
         //如果标签页不存在就添加一个
         if (!panes.find(i => i.key === activeMenu)) {
             panes.push({
-                name: item.name,
-                key: item.key,
-                content: tabs[item.key] || item.name
+                name: item.title,
+                key: item.code,
+                content: tabs[item.code] || item.title
             })
         }
         this.props.onChangeState({
@@ -44,8 +55,22 @@ class MySider extends React.Component {
             activeMenu
         })
     }
-    render() {
-        const { activeMenu, theme } = this.props
+
+    shouldComponentUpdate(nextProps, nextState){
+        const list = List(this.props.accessedMenus)
+        const list2 = List(nextProps.accessedMenus)
+        if(list.equals(list2)){
+            return false;
+        }
+        return true;
+    }
+    componentDidUpdate(){
+        console.log('update')
+    }
+    render() { 
+        const { activeMenu, theme, accessedMenus} = this.props
+        const list = List(this.props.accessedMenus ||[])
+        const menu =list.merge(constantMenuMap)
         return (
             <div className={`my-sider ${theme}`}>
                 <div className={`sider-menu-logo ${theme}`}>
@@ -55,7 +80,7 @@ class MySider extends React.Component {
                     </a>
                 </div>
                 <Menu theme={theme} mode="inline" selectedKeys={[activeMenu]} style={{ paddingTop: 16 }}>
-                    {this.renderMenu(menu)}
+                    {this.renderMenu(menu.toJS())}
                 </Menu>
             </div >
         )

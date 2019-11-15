@@ -1,0 +1,35 @@
+/* Tooltip 容器 */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; /* 悬停元素上显示点线 */
+}
+ 
+/* Tooltip 文本 */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 80px;
+    background-color: #6d6d6d;
+    color: #fff;
+    text-align: center;
+    padding: 3px 0;
+    border-radius: 6px;
+    top: 25px;
+    left: 0px;
+    position: absolute;
+    z-index: 1;
+}
+ 
+/* 鼠标移动上去后显示提示框 */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+.icon-btn{
+    width: 20px;
+    height: 20px;
+    display: block;
+    line-height: 17px;
+    text-align: center;
+    padding: 0px 0px 0px 0px !important;
+    padding: 0 1 1 0;
+}

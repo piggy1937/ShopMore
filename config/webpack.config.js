@@ -142,8 +142,10 @@ module.exports = function(webpackEnv) {
       // the line below with these two lines if you prefer the stock client:
       // require.resolve('webpack-dev-server/client') + '?/',
       // require.resolve('webpack/hot/dev-server'),
+      "@babel/polyfill",
       isEnvDevelopment &&
         require.resolve('react-dev-utils/webpackHotDevClient'),
+      
       // Finally, this is your app's code:
       paths.appIndexJs,
       // We include the app code last so that if there is a runtime error during
@@ -340,6 +342,13 @@ module.exports = function(webpackEnv) {
               include: paths.appSrc,
               loader: require.resolve('babel-loader'),
               options: {
+                options: {
+                  "presets": [["@babel/preset-env", {
+                      useBuiltIns: "usage",
+                      corejs: 3
+                  }]]
+              },
+
                 customize: require.resolve(
                   'babel-preset-react-app/webpack-overrides'
                 ),
@@ -371,7 +380,7 @@ module.exports = function(webpackEnv) {
               exclude: /@babel(?:\/|\\{1,2})runtime/,
               loader: require.resolve('babel-loader'),
               options: {
-                babelrc: false,
+                babelrc: true,
                 configFile: false,
                 compact: false,
                 presets: [
@@ -379,6 +388,10 @@ module.exports = function(webpackEnv) {
                     require.resolve('babel-preset-react-app/dependencies'),
                     { helpers: true },
                   ],
+                  ["@babel/preset-env", {
+                    useBuiltIns: "usage",
+                    corejs: 3
+                }]
                 ],
                 cacheDirectory: true,
                 cacheCompression: isEnvProduction,

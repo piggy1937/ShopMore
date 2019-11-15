@@ -4,7 +4,7 @@ import LoadableComponent from '../utils/LoadableComponent'
 const ButtonDemo = LoadableComponent(import('./ButtonDemo/index'), true);
 const IconDemo = LoadableComponent(import('./IconDemo/index'), true);
 const FeedbackDemo = LoadableComponent(import('./FeedbackDemo/index'), true);
-const Users = LoadableComponent(import('./Users/index'), true);
+const UsersManager = LoadableComponent(import('./Users/index'), true);
 const Collection = LoadableComponent(import('./Collection/index'), true);
 const MessageBoard = LoadableComponent(import('./MessageBoard/index'), true);
 const Chat = LoadableComponent(import('./Chat/index'), true);
@@ -13,95 +13,108 @@ const BudgetInfo = LoadableComponent(import('./maycur/budget'), true);
 const ScheduleInfo = LoadableComponent(import('./maycur/Schedule'), true);
 const SyncInfo = LoadableComponent(import('./maycur/sync'), true);
 const MenuManager = LoadableComponent(import('./BaseManager/menu-manager'), true);
-const RoleTypeInfo = LoadableComponent(import('./role/type/index'), true);
+const RoleTypeManager = LoadableComponent(import('./role/type/index'), true);
+const RoleManager     = LoadableComponent(import('./role/role/index'), true);
 const menu = [
     {
        name:'每刻报销',
        icon: 'ant-design',
-       key: 'budget',
+       code: 'maycurManager',
+       authority: 'maycurManager',
        children:[{
         name: '获取预算',
         icon: '',
-        key: 'BudgetInfo',
+        code: 'buggetManager',
+        authority: 'buggetManager',
        },
            {
                name: '定时轮询',
                icon: '',
-               key: 'ScheduleInfo',
+               code: 'scheduleManager',
+               authority: 'scheduleManager',
            },
            {
                name: '组织架构同步',
                icon: '',
-               key: 'SyncInfo',
+               code: 'orgManager',
+               authority: 'orgManager',
            }
        ]
     },
     {
         name: '基础配置管理',
         icon: 'setting',
-        key: 'baseManager',
+        code: 'baseManager',
+        authority: 'baseManager',
         children: [
             {
                 name: '菜单管理',
                 icon: 'usergroup-add',
-                key: 'menuManager',
+                code: 'menuManager',
+                authority: 'menuManager',
             },
             {
                 name: '角色权限管理',
                 icon: 'usergroup-add',
-                key: 'IconDemo',
+                code: 'roleManager',
+                authority: 'roleManager'
             },
             {
                 name: '角色类型管理',
                 icon: 'usergroup-add',
-                key: 'RoleTypeInfo',
+                code: 'roleTypeManager',
+                authority: 'roleTypeManager'
             },
         ]
     },
     {
         name: '用户管理',
         icon: 'user',
-        key: 'Users'
-    },
-    {
-        name: '作品集',
-        icon: 'bulb',
-        key: 'Collection'
-    },
-    {
-        name: '留言板',
-        icon: 'message',
-        key: 'MessageBoard'
-    },
-    {
-        name: '聊天室',
-        icon: 'qq',
-        key: 'Chat'
-    },
-    {
-        name: '关于',
-        icon: 'info-circle',
-        key: 'About'
+        code: 'usersManager',
+        authority: 'usersManager',
+
     }
 ]
-
+const constantMenuMap=[
+    {
+    title: '作品集',
+    icon: 'bulb',
+    code: 'Collection'
+},
+{
+    title: '留言板',
+    icon: 'message',
+    code: 'MessageBoard'
+},
+{
+    title: '聊天室',
+    icon: 'qq',
+    code: 'Chat'
+},
+{
+    title: '关于',
+    icon: 'info-circle',
+    code: 'About'
+}]
 const tabs = {
     ButtonDemo: <ButtonDemo />,
     IconDemo: <IconDemo />,
     FeedbackDemo: <FeedbackDemo />,
-    Users: <Users />,
+    usersManager: <UsersManager />,
     Collection: <Collection />,
     MessageBoard: <MessageBoard />,
     Chat: <Chat />,
     About: <About />,
-    BudgetInfo:<BudgetInfo/>,
-    ScheduleInfo:<ScheduleInfo/>,
-    SyncInfo:<SyncInfo/>,
+    buggetManager:<BudgetInfo/>,
+    scheduleManager:<ScheduleInfo/>,
+    orgManager:<SyncInfo/>,
     menuManager:<MenuManager/>, //菜单管理界面
-    RoleTypeInfo:<RoleTypeInfo/>
+    roleTypeManager:<RoleTypeManager/>,
+    roleManager:<RoleManager/>
 }
 
 export {
     menu,
-    tabs
+    tabs,
+    constantMenuMap
 }

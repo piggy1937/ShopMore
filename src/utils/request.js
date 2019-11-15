@@ -41,7 +41,10 @@ axios.interceptors.response.use(response => {
     } else if (error.status === 401 && error.statusText === 'Unauthorized') {
       logout()
       history.push('/login')
-    } else {
+    }else if(error.status === 504){
+      history.push('/error')
+    } 
+     else {
       reject(error);
     }
   });

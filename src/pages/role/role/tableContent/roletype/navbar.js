@@ -1,17 +1,18 @@
 import React from 'react'
 import { Tree, Input,Icon,Button,Tooltip} from 'antd'
 import request from '@/utils/request'
-import { changeFormStatus ,fetchMenu} from '@/store/actions'
+import { changeRoleStatus ,fetchRole} from '@/store/actions'
 import { connect, } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import './navbar.css'
 const { TreeNode } = Tree;
 const { Search } = Input;
 const store = connect(
-  (state) => ({ formStatus: state.menu.formStatus,
-     formEdit: state.menu.formEdit,
-     accessedMenus:state.menu.menuData }),
-  (dispatch) => bindActionCreators({ changeFormStatus,fetchMenu }, dispatch)
+  (state) => ({ formStatus: state.role.formStatus,
+     formEdit: state.role.formEdit,
+     roleData:state.role.roleData
+  }),
+  (dispatch) => bindActionCreators({ changeRoleStatus,fetchRole }, dispatch)
 )
 
 const dataList = [];
@@ -44,6 +45,7 @@ class Navbar extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+        type:this.props.type ,
       expandedKeys: [],
       searchValue: '',
       autoExpandParent: true,
@@ -52,8 +54,9 @@ class Navbar extends React.Component {
 
   }
   async componentDidMount() {
-    await this.props.fetchMenu()
-    generateList(this.props.accessedMenus);
+    await this.props.fetchRole(this.state.type)
+      console.log(this.state.type)
+    generateList(this.props.roleData);
   }
   //处理树形图点击事件
   onHandleNodeSelect = (selectedKeys, obj) => {
@@ -63,13 +66,13 @@ class Navbar extends React.Component {
       return
      }
     if (!this.props.formEdit) {
-      this.props.changeFormStatus({
+      this.props.changeRoleStatus({
         formStatus: 'update',
         formEdit:this.props.formEdit,
         currentId:this.props.currentId
       })
     }    
-    this.props.getMenuInfo(id);
+    this.props.getRoleInfo(id);
   }
   clearRightMenu=()=>{
     this.setState({
@@ -112,7 +115,7 @@ onSearchChange = (e) => {
   const expandedKeys = dataList
     .map(item => {
       if (item.title.indexOf(value) > -1) {
-        return getParentKey(item.key, this.props.accessedMenus);
+        return getParentKey(item.key, this.props.roleData);
       }
       return null;
     })
@@ -140,8 +143,9 @@ getNodeTreeMenu = ()=>{
 
 
   render() {
+   
     const { searchValue, expandedKeys, autoExpandParent } = this.state;
-    const {accessedMenus} = this.props
+    const {roleData} = this.props
     const loop = data =>
       data.map(item => {
         const index = item.title.indexOf(searchValue);
@@ -164,7 +168,7 @@ getNodeTreeMenu = ()=>{
             </TreeNode>
           );
         }
-        return <TreeNode icon={<i className={item.icon}></i>} key={item.key} title={title} />;
+        return <TreeNode icon={item.icon} key={item.key} title={title} />;
       });
     return (
       <div >
@@ -179,7 +183,7 @@ getNodeTreeMenu = ()=>{
           onSelect={this.onHandleNodeSelect}
           onRightClick={this.onHandleNodeRightClick}
         >
-          {loop(accessedMenus)}
+          {loop(roleData)}
         </Tree>
         {this.state.nodeTreeItem != null ? this.getNodeTreeMenu() : ""}
       </div>

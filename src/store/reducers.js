@@ -1,5 +1,9 @@
 import { combineReducers } from 'redux'
-import { SET_USER, SET_WEBSOCKET, SET_ONLINELIST, SET_CHATLIST, ADD_CHAT,REFRESH_TOKEN,CHANGE_FORM_STATUS ,SET_MENU} from './actions'
+import { Map } from 'immutable';
+import {
+    SET_USER, SET_WEBSOCKET, SET_ONLINELIST, SET_CHATLIST, ADD_CHAT, REFRESH_TOKEN,
+    CHANGE_FORM_STATUS, SET_MENU,SET_PERMISSION, SET_ELEMENT, CHANGE_ROLE_STATUS, SET_ROLE,SET_ROLE_DEPARTMENT
+} from './actions'
 
 /**
  * 用户信息
@@ -11,7 +15,7 @@ function user(state = {}, action) {
         case SET_USER: {
             return action.user
         }
-        case REFRESH_TOKEN:{
+        case REFRESH_TOKEN: {
             console.log('获取预算信息')
         }
         default:
@@ -23,31 +27,99 @@ function user(state = {}, action) {
  * 菜单信息信息
  * @param {*} state 
  * @param {*} action 
+ * @param menuData 全部树形列表信息
+ * @param accessedMenus 可访问树形菜单
+ */
+const defaultMenu = { formStatus: '', formEdit: true, currentId: -1, menuData: [] ,accessedMenus:[]}
+function menu(state = defaultMenu, action) {
+    switch (action.type) {
+        case CHANGE_FORM_STATUS: {
+            const map = Map(state)
+            const ret = map.merge(action.param);
+            return ret.toJS()
+        }
+        case SET_MENU: {
+            const map = Map(state)
+            let ret = map.set('menuData', action.param.menuData)
+            if(action.param.accessedMenus){
+                ret = ret.set('accessedMenus',action.param.accessedMenus)
+            }
+            return ret.toJS()
+        }
+    
+        default:
+            return state
+    }
+    console.log(state, action)
+}
+/***按钮或资源 */
+const defaultElement = { content: [], totalPages: 1, number: 1, size: 10, pageIndex: 0 }
+function element(state = defaultElement, action) {
+    switch (action.type) {
+        case SET_ELEMENT: {
+            let { number, size, content, totalPages } = action.data
+            if (number < 1) { number = 1 }
+            const map = Map(state)
+            const ret = map.merge({ number, size, content, totalPages, pageIndex: (number - 1) * size })
+            return ret.toJS();
+        }
+
+        default:
+            return state
+    }
+    console.log(state, action)
+}
+
+/**
+ * 角色信息
+ * @param {*} state
+ * @param {*} action
  * @param menuData 树形列表信息
  */
-const defaultMenu = {formStatus:'',formEdit: true,currentId:-1, menuData: []}
-function menu(state=defaultMenu,action){
+const defaultRole = { formStatus: '', formEdit: true, currentId: -1, roleData: [] ,departData:[]}
+function role(state = defaultRole, action) {
     switch (action.type) {
-        case CHANGE_FORM_STATUS:{
-            let tmpState = {}
-           
-            tmpState=Object.assign({},tmpState,{
-                formStatus: action.param.formStatus,
-                formEdit: action.param.formEdit,
-                currentId:action.param.currentId
-            })
-            return Object.assign({}, state, tmpState)
+        case CHANGE_ROLE_STATUS: {
+            const map = Map(state)
+            const ret = map.merge(action.param);
+            return ret.toJS()
         }
-        case SET_MENU:{
-            return Object.assign({}, state, {
-                menuData:action.param
-            })
+        case SET_ROLE: {
+            const map = Map(state)
+            const ret = map.set('roleData', action.param)
+            return ret.toJS()
+    }
+        case SET_ROLE_DEPARTMENT: {
+            const map = Map(state)
+            const ret = map.set('departData', action.param)
+            return ret.toJS()
         }
         default:
             return state
     }
-    console.log(state,action)
+    console.log(state, action)
 }
+/**
+ * 权限授权资源
+ * @param {*} state
+ * @param {*} action
+ * @param menuData 列表信息
+ */
+const defaultPermission = {treeCheckedKeys:[],tableCheckedKeys:[]}
+function permission(state = defaultPermission, action) {
+    switch (action.type) {
+        case SET_PERMISSION: {
+            const map = Map(state)
+            const ret = map.merge(action.param);
+            return ret.toJS()
+        }
+        default:
+            return state
+    }
+    console.log(state, action)
+}
+
+
 
 /**
  * websocket对象
@@ -101,6 +173,9 @@ function chatList(state = [], action) {
 const rootReducer = combineReducers({
     user,
     menu,
+    role,
+    permission,
+    element,
     websocket,
     onlineList,
     chatList,

@@ -6,16 +6,18 @@ import PrivateRoute from './components/PrivateRoute'
 import './assets/iconfont/iconfont.css'
 import LoadableComponent from '@/utils/LoadableComponent'
 
-const Index = LoadableComponent(import('./pages/Index'))
-const Login = LoadableComponent(import('./pages/Login'))
+const Index = LoadableComponent(import('@/pages/Index'))
+const Login = LoadableComponent(import('@/pages/Login'))
+const ErrorPage = LoadableComponent(import('@/pages/Error'))
 
 @withRouter
 class App extends React.Component {
   render() {
     return (
       <Switch>
-        <Route path='/login' component={Login} />
-        <PrivateRoute path='/' component={Index} />
+        <Route path='/login' exact component={Login} />
+        <PrivateRoute path='/' exact component={Index} />
+        <Route path="*" component={ErrorPage} />
       </Switch>
     )
   }
