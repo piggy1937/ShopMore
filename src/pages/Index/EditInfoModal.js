@@ -67,27 +67,12 @@ class EditInfoModal extends React.Component {
             method:'post',
             url:'/api/admin/user/update',
             data:param
-        });
-        
-        if (res.status === 0) {
-            //修改localStorage，为什么我们在redux中保存了用户信息还要在localStorage中保存？redux刷新就重置了，我们需要username重新去后台获取
-            localStorage.setItem('username', values.username)
-            //修改cookie
-            authenticateSuccess(res.data.token)
-            //修改redux中的user信息
-            this.props.setUser(res.data)
-            //修改websocket中的user信息
-            if (this.props.websocket.readyState !== 1) {
-                this.props.initWebSocket(res.data)
-            } else {
-                this.props.websocket.send(JSON.stringify({
-                    id: res.data.id,
-                    username: res.data.username,
-                    avatar: res.data.avatar
-                }))
-            }
+        })
+        if (res.code ===200) {
             message.success('修改信息成功')
             this.handleCancel()
+        }else{
+            message.error(res.message)
         }
     }
     /**
@@ -191,7 +176,7 @@ class EditInfoModal extends React.Component {
                                     { min: 3, message: '用户名至少为3位' }
                                 ]
                             })(
-                                <Input placeholder="请输入用户名" />
+                                <Input placeholder="请输入用户名" disabled={true}/>
                             )}
                         </Form.Item>
                         <Form.Item label={'出生年月日'} {...formItemLayout}>
@@ -217,13 +202,13 @@ class EditInfoModal extends React.Component {
                             )}
                         </Form.Item>
                         <Form.Item label={'性别'} {...formItemLayout}>
-                            {getFieldDecorator('gender', {
-                                initialValue: 'male',
+                            {getFieldDecorator('sex', {
+
                                 // rules: [{ required: true, message: '请选择性别' }],
                             })(
                                 <RadioGroup>
-                                    <Radio value={'male'}>男</Radio>
-                                    <Radio value={'female'}>女</Radio>
+                                    <Radio value={1}>男</Radio>
+                                    <Radio value={0}>女</Radio>
                                 </RadioGroup>
                             )}
                         </Form.Item>

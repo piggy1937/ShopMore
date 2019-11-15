@@ -29,7 +29,6 @@ class UsersManager extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            sex: ['男', '女'],
             items: [],
             isLoading: false,
             pagination: {
@@ -59,7 +58,7 @@ class UsersManager extends Component {
      * @param pageSize
      */
     onChangePage=(page,pageSize)=>{
-        this.getRoleTypeInfo(page-1)
+        this.getUsersInfo(page-1)
         this.setState({
             pagination:{
                 current: (page-1)*pageSize
@@ -67,18 +66,47 @@ class UsersManager extends Component {
         })
     }
 
+    onReset=()=>{
+        this.props.form.resetFields()
+        this.setState({
+            isLoading: false
+        })
+    }
+
     /**
      *根据name类型产找
      */
-    onSearch=(value)=>{
+    onSearch=()=>{
+        const {current}= this.state.pagination
+        const {username,sex} = this.props.form.getFieldsValue()
+        this.getUsersInfo(current,username,sex);
+    }
 
 
+    handleDelete=(id)=>{
+        request({
+            method:'delete',
+            url:'/api/admin/user',
+            data:{
+                id
+            }
+        }).then(res=>{
+            if(res.code === 200){
+                message.success('删除成功');
+                this.getUsersInfo(0);
+            }else{
+                message.error('删除失败');
+            }
+
+        }).catch(err=>{
+            message.error(err)
+        })
     }
 
     /***
      * 获取角色信息
      */
-    getUsersInfo = async (page=0,name) => {
+    getUsersInfo = async (page=0,username,sex) => {
         const {pagination} = this.state
         this.setState({
             isLoading: true,
@@ -92,7 +120,9 @@ class UsersManager extends Component {
                 url: '/api/admin/user/page',
                 data: {
                     pageNum:page,
-                    pageSize:pagination.pageSize
+                    pageSize:pagination.pageSize,
+                    username,
+                    sex
                 }
             })
             if (res.code!=200) {
@@ -102,6 +132,7 @@ class UsersManager extends Component {
                 return
             }
             const {pageSize} = res.result.pageable
+            this.props.form.resetFields()
             this.setState({
                 isLoading: false,
                 items: res.result.content,
@@ -112,9 +143,6 @@ class UsersManager extends Component {
                 }
             })
         }catch(e){
-            this.setState({
-                isLoading: false,
-            })
             message.error("获取角色类型异常")
             return
         }
@@ -147,7 +175,6 @@ class UsersManager extends Component {
 
     /**父子组件调用 */
     onElementRef = (ref) => {
-        console.log("22222222222")
         this.elementRef = ref
     }
     /**
@@ -160,6 +187,7 @@ class UsersManager extends Component {
             title:"添加人员"
         })
     }
+
 
     render() {
         const { pagination, visible,title } = this.state
@@ -227,11 +255,11 @@ class UsersManager extends Component {
                 render: (record) => (
                     <div style={{ textAlign: 'left' }}>
                         <Popconfirm
-                            disabled={record.isSystem}
+                            disabled={record.username==='admin'}
                             placement="rightBottom"
                             title="此操作将永久删除, 是否继续?"
                             onConfirm={()=>{
-                                this.handleDeleteconfirm(record.id)
+                                this.handleDelete(record.id)
                             }}
                             okText="Yes"
                             cancelText="No">
@@ -239,7 +267,7 @@ class UsersManager extends Component {
                         </Popconfirm>&emsp;
                         <Button type="primary" icon='undo'  onClick={()=> {
                             this.handleUpdate(record.id)
-                        }}>编辑</Button>
+                        }}>编辑</Button>&emsp;
                     </div>
                 ),
             }
@@ -251,7 +279,7 @@ class UsersManager extends Component {
                         <Row>
                             <Col span={6}>
                                 <Form.Item label="账号">
-                                    {getFieldDecorator('name')(
+                                    {getFieldDecorator('username')(
                                         <Input
                                             onPressEnter={this.onSearch}
                                             style={{ width: 200 }}
@@ -269,11 +297,8 @@ class UsersManager extends Component {
                                         style={{ width: 180 }}
                                         placeholder="请选择性别"
                                     >
-                                        {
-                                            this.state.sex.map(item=>{
-                                                return( <Option key={item} value={item}>{item}</Option>)
-                                            })
-                                        }
+                                        <Option value="1">男</Option>
+                                        <Option value="0">女</Option>
                                     </Select>,
                                 )}
                             </Form.Item>
