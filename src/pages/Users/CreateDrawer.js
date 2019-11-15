@@ -21,18 +21,31 @@ class CreateDrawer extends Component {
     constructor(props){
         super(props);
         this.state={
-            uploading: false
+            uploading: false,
+            dialogStatus:''
         }
         this.checkNameUniqued = debounce(this.checkNameUniqued,500);
     }
 
     async componentDidMount() {
         await this.props.fetchRole("roleType")
+        this.props.onRef(this)
+    }
+
+    handleOk = () => {
+        if (this.state.dialogStatus === 'update') {
+            this.handleUpdate();
+        } else {
+            this.handleSave()
+        }
     }
 
     onClose = () => {
         this.props.form.resetFields()
         this.props.toggleVisible(false)
+        this.setState({
+            dialogStatus:''
+        })
     }
     /**
      * 转换上传组件表单的值
@@ -44,6 +57,23 @@ class CreateDrawer extends Component {
         } else {
             return ''
         }
+    }
+
+
+    /**
+     * 初始化数据
+     */
+    initForm =(data)=>{
+        const {setFieldsValue} = this.props.form
+        const { username,sex,avatar,roles,id} = data
+        this.props.toggleVisible(true)
+        setFieldsValue({
+            username,sex,avatar,roles,id
+        })
+        this.setState({
+            dialogStatus:'update',
+        })
+
     }
 
     /**
@@ -93,7 +123,7 @@ class CreateDrawer extends Component {
      * @returns {*}
      */
     handleSave=async()=>{
-        const {username,sex,avatar,roles} = this.props.form.getFieldsValue()
+        const {username,sex,avatar,roles,password} = this.props.form.getFieldsValue()
         const res=await request({
             headers: {
                 'content-type': 'application/json',
@@ -101,7 +131,7 @@ class CreateDrawer extends Component {
             method: 'post',
             url: '/api/admin/user',
             data: {
-                username,sex,avatar,roles
+                username,sex,avatar,roles,password
             }
         })
         if(res.code===200){
@@ -109,8 +139,37 @@ class CreateDrawer extends Component {
             message.success("添加成功")
             this.props.onCreate()
             this.onClose();
+        }else{
+            message.error(res.messages)
         }
     }
+
+    /**
+     * 修改人员
+     */
+      handleUpdate=()=>{
+          const {username,sex,avatar,roles,password,id} = this.props.form.getFieldsValue()
+          request({
+              method: 'put',
+              url: '/api/admin/user',
+              data:{
+                  username,sex,avatar,roles,password,id
+              }
+          }).then(res=>{
+              if(res.code === 200){
+                  this.props.form.resetFields()
+                  message.success("修改成功")
+                  this.props.onCreate()
+                  this.onClose();
+              }else{
+                  message.error('修改失败');
+              }
+
+          }).catch(error=>{
+              message.error(error)
+          })
+
+      }
 
     /**
      * 检查用户名是否存在
@@ -179,12 +238,12 @@ class CreateDrawer extends Component {
                 <Form layout="vertical" hideRequiredMark>
                     <Row gutter={16}>
                         <Col span={12}>
-                            <Form.Item label="账号姓名">
+                            <Form.Item label="账号名">
                                 {getFieldDecorator('username', {
                                     rules: [{ required: true, message: 'Please enter user name' },
-                                        {validator:this.checkNameUniqued}
+                                        this.state.dialogStatus===''&&{validator:this.checkNameUniqued}
                                     ],
-                                })(<Input placeholder="Please enter user name" />)}
+                                })(<Input placeholder="Please enter user name"   disabled={this.state.dialogStatus=='update'}/>)}
                             </Form.Item>
                         </Col>
                     </Row>
@@ -246,6 +305,16 @@ class CreateDrawer extends Component {
                             </Form.Item>
                         </Col>
                     </Row>
+                    <Row>
+                        <Col>
+                        <Form.Item >
+                            {getFieldDecorator('id')(
+                                <Input type='hidden'/>,
+                            )}
+                        </Form.Item>
+                        </Col>
+                    </Row>
+
                 </Form>
                 <div
                     style={{
@@ -262,7 +331,7 @@ class CreateDrawer extends Component {
                     <Button onClick={this.onClose} style={{ marginRight: 8 }}>
                         Cancel
                     </Button>
-                    <Button onClick={this.handleSave} type="primary">
+                    <Button onClick={this.handleOk} type="primary">
                         Submit
                     </Button>
                 </div>

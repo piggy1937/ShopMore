@@ -21,6 +21,7 @@ import { withRouter } from 'react-router-dom'
 import request  from '@/utils/request'
 import CreateDrawer from "./CreateDrawer";
 import {bindActionCreators} from "redux";
+import CreateModal from "../role/type";
 const { Search } = Input;
 
 @withRouter @Form.create()
@@ -120,13 +121,37 @@ class UsersManager extends Component {
 
     }
 
-    /**删除菜单项 */
-    handleDeleteconfirm = (id)=>{
-
+    /**
+     * 修改人员
+     */
+    handleUpdate=(id)=>{
+        request({
+            method:'get',
+            url:'/api/admin/user/findById',
+            data:{id}
+        }).then(data=>{
+            if(data.code===200){
+                this.setState({
+                    title:"修改人员"
+                })
+                this.elementRef.initForm(data.result);
+            }else if(data.code === 100){
+                message.error('非法请求参数')
+            }else{
+                message.error(data.mesage)
+            }
+        }).catch(err=>{
+                message.error(err.message)
+           })
     }
 
+    /**父子组件调用 */
+    onElementRef = (ref) => {
+        console.log("22222222222")
+        this.elementRef = ref
+    }
     /**
-     * 添加按钮
+     * 添加人员
      * @returns {*}
      */
     handleAdd = () =>{
@@ -213,7 +238,7 @@ class UsersManager extends Component {
                             <Button icon="delete"  type='danger'>删除</Button>
                         </Popconfirm>&emsp;
                         <Button type="primary" icon='undo'  onClick={()=> {
-                            this.handleUpdate()
+                            this.handleUpdate(record.id)
                         }}>编辑</Button>
                     </div>
                 ),
@@ -280,6 +305,7 @@ class UsersManager extends Component {
                                toggleVisible={this.toggleShowCreateDrawer}
                                title={title}
                                onCreate={this.getUsersInfo}
+                               onRef={this.onElementRef}
                 />
             </div>
         );
