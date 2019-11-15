@@ -62,6 +62,7 @@ class NavBar extends React.Component {
             <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.handleChange} />
             <Tree
               checkable
+              checkStrictly={true}
               onExpand={this.handleExpand}
               expandedKeys={expandedKeys}
               checkedKeys={this.props.checkedKeys}

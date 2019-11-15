@@ -130,8 +130,14 @@ export function fetchRole(param) {
         }
     }
 }
-
-
+//设置权限
+export const SET_PERMISSION = 'set_permission'
+export function setPermission(param){
+    return {
+        type: SET_PERMISSION,
+        param
+    }
+}
 
 //设置资源或按钮
 export const SET_ELEMENT = 'set_element'

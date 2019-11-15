@@ -5,7 +5,7 @@ import { Card, Button,Icon, Row, Col, Input,Form,Select,Popconfirm,message} from
 import { withRouter } from 'react-router-dom'
 import request from '@/utils/request'
 import {connect} from "react-redux";
-import { changeRoleStatus ,fetchRole} from '@/store/actions'
+import { changeRoleStatus ,fetchRole,setPermission} from '@/store/actions'
 import { bindActionCreators } from 'redux'
 import ButtonGroup from 'antd/lib/button/button-group'
 import CreateDraw from './draw/index'
@@ -14,7 +14,7 @@ const store = connect(
         formEdit:state.role.formEdit,
         currentId:state.role.currentId,
     }),
-    (dispatch) => bindActionCreators({changeRoleStatus,fetchRole}, dispatch)
+    (dispatch) => bindActionCreators({changeRoleStatus,fetchRole,setPermission}, dispatch)
 )
 @withRouter @Form.create()@store
 class RoleType extends React.Component {
@@ -22,7 +22,8 @@ class RoleType extends React.Component {
         super(props)
         this.state= {
             type:"roleType",
-            showElement: false
+            showElement: false,
+            resourceAuthorities:[]
         }
     }
 
@@ -229,7 +230,7 @@ class RoleType extends React.Component {
         }).then(res=>{
             if(res.code===200){
                 const {setFieldsValue} =this.props.form
-                const {id,code,name,description,parentId} = res.result
+                const {id,code,name,description,parentId,resourceAuthorities} = res.result
                 setFieldsValue({
                     id,
                     code,
@@ -245,6 +246,25 @@ class RoleType extends React.Component {
                 this.setState({
                     showElement:true
                 })
+                let menuKeys = []
+                let elementKeys = []
+                if (resourceAuthorities && resourceAuthorities.length > 0) {
+                  resourceAuthorities.forEach(element => {
+                    if (element.resourceType) {
+                      if (element.resourceType === 'menu') {
+                        menuKeys.push(element.menu.id)
+                      } else (
+                        elementKeys.push(element.element.id)
+                      )
+                    }
+                  });
+                } 
+                this.props.setPermission({
+                    treeCheckedKeys:menuKeys,
+                    tableCheckedKeys:elementKeys
+                })
+
+
             }
         }).catch(err=>{
             console.log(err)
@@ -410,7 +430,8 @@ class RoleType extends React.Component {
                 </Card>
                 <CreateDraw visible={this.state.isShowCreateModal}
                     toggleVisible={this.toggleShowCreateModal}
-                    title={this.state.modelTitle}></CreateDraw>
+                    title={this.state.modelTitle}
+                    ></CreateDraw>
             </div>
         )
     }

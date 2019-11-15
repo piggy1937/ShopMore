@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import { Map } from 'immutable';
 import {
     SET_USER, SET_WEBSOCKET, SET_ONLINELIST, SET_CHATLIST, ADD_CHAT, REFRESH_TOKEN,
-    CHANGE_FORM_STATUS, SET_MENU,SET_ACCESSED_MENU, SET_ELEMENT, CHANGE_ROLE_STATUS, SET_ROLE,SET_ROLE_DEPARTMENT
+    CHANGE_FORM_STATUS, SET_MENU,SET_PERMISSION, SET_ELEMENT, CHANGE_ROLE_STATUS, SET_ROLE,SET_ROLE_DEPARTMENT
 } from './actions'
 
 /**
@@ -99,6 +99,27 @@ function role(state = defaultRole, action) {
     }
     console.log(state, action)
 }
+/**
+ * 权限授权资源
+ * @param {*} state
+ * @param {*} action
+ * @param menuData 列表信息
+ */
+const defaultPermission = {treeCheckedKeys:[],tableCheckedKeys:[]}
+function permission(state = defaultPermission, action) {
+    switch (action.type) {
+        case SET_PERMISSION: {
+            const map = Map(state)
+            const ret = map.merge(action.param);
+            return ret.toJS()
+        }
+        default:
+            return state
+    }
+    console.log(state, action)
+}
+
+
 
 /**
  * websocket对象
@@ -153,6 +174,7 @@ const rootReducer = combineReducers({
     user,
     menu,
     role,
+    permission,
     element,
     websocket,
     onlineList,
