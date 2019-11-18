@@ -36,7 +36,6 @@ class EditInfoModal extends React.Component {
         uploading: false
     }
     componentDidMount(){
-        console.log('#########')
     }
     /**
      * 关闭模态框
@@ -64,8 +63,8 @@ class EditInfoModal extends React.Component {
             birth: values.birth && moment(values.birth).valueOf()
         }
         const res = await request({
-            method:'post',
-            url:'/api/admin/user/update',
+            method:'put',
+            url:'/api/admin/user/info',
             data:param
         })
         if (res.code ===200) {

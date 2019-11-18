@@ -69,7 +69,7 @@ class EditPasswordModal extends React.Component {
                     'content-type': 'application/json',
                 },
                 method: 'put',
-                url: '/api/admin/user/update',
+                url: '/api/admin/user/password',
                 data: {
                     username,encodedPassword:password
                 }
