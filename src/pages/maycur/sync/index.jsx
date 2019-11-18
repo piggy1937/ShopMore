@@ -3,7 +3,7 @@ import { Table, Card, Form, Input, Button, DatePicker, message, Icon, Row, Col, 
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import request  from '@/utils/request'
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import ReactJson from 'react-json-view';
 const store = connect(
      (state) => ({ user: state.user })
 )
@@ -13,7 +13,7 @@ class SyncInfo extends React.Component {
         super(props)
         this.state = {
             title:'结果展示',
-            message:'',
+            message:{},
             loading:{
                 subCompany:false,
                 organization:false,
@@ -33,7 +33,7 @@ class SyncInfo extends React.Component {
     onReset = ()=>{
         this.setState({
                 title:'结果展示',
-                message:'',
+                message:{},
                 loading:{
                     subCompany:false,
                     organization:false,
@@ -110,10 +110,10 @@ class SyncInfo extends React.Component {
             message.error("同步异常")
         return
     }
-    this.setState({
-        message:res.message ,
-        loading:false
-    })
+        this.setState({
+            message:res,
+            loading:false
+        })
 
     }
     render() {
@@ -129,12 +129,9 @@ class SyncInfo extends React.Component {
                             <Button type='primary' loading = {this.state.loading.productFna}  onClick={()=> {this.syncInfo('productFna')}}>项目预算同步</Button>&emsp;
                             <Button icon="reload"  onClick={this.onReset}>重置</Button>
                 </div>}>
-                    <CopyToClipboard text={this.state.message}
-                                     onCopy={this.onCopy}>
-                        <button type='primary' >复制</button>
-                    </CopyToClipboard><br/>
-                    <textarea style={{marginTop: '1em'}} cols="120" rows="12"  defaultValue={this.state.message} >
-                    </textarea>
+                     <div>
+                         <ReactJson src={this.state.message} name = {null} collapsed={4}/>
+                     </div>
                 </Card>
             </div>
         );
