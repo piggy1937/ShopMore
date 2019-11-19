@@ -182,16 +182,16 @@ class SyncInfo extends React.Component {
                             <Button type='primary' loading = {this.state.loading.productFna}  onClick={()=> {this.syncInfo('productFna')}}>项目预算同步</Button>&emsp;
                             <Button icon="reload"  onClick={this.onReset}>重置</Button>
                 </div>}>
-                    <div style={{ background: '#ECECEC', padding: '30px' }}>
-                        <Row gutter={20}>
-                            <Col span={12}>
-                                <Card title="成功数据" bordered={false}>
+                    <div>
+                        <Row gutter={24}>
+                            <Col span={11}>
+                                <Card title="操作日志" bordered={true}>
                                     <ReactJson src={this.state.deleteSuccess} name = {"删除数据"} collapsed={4}/>
                                     <ReactJson src={this.state.modifySuccess} name = {"修改数据"} collapsed={4}/>
                                 </Card>
                             </Col>
-                            <Col span={12}>
-                                <Card title="失败数据" bordered={false}>
+                            <Col span={11} offset={2}>
+                                <Card title="系统响应" bordered={true}>
                                     <ReactJson src={this.state.deleteError} name = {"删除失败"} collapsed={4}/>
                                     <ReactJson src={this.state.modifyError} name = {"修改失败"} collapsed={4}/>
                                 </Card>
@@ -199,7 +199,7 @@ class SyncInfo extends React.Component {
                         </Row><br/>
                         <Row gutter={20}>
                             <Col span={12}>
-                                <Card title="其他信息" bordered={false}>
+                                <Card title="执行情况" bordered={false}>
                                     <CopyToClipboard text={this.state.message}
                                                      onCopy={this.onCopy}>
                                         <button type='primary'>复制</button>
