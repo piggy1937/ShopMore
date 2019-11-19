@@ -101,7 +101,7 @@ class formDesigner extends React.Component{
                                 <Form.Item style={{ marginRight: 0, width: '100%' }} wrapperCol={{ span: 24 }}>
                                     <div style={{ textAlign: 'left' }}>
                                         <Button icon="plus" onClick={()=>{
-                                            this.props.history.push('/formeditor')
+                                            this.props.history.push('/formdesigner')
                                         }}>表单设计</Button>
                                     </div>
                                 </Form.Item>
