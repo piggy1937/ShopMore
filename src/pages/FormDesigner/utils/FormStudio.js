@@ -61,7 +61,7 @@ class FormStudio{
   }
 
   getJsonData(){
-    return JSON.parse(JSON.stringify(this._topLayout.props.definition))
+    return this._topLayout.props.definition
   }
 }
 

@@ -12,7 +12,7 @@ export function sortable(node, component){
       cancel: ".j_cancel-drag",
       stop(event, ui) {
         if(componentInst && FormStudio.draggedFactory){
-          console.log(FormStudio.draggedFactory);
+          console.log("FormStudio.draggedFactory:"+FormStudio.draggedFactory);
           component.addChild($(ui.item).index(), FormStudio.draggedFactory.createComponentDefinition())
           $(ui.item).remove();
         }
@@ -29,6 +29,7 @@ export function sortable(node, component){
         console.log('-> receive');
       }
     }).disableSelection();
+
 
     // 移除子元素
     $($node).on('click', '.fm-btn-remove, .fm-btn-del', function(e){
