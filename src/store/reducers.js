@@ -2,7 +2,11 @@ import { combineReducers } from 'redux'
 import { Map } from 'immutable';
 import {
     SET_USER, SET_WEBSOCKET, SET_ONLINELIST, SET_CHATLIST, ADD_CHAT, REFRESH_TOKEN,
-    CHANGE_FORM_STATUS, SET_MENU,SET_PERMISSION, SET_ELEMENT, CHANGE_ROLE_STATUS, SET_ROLE,SET_ROLE_DEPARTMENT
+    CHANGE_FORM_STATUS, SET_MENU,SET_PERMISSION, SET_ELEMENT, CHANGE_ROLE_STATUS, 
+    SET_ROLE,
+    SET_ROLE_DEPARTMENT,
+    SET_FORM,
+    SET_COLUMNS
 } from './actions'
 
 /**
@@ -118,6 +122,32 @@ function permission(state = defaultPermission, action) {
     }
     console.log(state, action)
 }
+/**
+ * 动态表单
+ * @param {*} state
+ * @param {*} action
+ * @param menuData 列表信息
+ */
+const defaultDynamicForm = {form:{correlations:[],triggers:[]},colums:[]}
+function dynamicForm(state = defaultDynamicForm, action) {
+    switch (action.type) {
+        case SET_FORM: {
+            const map = Map(state)
+            const ret = map.merge({
+                form:action.data
+            });
+            return ret.toJS()
+        }
+        case SET_COLUMNS: {
+            const map = Map(state)
+            const ret = map.merge(action.param);
+            return ret.toJS()
+        }
+        default:
+            return state
+    }
+    console.log(state, action)
+}
 
 
 
@@ -175,6 +205,7 @@ const rootReducer = combineReducers({
     menu,
     role,
     permission,
+    dynamicForm,
     element,
     websocket,
     onlineList,

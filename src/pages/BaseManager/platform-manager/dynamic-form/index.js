@@ -19,16 +19,17 @@ import {
 } from 'antd'
 import request from '@/utils/request'
 import {withRouter} from 'react-router-dom'
-
+import CreateFormModal from './createFormModal'
 /**表单设计 */
 @withRouter
-class formDesigner extends React.Component {
+class DynamicformDesigner extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             component:'',
             items: [],
             isLoading: false,
+            isShowCreateModal: false, //是否展示对话框
             pagination: {
                 total: 0,
                 current: 1,
@@ -42,7 +43,12 @@ class formDesigner extends React.Component {
     componentDidMount() {
         this.getDesignFormInfo()
     }
-
+    /**切换对话框显示状态 */
+    toggleShowCreateModal = (visible) => {
+        this.setState({
+          isShowCreateModal: visible
+        })
+      }
     /***
      * 获取表单
      */
@@ -51,6 +57,7 @@ class formDesigner extends React.Component {
         this.setState({
             isLoading: true,
         })
+
         try {
             const res = await request({
                 headers: {
@@ -131,7 +138,7 @@ class formDesigner extends React.Component {
     }
 
     render() {
-        const {items,isLoading} = this.state
+        const {items,isLoading,isShowCreateModal} = this.state
         const columns = [
             {
                 title: '序号',
@@ -197,8 +204,8 @@ class formDesigner extends React.Component {
                             <Form.Item style={{marginRight: 0, width: '100%'}} wrapperCol={{span: 24}}>
                                 <div style={{textAlign: 'left'}}>
                                     <Button icon="plus" onClick={() => {
-                                        this.props.history.push('/formdesigner')
-                                    }}>表单设计</Button>
+                                      this.toggleShowCreateModal(true)
+                                    }}>新建表单</Button>
                                 </div>
                             </Form.Item>
                         </Col>
@@ -214,8 +221,9 @@ class formDesigner extends React.Component {
             <div style={{textAlign: 'right'}}>
                 <Pagination defaultCurrent={1} total={this.state.pagination.total} onChange={this.onChangePage} />
             </div>
+            <CreateFormModal visible={isShowCreateModal} toggleVisible={this.toggleShowCreateModal} />
         </div>)
     }
 }
 
-export default formDesigner
+export default DynamicformDesigner

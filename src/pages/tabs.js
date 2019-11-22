@@ -15,7 +15,7 @@ const SyncInfo = LoadableComponent(import('./maycur/sync'), true);
 const MenuManager = LoadableComponent(import('./BaseManager/menu-manager'), true);
 const RoleTypeManager = LoadableComponent(import('./role/type/index'), true);
 const RoleManager     = LoadableComponent(import('./role/role/index'), true);
-const FormManager     = LoadableComponent(import('./BaseManager/platform-manager/form'), true);
+const FormManager     = LoadableComponent(import('./BaseManager/platform-manager/dynamic-form'), true);
 const menu = [
     {
        name:'每刻报销',

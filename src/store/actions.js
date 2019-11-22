@@ -183,6 +183,21 @@ export function getUser(param) {
     }
 }
 
+//设置表单属性+字段
+export const SET_FORM = 'set_form'
+export function setDynamicForm(param){
+    return {
+        type: SET_FORM,
+        data:param
+    }
+}
+export const SET_COLUMNS = 'set_colums'
+export function setDynamicFormColumn(param){
+    return {
+        type: SET_COLUMNS,
+        data:param
+    }
+}
 
 export const SET_WEBSOCKET = 'SET_WEBSOCKET'  //设置websocket对象
 export function setWebsocket(websocket) {
