@@ -1,6 +1,7 @@
 import React from 'react'
 import { Modal, Input, Form, message } from 'antd'
 import { connect } from 'react-redux'
+import request from '@/utils/request'
 import { createFormField, encrypt } from '../../utils/util'
 // import { json } from '../../utils/ajax'
 
@@ -19,41 +20,70 @@ const form = Form.create({
 
 @store @form
 class EditPasswordModal extends React.Component {
+    state={
+        validateStatus:'',
+        helpValue:''
+    }
     handleCancel = () => {
         this.props.form.resetFields()
         this.props.toggleVisible(false)
+        this.setState({
+            validateStatus:'',
+            helpValue:''
+        })
     }
     /**
      * 模态框的确定按钮
      */
     handleOk = () => {
+        this.setState({
+            validateStatus:'',
+            helpValue:''
+        })
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 this.onSubmit(values)
             }
         });
     }
+
     /**
      * 提交修改密码
      */
-    onSubmit = async (values) => {
+    onSubmit = async () => {
         //加密密码
-        const ciphertext = encrypt(values.oldPassword)
-        const res ='' //await json.post('/user/login', {
-        //     username: values.username,
-        //     password: ciphertext
-        // })
-        if (res.status === 0) {
-            const ciphertext2 = encrypt(values.password)
-            const res2={}
-            // const res2 = await json.post('/user/update', {
-            //     username: values.username,
-            //     password: ciphertext2
-            // })
-            if (res2.status === 0) {
-                message.success('修改密码成功')
+        const {username,oldPassword,password} = this.props.form.getFieldsValue()
+        const res =await request({
+            headers: {
+                'content-type': 'application/json',
+            },
+            method: 'get',
+            url: '/api/admin/user/check_password',
+            data: {
+                username,password:oldPassword
+            }
+       })
+        if (res.code===200) {
+            const res2 =await request({
+                headers: {
+                    'content-type': 'application/json',
+                },
+                method: 'put',
+                url: '/api/admin/user/password',
+                data: {
+                    username,encodedPassword:password
+                }
+            })
+            if(res2.code===200){
+                this.props.form.resetFields()
+                message.success("修改成功")
                 this.handleCancel()
             }
+        }else{
+            this.setState({
+                validateStatus:'error',
+                helpValue:'密码错误'
+            })
         }
     }
 
@@ -78,15 +108,19 @@ class EditPasswordModal extends React.Component {
                             <Input disabled />
                         )}
                     </Form.Item>
-                    <Form.Item label={'旧密码'} {...formItemLayout}>
+                    <Form.Item label={'旧密码'} {...formItemLayout}  validateStatus={this.state.validateStatus}
+                               help={this.state.helpValue}>
                         {getFieldDecorator('oldPassword', {
-                            rules: [{ required: true, message: '请输入旧密码' }],
+                            rules: [{ required: true, message: '请输入旧密码' }
+                            ],
                         })(
                             <Input
                                 placeholder="请输入旧密码"
                                 autoComplete="new-password"
                                 type={'password'} />
-                        )}
+                        )
+                        }
+
                     </Form.Item>
                     <Form.Item label={'新密码'} {...formItemLayout}>
                         {getFieldDecorator('password', {

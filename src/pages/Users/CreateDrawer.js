@@ -253,7 +253,7 @@ class CreateDrawer extends Component {
                                 {getFieldDecorator('password', {
                                     rules: [{ required: true, message: '请输入密码' }
                                     ],
-                                })(<Input placeholder="Please enter password" type="password"/>)}
+                                })(<Input placeholder="Please enter password" type="password"  disabled={this.state.dialogStatus=='update'}/>)}
                             </Form.Item>
                         </Col>
                     </Row>
@@ -285,7 +285,7 @@ class CreateDrawer extends Component {
                             </Form.Item>
                         </Col>
                     </Row>
-                    <Row gutter={16}>
+                    <Row gutter={25}>
                         <Col span={12}>
                             <Form.Item label="角色">
                                 {getFieldDecorator('roles', {

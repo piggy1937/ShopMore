@@ -15,6 +15,7 @@ const SyncInfo = LoadableComponent(import('./maycur/sync'), true);
 const MenuManager = LoadableComponent(import('./BaseManager/menu-manager'), true);
 const RoleTypeManager = LoadableComponent(import('./role/type/index'), true);
 const RoleManager     = LoadableComponent(import('./role/role/index'), true);
+const FormManager     = LoadableComponent(import('./BaseManager/platform-manager/dynamic-form'), true);
 const menu = [
     {
        name:'每刻报销',
@@ -73,6 +74,22 @@ const menu = [
         code: 'usersManager',
         authority: 'usersManager',
 
+    },
+    {
+        name: '平台设计',
+        icon: 'user',
+        code: 'platformManager',
+        authority: 'platformManager',
+        children: [
+            {
+                name: '表单设计',
+                icon: 'user',
+                code: 'formManager',
+                authority: 'formManager',
+        
+            }
+        ]
+
     }
 ]
 const constantMenuMap=[
@@ -110,7 +127,8 @@ const tabs = {
     orgManager:<SyncInfo/>,
     menuManager:<MenuManager/>, //菜单管理界面
     roleTypeManager:<RoleTypeManager/>,
-    roleManager:<RoleManager/>
+    roleManager:<RoleManager/>,
+    formManager:<FormManager/>
 }
 
 export {
