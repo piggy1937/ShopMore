@@ -64,7 +64,7 @@ class DynamicformDesigner extends React.Component {
                     'content-type': 'application/json',
                 },
                 method: 'get',
-                url: '/api/admin/form/page',
+                url: '/api/admin/dynamic/form/page',
                 data: {
                     pageNum: page,
                     pageSize: pagination.pageSize,
@@ -109,7 +109,26 @@ class DynamicformDesigner extends React.Component {
             }
         })
     }
+    /**
+     * 发布表单
+     */
+    handleDeploy = async (id)=>{
+      const ret = await request({
+          method:'put',
+          url:`/api/admin/dynamic/form/${id}/deploy`
+      })
+    }
 
+   /**删除表单 */
+   handleDelete = async (id)=>{
+    const ret = await request({
+        method:'delete',
+        url:`/api/admin/dynamic/form/${id}/delete`
+    })
+    if(ret.code === 200){
+        this.getDesignFormInfo()
+    }
+  }
 
     /**
      * 根据id查询表单
@@ -161,8 +180,8 @@ class DynamicformDesigner extends React.Component {
             },
             {
                 title: '创建人',
-                dataIndex: 'creatorId',
-                key: 'creatorId',
+                dataIndex: 'creater',
+                key: 'creater',
             },
             {
                 title: '创建日期',
@@ -179,11 +198,14 @@ class DynamicformDesigner extends React.Component {
                 key: 'action',
                 render: (text, record) => (
                     <span>
+                        <Button type="primary" icon='edit' onClick={() => {
+                            this.handleDeploy(record.id)
+                        }}>发布</Button>&emsp;
                             <Popconfirm
                                 placement="rightBottom"
                                 title="此操作将永久删除, 是否继续?"
                                 onConfirm={() => {
-
+                                    this.handleDelete(record.id)
                                 }}
                                 okText="Yes"
                                 cancelText="No">

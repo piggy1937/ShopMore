@@ -2,19 +2,20 @@ import React, { Component } from 'react';
 import { Modal, Form, Input, message, Select,Tabs} from 'antd'
 import { connect, } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchElement} from '@/store/actions'
+import { fetchElement,setDynamicFormColumn} from '@/store/actions'
 import request from '@/utils/request'
 import LoadableComponent from '@/utils/LoadableComponent'
 const BaseInfoPane = LoadableComponent(import('./tabpane/baseInfo'), true);
+const FieldSetPane = LoadableComponent(import('./tabpane/fieldSet'), true);
 
 const { TabPane } = Tabs;
 const { Option } = Select;
 const store = connect(
     (state) => ({
         formData: state.dynamicForm.form,
-        formColumnsData:state.dynamicForm.columns,
+        formColumnsData:state.dynamicForm.fieldDataSource,
     }),
-    (dispatch) => bindActionCreators({fetchElement}, dispatch)
+    (dispatch) => bindActionCreators({fetchElement,setDynamicFormColumn}, dispatch)
 )
 @store
 class CreateFormModal extends Component {
@@ -29,8 +30,12 @@ class CreateFormModal extends Component {
 
     }
     onCancel = () => {
-        this.props.form.resetFields()
         this.props.toggleVisible(false)
+        this.props.setDynamicFormColumn({
+            form:{},
+            columns:[],
+            fieldDataSource:[]
+        })
     }
     handleOk = async () => {
       await this.baseInfoRef.setFormData()
@@ -120,7 +125,7 @@ class CreateFormModal extends Component {
                      <BaseInfoPane onRef={this.onBaseInfoRef}/>
                     </TabPane>
                     <TabPane tab="字段设置" key="fieldSet">
-                    字段设置
+                    <FieldSetPane/>
                     </TabPane>
                     <TabPane tab="表关联设置" key="refTabSet">
                     表关联设置

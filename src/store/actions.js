@@ -198,6 +198,13 @@ export function setDynamicFormColumn(param){
         data:param
     }
 }
+export const ADD_COLUMNS = 'add_colums'
+export function addDynamicFormColumn(param){
+    return {
+        type: ADD_COLUMNS,
+        data:param
+    }
+}
 
 export const SET_WEBSOCKET = 'SET_WEBSOCKET'  //设置websocket对象
 export function setWebsocket(websocket) {

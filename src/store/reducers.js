@@ -6,7 +6,8 @@ import {
     SET_ROLE,
     SET_ROLE_DEPARTMENT,
     SET_FORM,
-    SET_COLUMNS
+    SET_COLUMNS,
+    ADD_COLUMNS
 } from './actions'
 
 /**
@@ -128,7 +129,7 @@ function permission(state = defaultPermission, action) {
  * @param {*} action
  * @param menuData 列表信息
  */
-const defaultDynamicForm = {form:{correlations:[],triggers:[]},colums:[]}
+const defaultDynamicForm = {form:{correlations:[],triggers:[]},colums:[],count:0,fieldDataSource:[]}
 function dynamicForm(state = defaultDynamicForm, action) {
     switch (action.type) {
         case SET_FORM: {
@@ -140,7 +141,20 @@ function dynamicForm(state = defaultDynamicForm, action) {
         }
         case SET_COLUMNS: {
             const map = Map(state)
-            const ret = map.merge(action.param);
+            const ret = map.merge(action.data);
+            return ret.toJS()
+        }
+        case ADD_COLUMNS:{
+            const map = Map(state)
+             let columns= map.get('fieldDataSource');
+             columns=columns.push(action.data)
+             let count= map.get('count') +1
+            let  ret = map.set({
+                    count: count,  
+            });
+             ret = ret.set({
+                fieldDataSource:columns
+            });
             return ret.toJS()
         }
         default:
