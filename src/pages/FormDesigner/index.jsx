@@ -36,8 +36,12 @@ class Index extends PureComponent {
             <Layout className="layout">
                 <Header style={{background: 'white'}}>
                     <div className="logo"/>
-                    <Button type="primary" icon="undo" onClick={()=>{this.props.history.push('/')}}>返回</Button>
-                    <Button type="primary" onClick={()=>{this.getJsonData()}}>保存数据</Button>
+                    <div  className="mini-panel-title">新建模板</div>
+                    <div className="mini-panel-button">
+                        <Button type="primary" onClick={()=>{this.props.history.push("/preview")}}>预览</Button>
+                        <Button type="primary" onClick={()=>{this.openCreateModal()}}>保存数据</Button>
+                        <Button type="primary" icon="undo" onClick={()=>{this.props.history.goBack()}}>返回</Button>
+                    </div>
                 </Header>
                 <Content style={{padding: '50px 50px'}}>
                     <FormDesigner/>

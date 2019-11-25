@@ -8,9 +8,14 @@ class FormView extends PureComponent{
   LinearLayout = null;
 
   componentWillMount(){
-     const LinearLayoutFactory =FormStudio.getFactory("LinearLayout");
-    this.LinearLayout = LinearLayoutFactory.renderComponenet(LinearLayoutFactory.createComponentDefinition())({});
-    FormStudio.topLayout = this.LinearLayout;
+    const topLayout = FormStudio._topLayout
+    if(topLayout){
+      this.LinearLayout=topLayout
+    }else{
+      const LinearLayoutFactory =FormStudio.getFactory("LinearLayout");
+      this.LinearLayout = LinearLayoutFactory.renderComponenet(LinearLayoutFactory.createComponentDefinition())({});
+      FormStudio.topLayout = this.LinearLayout;
+    }
   }
 
   render() {

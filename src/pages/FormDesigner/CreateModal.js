@@ -95,7 +95,7 @@ class CreateModal extends Component {
             })
             return
         }
-        if(res.code==200){
+        if(res.code===200){
             this.onCancel()
             message.success('添加成功')
             this.props.history.push('/')
