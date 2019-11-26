@@ -13,7 +13,7 @@ const { Option } = Select;
 const store = connect(
     (state) => ({
         formData: state.dynamicForm.form,
-        columns:state.dynamicForm.colums,
+        columns:state.dynamicForm.columns,
     }),
     (dispatch) => bindActionCreators({setDynamicForm,setDynamicFormColumn}, dispatch)
 )
@@ -88,7 +88,7 @@ class CreateFormModal extends Component {
         }).then(data=>{
             if(data.code===200){
                 const {columns,form} =data.result
-                this.props.setDynamicFormColumn({ colums:columns})
+                this.props.setDynamicFormColumn({columns})
                 this.props.setDynamicForm(form);
                 this.baseInfoRef.initBaseInfo();
             }else{

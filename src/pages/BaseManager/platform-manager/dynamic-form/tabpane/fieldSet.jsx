@@ -153,8 +153,8 @@ class EditableCell extends React.Component {
   }
 const store = connect(
     (state) => ({
-        dataSource: state.dynamicForm.colums||[],
-        columns:state.dynamicForm.colums,
+        dataSource: state.dynamicForm.columns||[],
+        columns:state.dynamicForm.columns,
      }),
     (dispatch) => bindActionCreators({addDynamicFormColumn,setDynamicFormColumn}, dispatch)
   )
@@ -247,7 +247,7 @@ const store = connect(
           ...item,
           ...row,
         });
-        this.props.setDynamicFormColumn({ colums: newData })
+        this.props.setDynamicFormColumn({ columns: newData })
       };
     handleAdd=()=>{
         const {dataSource } = this.props;

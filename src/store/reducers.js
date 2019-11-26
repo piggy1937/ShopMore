@@ -137,7 +137,7 @@ function permission(state = defaultPermission, action) {
  * @param {*} action
  * @param menuData 列表信息
  */
-const defaultDynamicForm = {form:{correlations:[],triggers:[]},colums:[],count:0}
+const defaultDynamicForm = {form:{correlations:[],triggers:[]},columns:[],count:0}
 function dynamicForm(state = defaultDynamicForm, action) {
     switch (action.type) {
         case SET_FORM: {
@@ -154,10 +154,10 @@ function dynamicForm(state = defaultDynamicForm, action) {
         }
         case ADD_COLUMNS:{
             const map = Map(state)
-             let colums= map.get('colums');
-             colums=colums.push(action.data)
+             let columns= map.get('columns');
+            columns=columns.push(action.data)
             const ret = map.set({
-                colums:colums
+                columns:columns
             });
             return ret.toJS()
         }
