@@ -68,11 +68,14 @@ class MySider extends React.Component {
     componentDidUpdate(){
         console.log('update')
     }
-    render() { 
+    componentDidMount(){
         const { activeMenu, theme, accessedMenus} = this.props
         if(activeMenu){
             this.addPane(activeMenu)
         }
+    }
+    render() { 
+        const { activeMenu, theme, accessedMenus} = this.props
         const list = List(this.props.accessedMenus ||[])
         const menu =list.merge(constantMenuMap)
         return (
