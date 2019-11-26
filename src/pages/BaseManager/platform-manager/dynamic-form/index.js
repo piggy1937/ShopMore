@@ -20,6 +20,7 @@ import {
 import request from '@/utils/request'
 import {withRouter} from 'react-router-dom'
 import CreateFormModal from './createFormModal'
+import CreateDrawer from "../../../Users";
 
 /**表单设计 */
 @withRouter
@@ -231,7 +232,11 @@ class DynamicformDesigner extends React.Component {
             <div style={{textAlign: 'right'}}>
                 <Pagination defaultCurrent={1} total={this.state.pagination.total} onChange={this.onChangePage} />
             </div>
-            <CreateFormModal visible={isShowCreateModal} toggleVisible={this.toggleShowCreateModal}  onRef={this.onFormInfoRef}/>
+            <CreateFormModal visible={isShowCreateModal}
+                             toggleVisible={this.toggleShowCreateModal}
+                             onRef={this.onFormInfoRef}
+                             onCreate={this.getDesignFormInfo}
+            />
         </div>)
     }
 }

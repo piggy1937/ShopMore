@@ -18,11 +18,12 @@ class BaseInfo extends React.Component{
             }
         })
     }
+    handleClose=()=>{
+        this.props.form.resetFields()
+    }
 
     componentDidMount(){
-        if(this.props.formData){
             this.props.onRef(this)
-        }
     }
 
       /**

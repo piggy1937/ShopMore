@@ -41,9 +41,8 @@ class CreateFormModal extends Component {
             columns:[],
             fieldDataSource:[]
         })
-        this.props.setDynamicForm({
-            form:{},
-        })
+        this.baseInfoRef.handleClose()
+
     }
     handleOk = async () => {
       await this.baseInfoRef.setFormData()
@@ -62,9 +61,9 @@ class CreateFormModal extends Component {
             data: values
             });
             if(ret.code === 200){
-                this.props.form.resetFields()
                 this.props.toggleVisible(false)
                 this.onCancel()
+                this.props.onCreate()
             }else{
                 message.error((ret.message))
             }
@@ -89,7 +88,7 @@ class CreateFormModal extends Component {
         }).then(data=>{
             if(data.code===200){
                 const {columns,form} =data.result
-                this.props.setDynamicFormColumn({ columns})
+                this.props.setDynamicFormColumn({ colums:columns})
                 this.props.setDynamicForm(form);
                 this.baseInfoRef.initBaseInfo();
             }else{

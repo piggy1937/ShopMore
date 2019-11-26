@@ -153,7 +153,8 @@ class EditableCell extends React.Component {
   }
 const store = connect(
     (state) => ({
-        dataSource: state.dynamicForm.colums||[]
+        dataSource: state.dynamicForm.colums||[],
+        columns:state.dynamicForm.colums,
      }),
     (dispatch) => bindActionCreators({addDynamicFormColumn,setDynamicFormColumn}, dispatch)
   )
@@ -190,7 +191,12 @@ const store = connect(
                     dataIndex: 'describe',
                     key: 'describe',
                     editable: true,
-                  }]
+                  },
+                {
+                    dataIndex: 'id',
+                    key: 'id',
+                }
+            ]
         },
         {
             title: '数据类型',
@@ -227,6 +233,12 @@ const store = connect(
             ) : null)
         }]
      }
+
+      componentDidMount(){
+        console.log(this.props.columns)
+      }
+
+
      handleSave =row => {
         const newData = [...this.props.dataSource];
         const index = newData.findIndex(item => row.key === item.key);
