@@ -68,10 +68,9 @@ class CreateModal extends Component {
         this.setState({
             isLoading:true
         })
-        const correlations = JSON.stringify(FormStudio.getJsonData());
+        const template = JSON.stringify(FormStudio.getJsonData());
 
         const field = this.props.form.getFieldsValue()
-        const {username} = this.props.user
         let res
         try{
             res = await request({
@@ -81,11 +80,10 @@ class CreateModal extends Component {
                 method: 'post',
                 url: '/api/admin/template',
                 data: {
-                      name:field.name,
-                      databaseTableName:field.databaseTableName,
-                      describe:field.describe,
-                      creatorId:username,
-                      correlations
+                    code:field.code,
+                    name:field.name,
+                    template,
+                    type:field.type
                 }
             })
         }catch(e){
@@ -95,7 +93,7 @@ class CreateModal extends Component {
             })
             return
         }
-        if(res.code===200){
+        if(res.code==200){
             this.onCancel()
             message.success('添加成功')
             this.props.history.push('/')
@@ -118,7 +116,7 @@ class CreateModal extends Component {
         return (
             <Modal
                 visible={visible}
-                title='表单'
+                title='模板管理'
                 centered
                 onCancel={this.onCancel}
                 onOk={this.handleOk}
@@ -132,18 +130,18 @@ class CreateModal extends Component {
                 ]}
             >
                 <Form {...formItemLayout}>
-                    <Form.Item label={'数据库表名'}>
-                        {getFieldDecorator('databaseTableName', {
+                    <Form.Item label={'模板标识'}>
+                        {getFieldDecorator('code', {
                             validateFirst: true,
                             rules: [
-                                { required: true, message: '编码不能为空' },
+                                { required: true, message: '模板标识' },
                                 { pattern: /^[^\s']+$/, message: '不能输入特殊字符' },
-                                {validator:this.checkTableNameUniqued}
+                                {validator:this.checkTableCodeUniqued}
                             ],
-                           
+
                         })(
                             <Input
-                                placeholder='请输入表名' />
+                                placeholder='请输入模板标识' />
                         )}
                     </Form.Item>
                     <Form.Item label={'名称'}>
@@ -159,12 +157,12 @@ class CreateModal extends Component {
                                 placeholder='请输入表单名称' />
                         )}
                     </Form.Item>
-                    <Form.Item label={'备注'}>
-                        {getFieldDecorator('describe', {
+                    <Form.Item label={'模板类型'}>
+                        {getFieldDecorator('type', {
                             validateFirst: true,
                         })(
                             <Input
-                                placeholder='备注' />
+                                placeholder='模板类型' />
                         )}
                     </Form.Item>
                 </Form>
