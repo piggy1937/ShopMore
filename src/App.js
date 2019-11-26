@@ -18,8 +18,7 @@ class App extends React.Component {
       <Switch>
         <Route path='/login' exact component={Login} />
         <PrivateRoute path='/' exact component={Index} />
-        <Route path='/template' exact component={FormDesigner} />
-        <Route path='/template' exact component={FormDesigner} />
+        <Route path='/template/:id' exact component={FormDesigner} />
         <Route path='/preview' exact component={PreView}/>
         <Route path="*" component={ErrorPage} />
       </Switch>

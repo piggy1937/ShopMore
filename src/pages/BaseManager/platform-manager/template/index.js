@@ -117,25 +117,7 @@ class TemplateManager extends React.Component {
      * @returns {*}
      */
     handleUpdate =(id)=>{
-      this.setState({
-          isLoading:true
-      })
-        request({
-            method:'get',
-            url:'/api/admin/template/findById',
-            data:{id}
-        }).then(data=>{
-            if(data.code===200){
-                this.props.history.push({pathname:'/template',query:{component:data.result.formStyle}})
-            }else{
-                message.error(data.message)
-            }
-        }).catch(err=>{
-            message.error(err.message)
-        })
-        this.setState({
-            isLoading:false
-        })
+        this.props.history.push({pathname:`/template/${id}`})
     }
 
     render() {
@@ -182,7 +164,7 @@ class TemplateManager extends React.Component {
                                 <Button icon="delete" type='danger'>删除</Button>
                             </Popconfirm>&emsp;
                         <Button type="primary" icon='edit' onClick={() => {
-                            this.handleUpdate(record.id)
+                            this.handleUpdate(record['id'])
                         }} loading={this.state.isLoading}>编辑</Button>
                 </span>
                 ),

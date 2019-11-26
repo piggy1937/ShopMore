@@ -70,6 +70,7 @@ class FormDesigner extends PureComponent {
 
 
   renderChild(){
+
     return FormStudio.factoryFilter(item=>item.type !== 'LinearLayout').map(item=>{
       return <FormComponent component={item} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} />
     })
@@ -87,7 +88,7 @@ class FormDesigner extends PureComponent {
         </Card>
 
         <div>
-          <FormView formDefinition={{}} />
+          <FormView formDefinition={{templateData:this.props.templateData}} />
         </div>
 
         <Card bordered style={{flexGrow:1}} type="card" title="属性编辑">

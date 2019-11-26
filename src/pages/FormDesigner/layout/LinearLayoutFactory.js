@@ -41,22 +41,27 @@ class LinearLayout extends Layout{
 }
 
 @FactoryRegister(LinearLayout)
-class LinearLayoutFactory {
+class LinearLayoutFactory extends React.Component{
   type="LinearLayout"
-
   title="流式布局"
-
+  children=[]
   /**
    * 初始化一个组件定义
    * @returns {{type: string, title: string}}
    */
-  createComponentDefinition(){
+  createComponentDefinition(data){
+    if(data){
+      return JSON.parse(data)
+    }
     return  {
       type: this.type,
       title: this.title,
       props:{ },
-      children:[]
+      children:this.children
     }
+  }
+  updateState(children){
+    
   }
 }
 
