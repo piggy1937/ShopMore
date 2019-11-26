@@ -10,7 +10,7 @@ const Index = LoadableComponent(import('@/pages/Index'))
 const Login = LoadableComponent(import('@/pages/Login'))
 const ErrorPage = LoadableComponent(import('@/pages/Error'))
 const FormDesigner = LoadableComponent(import('@/pages/FormDesigner'))
-
+const PreView = LoadableComponent(import('@/pages/FormDesigner/preview'))
 @withRouter
 class App extends React.Component {
   render() {
@@ -18,7 +18,9 @@ class App extends React.Component {
       <Switch>
         <Route path='/login' exact component={Login} />
         <PrivateRoute path='/' exact component={Index} />
-        <Route path='/formdesigner' exact component={FormDesigner} />
+        <Route path='/template' exact component={FormDesigner} />
+        <Route path='/template' exact component={FormDesigner} />
+        <Route path='/preview' exact component={PreView}/>
         <Route path="*" component={ErrorPage} />
       </Switch>
     )

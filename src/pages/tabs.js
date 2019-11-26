@@ -16,6 +16,7 @@ const MenuManager = LoadableComponent(import('./BaseManager/menu-manager'), true
 const RoleTypeManager = LoadableComponent(import('./role/type/index'), true);
 const RoleManager     = LoadableComponent(import('./role/role/index'), true);
 const FormManager     = LoadableComponent(import('./BaseManager/platform-manager/dynamic-form'), true);
+const TemplateManager  = LoadableComponent(import('./BaseManager/platform-manager/template'), true);
 const menu = [
     {
        name:'每刻报销',
@@ -87,6 +88,13 @@ const menu = [
                 code: 'formManager',
                 authority: 'formManager',
         
+            },
+            {
+                name: '模板管理',
+                icon: 'user',
+                code: 'templateManager',
+                authority: 'templateManager',
+
             }
         ]
 
@@ -128,7 +136,8 @@ const tabs = {
     menuManager:<MenuManager/>, //菜单管理界面
     roleTypeManager:<RoleTypeManager/>,
     roleManager:<RoleManager/>,
-    formManager:<FormManager/>
+    formManager:<FormManager/>,
+    templateManager:<TemplateManager/>
 }
 
 export {
