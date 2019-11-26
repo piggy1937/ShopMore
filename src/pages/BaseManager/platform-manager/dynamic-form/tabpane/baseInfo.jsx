@@ -52,7 +52,7 @@ class BaseInfo extends React.Component{
             <Row gutter={24}>
                 <Col span={12} >
                     <Form.Item label='表单ID'>
-                        {getFieldDecorator(`id`, {
+                        {getFieldDecorator(`sn`, {
                         rules: [
                             {
                             required: true,

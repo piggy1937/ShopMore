@@ -13,7 +13,7 @@ const { Option } = Select;
 const store = connect(
     (state) => ({
         formData: state.dynamicForm.form,
-        formColumnsData:state.dynamicForm.fieldDataSource,
+        columns:state.dynamicForm.colums,
     }),
     (dispatch) => bindActionCreators({fetchElement,setDynamicFormColumn}, dispatch)
 )
@@ -41,7 +41,7 @@ class CreateFormModal extends Component {
       await this.baseInfoRef.setFormData()
       this.handleAddElement({
           form:this.props.formData,
-          columns:this.props.formColumnsData
+          columns:this.props.columns
       })
     }
    

@@ -64,7 +64,6 @@ class EditableCell extends React.Component {
                       initialValue: record[dataIndex],
                   })(
                       <Select
-                      value={'VARCHAR'}
                       size={120}
                     >
                         {this.state.jdbcType.map(e=>(
@@ -90,7 +89,6 @@ class EditableCell extends React.Component {
                     initialValue: record[dataIndex],
                 })(
                     <Select
-                    value={'String'}
                     size={120}
                   >
                       {this.state.javaType.map(e=>(
@@ -112,9 +110,9 @@ class EditableCell extends React.Component {
                       message: `${title} is required.`,
                   }
                   ],
-                  initialValue: record[dataIndex],
+                  //initialValue: record[dataIndex],
               })(
-                 <Input ref={node => (this.input = node)} onPressEnter={this.save} onBlur={this.save} />
+                 <Input ref={node => (this.input = node)} placeholder={record[dataIndex]} onPressEnter={this.save} onBlur={this.save} />
               )}
               </Form.Item>) 
            }
@@ -154,8 +152,7 @@ class EditableCell extends React.Component {
   }
 const store = connect(
     (state) => ({
-        count: state.dynamicForm.count,
-        dataSource: state.dynamicForm.fieldDataSource
+        dataSource: state.dynamicForm.colums||[]
      }),
     (dispatch) => bindActionCreators({addDynamicFormColumn,setDynamicFormColumn}, dispatch)
   )
@@ -225,7 +222,7 @@ const store = connect(
             title: '操作',
             render: (text, record) =>(
             this.props.dataSource.length >= 1 ? (
-                <a>保存</a>
+                <a>删除</a>
             ) : null)
         }]
      }
@@ -237,7 +234,7 @@ const store = connect(
           ...item,
           ...row,
         });
-        this.props.setDynamicFormColumn({ fieldDataSource: newData })
+        this.props.setDynamicFormColumn({ colums: newData })
       };
     handleAdd=()=>{
         const {dataSource } = this.props;
@@ -247,9 +244,9 @@ const store = connect(
             columnName: '请输入列名',
             alias:'请输入别名',
             describe:'请输入备注',
-            jdbcType:'jdbcType',
-            javaType:'javaType',
-            length:'length',
+            jdbcType:'VARCHAR',
+            javaType:'String',
+            length:'100',
             editable:true
         })
     }
