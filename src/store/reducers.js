@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import { Map } from 'immutable';
 import {
     SET_USER, SET_WEBSOCKET, SET_ONLINELIST, SET_CHATLIST, ADD_CHAT, REFRESH_TOKEN,
-    CHANGE_FORM_STATUS, SET_MENU,SET_PERMISSION, SET_ELEMENT, CHANGE_ROLE_STATUS, 
+    CHANGE_FORM_STATUS, SET_MENU,CHANGE_ACTIVE_MENU,SET_PERMISSION, SET_ELEMENT, CHANGE_ROLE_STATUS, 
     SET_ROLE,
     SET_ROLE_DEPARTMENT,
     SET_FORM,
@@ -35,7 +35,10 @@ function user(state = {}, action) {
  * @param menuData 全部树形列表信息
  * @param accessedMenus 可访问树形菜单
  */
-const defaultMenu = { formStatus: '', formEdit: true, currentId: -1, menuData: [] ,accessedMenus:[]}
+const defaultMenu = { formStatus: '', formEdit: true, currentId: -1, menuData: [] ,accessedMenus:[],activeMenu:{
+        code: "buggetManager",
+        title: "获取预算",
+}}
 function menu(state = defaultMenu, action) {
     switch (action.type) {
         case CHANGE_FORM_STATUS: {
@@ -49,6 +52,11 @@ function menu(state = defaultMenu, action) {
             if(action.param.accessedMenus){
                 ret = ret.set('accessedMenus',action.param.accessedMenus)
             }
+            return ret.toJS()
+        }
+        case CHANGE_ACTIVE_MENU:{
+            const map = Map(state)
+            const ret = map.set('activeMenu',action.param)
             return ret.toJS()
         }
     

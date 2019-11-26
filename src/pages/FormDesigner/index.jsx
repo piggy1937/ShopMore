@@ -6,9 +6,18 @@ import FormStudio from "./utils/FormStudio";
 import CreateModal from './CreateModal'
 import request from '@/utils/request'
 import {withRouter} from 'react-router-dom'
+import { connect, } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { changeActiveMenu} from '@/store/actions'
 const {Header, Content} = Layout;
+const store = connect(
+    (state) => ({
+     }),
+    (dispatch) => bindActionCreators({changeActiveMenu}, dispatch)
+  )
 /**表单设计 */
 @withRouter
+@store
 class Index extends React.Component {
     constructor(props){
         super(props)
@@ -53,6 +62,14 @@ class Index extends React.Component {
         })
 
     }
+    /**返回上级界面 */
+    handleGoBack=()=>{
+         this.props.changeActiveMenu({
+             code:'templateManager',
+             title:'模板管理'
+         })
+         this.props.history.goBack()
+    }
     render() {
         const {isShowCreateModal,templateData} = this.state
         return (
@@ -63,7 +80,7 @@ class Index extends React.Component {
                     <div className="mini-panel-button">
                         <Button type="primary" onClick={()=>{this.props.history.push("/preview")}}>预览</Button>
                         <Button type="primary" onClick={()=>{this.openCreateModal()}}>保存数据</Button>
-                        <Button type="primary" icon="undo" onClick={()=>{this.props.history.goBack()}}>返回</Button>
+                        <Button type="primary" icon="undo" onClick={this.handleGoBack}>返回</Button>
                         <Button type="primary" icon="undo" onClick={()=>{this.props.history.goBack()}}>从数据库选择</Button>
                     </div>
                 </Header>

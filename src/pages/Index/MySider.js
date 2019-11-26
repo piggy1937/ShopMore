@@ -5,7 +5,8 @@ import { connect, } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {List} from 'immutable'
 const store = connect(
-    (state) => ({ accessedMenus:state.menu.accessedMenus }),
+    (state) => ({ accessedMenus:state.menu.accessedMenus,
+        activeMenu:state.menu.activeMenu }),
     (dispatch) => bindActionCreators({ }, dispatch)
 )
 @store
@@ -69,6 +70,9 @@ class MySider extends React.Component {
     }
     render() { 
         const { activeMenu, theme, accessedMenus} = this.props
+        if(activeMenu){
+            this.addPane(activeMenu)
+        }
         const list = List(this.props.accessedMenus ||[])
         const menu =list.merge(constantMenuMap)
         return (
@@ -79,7 +83,7 @@ class MySider extends React.Component {
                         <h1>Ant Design</h1>
                     </a>
                 </div>
-                <Menu theme={theme} mode="inline" selectedKeys={[activeMenu]} style={{ paddingTop: 16 }}>
+                <Menu theme={theme} mode="inline" selectedKeys={[activeMenu.code]} style={{ paddingTop: 16 }}>
                     {this.renderMenu(menu.toJS())}
                 </Menu>
             </div >

@@ -76,6 +76,13 @@ export function setMenu(param){
         param
     }
 }
+export const CHANGE_ACTIVE_MENU = 'changeActiveMenu'
+export function changeActiveMenu(param){
+    return {
+        type: CHANGE_ACTIVE_MENU,
+        param
+    }
+}
 //异步获取菜单，从后台获取菜单信息
 export function fetchMenu(param) {
     return async function (dispatch) {
