@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Modal, Form, Input, message, Select,Tabs} from 'antd'
 import { connect, } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchElement,setDynamicFormColumn} from '@/store/actions'
+import { setDynamicForm,setDynamicFormColumn} from '@/store/actions'
 import request from '@/utils/request'
 import LoadableComponent from '@/utils/LoadableComponent'
 const BaseInfoPane = LoadableComponent(import('./tabpane/baseInfo'), true);
@@ -15,7 +15,7 @@ const store = connect(
         formData: state.dynamicForm.form,
         columns:state.dynamicForm.colums,
     }),
-    (dispatch) => bindActionCreators({fetchElement,setDynamicFormColumn}, dispatch)
+    (dispatch) => bindActionCreators({setDynamicForm,setDynamicFormColumn}, dispatch)
 )
 @store
 class CreateFormModal extends Component {
@@ -29,12 +29,20 @@ class CreateFormModal extends Component {
         }
 
     }
+
+    componentWillMount() {
+        this.props.onRef(this)
+    }
+
     onCancel = () => {
         this.props.toggleVisible(false)
         this.props.setDynamicFormColumn({
             form:{},
             columns:[],
             fieldDataSource:[]
+        })
+        this.props.setDynamicForm({
+            form:{},
         })
     }
     handleOk = async () => {
@@ -56,6 +64,7 @@ class CreateFormModal extends Component {
             if(ret.code === 200){
                 this.props.form.resetFields()
                 this.props.toggleVisible(false)
+                this.onCancel()
             }else{
                 message.error((ret.message))
             }
@@ -69,37 +78,28 @@ class CreateFormModal extends Component {
         this.baseInfoRef = ref
     }
 
-    /**修改按钮或资源 */
-    handleUpdateElement = async (values) => {
-        try{
-        const ret = await request({
-            method: 'put',
-            url: '/api/admin/element',
-            data: values
-            });
-            if(ret.code === 200){
-                this.props.form.resetFields()
-                this.props.toggleVisible(false)
-                this.props.fetchElement({ menuId:this.props.currentId})
+    /**
+     * 初始化数据
+     */
+    initForm =(id)=>{
+        this.props.toggleVisible(true)
+        request({
+            method:'get',
+            url:`/api/admin/dynamic/form/${id}`,
+        }).then(data=>{
+            if(data.code===200){
+                const {columns,form} =data.result
+                this.props.setDynamicFormColumn({ columns})
+                this.props.setDynamicForm(form);
+                this.baseInfoRef.initBaseInfo();
             }else{
-                message.error((ret.message))
+                message.error(data.message)
             }
-        }catch(err){
-            console.log(err)
-        }
-           
+        }).catch(err=>{
+            message.error(err.message)
+        })
+
     }
-   /**初始化表格 */
-   initForm=(data)=>{
-       const {setFieldsValue} = this.props.form
-       const {id,code,type,name,url,method} = data
-       setFieldsValue({
-        id,code,type,name,url,method,
-        menuId:this.props.currentId
-       })
-       this.props.toggleVisible(true)
-       this.setState({dialogStatus:'update'})
-   }
     callback=(key)=> {
      console.log(key);
     }

@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 import { setDynamicForm} from '@/store/actions'
 const store = connect(
     (state) => ({
+        formData: state.dynamicForm.form
      }),
     (dispatch) => bindActionCreators({setDynamicForm}, dispatch)
   )
@@ -17,10 +18,25 @@ class BaseInfo extends React.Component{
             }
         })
     }
-   
+
     componentDidMount(){
-        this.props.onRef(this)
+        if(this.props.formData){
+            this.props.onRef(this)
+        }
     }
+
+      /**
+       * 初始化数据
+       */
+      initBaseInfo =()=>{
+          const  {id,sn,dataSourceId,name,type,databaseTableName,alias,describe,} = this.props.formData
+          const {setFieldsValue} = this.props.form
+          setFieldsValue({
+              id,sn,dataSourceId,name,type,databaseTableName,alias,describe,
+          })
+      }
+
+
     render(){
         const formItemLayout = {
             labelCol: {
@@ -126,6 +142,10 @@ class BaseInfo extends React.Component{
                             },
                         ],
                         })(<Input.TextArea rows={4} />)}
+                    </Form.Item>
+                    <Form.Item>
+                        {getFieldDecorator(`id`, {
+                        })(<Input type='hidden' />)}
                     </Form.Item>
                 </Col>
             </Row>

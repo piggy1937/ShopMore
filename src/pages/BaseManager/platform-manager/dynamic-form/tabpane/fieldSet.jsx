@@ -19,7 +19,8 @@ class EditableCell extends React.Component {
       jdbcType: ["VARCHAR", "NVARCHAR", "NUMERIC", "DATE", "CLOB", "BLOB" ],
       javaType: ["String", "Byte", "Integer", "Long", "Double", "BigDecimal", "Boolean", "Date", "List", "Map"]
     };
-  
+
+
     toggleEdit = () => {
       const editing = !this.state.editing;
       this.setState({ editing }, () => {

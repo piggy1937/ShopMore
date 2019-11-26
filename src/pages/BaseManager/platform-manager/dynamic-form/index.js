@@ -20,6 +20,7 @@ import {
 import request from '@/utils/request'
 import {withRouter} from 'react-router-dom'
 import CreateFormModal from './createFormModal'
+
 /**表单设计 */
 @withRouter
 class DynamicformDesigner extends React.Component {
@@ -135,25 +136,12 @@ class DynamicformDesigner extends React.Component {
      * @returns {*}
      */
     handleUpdate =(id)=>{
-      this.setState({
-          isLoading:true
-      })
-        request({
-            method:'get',
-            url:'/api/admin/form/findById',
-            data:{id}
-        }).then(data=>{
-            if(data.code===200){
-                this.props.history.push({pathname:'/formdesigner',query:{component:data.result.formStyle}})
-            }else{
-                message.error(data.message)
-            }
-        }).catch(err=>{
-            message.error(err.message)
-        })
-        this.setState({
-            isLoading:false
-        })
+      this.onFormInfoRef.initForm(id)
+    }
+
+    /**父子组件调用 */
+    onFormInfoRef = (ref) => {
+        this.onFormInfoRef = ref
     }
 
     render() {
@@ -243,7 +231,7 @@ class DynamicformDesigner extends React.Component {
             <div style={{textAlign: 'right'}}>
                 <Pagination defaultCurrent={1} total={this.state.pagination.total} onChange={this.onChangePage} />
             </div>
-            <CreateFormModal visible={isShowCreateModal} toggleVisible={this.toggleShowCreateModal} />
+            <CreateFormModal visible={isShowCreateModal} toggleVisible={this.toggleShowCreateModal}  onRef={this.onFormInfoRef}/>
         </div>)
     }
 }
