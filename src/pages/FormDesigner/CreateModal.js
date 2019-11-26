@@ -45,7 +45,7 @@ class CreateModal extends Component {
                 'content-type': 'application/json',
             },
             method: 'get',
-            url: '/api/admin/form/check_name',
+            url: '/api/admin/template/check_code',
             data: {
                 databaseTableName:value
             }
@@ -79,7 +79,7 @@ class CreateModal extends Component {
                     'content-type': 'application/json',
                 },
                 method: 'post',
-                url: '/api/admin/form',
+                url: '/api/admin/template',
                 data: {
                       name:field.name,
                       databaseTableName:field.databaseTableName,
