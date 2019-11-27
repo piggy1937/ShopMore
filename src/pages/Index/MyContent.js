@@ -59,7 +59,7 @@ class MyContent extends React.Component {
                             hideAdd>
                             {
                                 panes.map(item => (<TabPane key={item.key} tab={item.name}>
-                                    <div className='tabpane-box'>
+                                    <div className='tabpane-box' style={{height:'100%'}}>
                                         {item.content}
                                     </div>
                                     <Footer style={{ textAlign: 'center', background: '#fff' }}>

@@ -206,7 +206,7 @@ class ProcessDesign extends Component {
                 camunda: camundaModdleDescriptor,
             },
         });
-       // this.renderDiagram(xml || diagramXML);
+        this.renderDiagram(diagramXML);
         // 删除 bpmn logo
         const bjsIoLogo = document.querySelector('.bjs-powered-by');
         while (bjsIoLogo.firstChild) {
@@ -219,14 +219,14 @@ class ProcessDesign extends Component {
         const {hidePanel, hideFold, hideCount, svgVisible, svgSrc} = this.state;
 
         return (
-            <div>
+            <div style={{minHeight:'100%',height:'100%'}} className={styles.container}>
                 <Card
                     bordered={false}
                     style={{width: '100%', height: '100%'}}
                     bodyStyle={{height: '100%'}}
                 >
-                    <div className={styles.container} id="js-drop-zone">
-                        <div className={styles.canvas} id="canvas" />
+                    <div className={styles.container} style={  {minHeight:'100%',height:'100%'}} id="js-drop-zone">
+                        <div className={styles.canvas} id="canvas"  style={{minHeight:'100%',height:'100%'}}/>
                         <div
                             className={`properties-panel-fold
                                 ${hideCount === 1 ? (hidePanel ? 'fold' : '') : ''}
