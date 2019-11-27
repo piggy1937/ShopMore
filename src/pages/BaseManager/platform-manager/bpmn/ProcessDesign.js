@@ -14,7 +14,7 @@ import {diagramXML} from './BpmnEditor/sources/xml';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import styles from './BpmnEditor/sources/Bpmn.module.less';
-
+import FooterToolbar from '@/components/FooterToolbar';
 // @connect(({processManage, loading}) => ({
 //     processManage,
 //     loading: loading.models.processManage,
@@ -268,7 +268,12 @@ class ProcessDesign extends Component {
                         />
                     </FullModal> */}
                 )}
-             
+                <FooterToolbar>
+                    <Button >返回</Button>
+                    <Button type="primary" loading={loading} >
+                        保存
+                    </Button>
+                </FooterToolbar>
             </div>
         );
     }
