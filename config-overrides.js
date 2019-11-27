@@ -1,13 +1,12 @@
 /* config-overrides.js */
 const path = require('path');
 const { injectBabelPlugin } = require('react-app-rewired');
-const rewireLess = require('react-app-rewire-less');
 const { getLessVars } = require('antd-theme-generator');
-
+//const rewireCssModules = require('react-app-rewire-css-modules');
 function resolve (dir) {
     return path.join(__dirname, '.', dir)
 }
-
+const rewireLess = require('react-app-rewire-less-modules')
 module.exports = function override(config, env) {
     //do stuff with the webpack config...
 
@@ -35,6 +34,12 @@ module.exports = function override(config, env) {
 
     //启用ES7的修改器语法（babel 7）
     config = injectBabelPlugin(['@babel/plugin-proposal-decorators', { "legacy": true }], config)
+     //css模块化
+   //less模块化
+	config = rewireLess.withLoaderOptions({
+        javascriptEnabled: true,
+        modifyVars: {'@primary-color': '#1DA57A'},
+     })(config, env)
   
     return config;
 }

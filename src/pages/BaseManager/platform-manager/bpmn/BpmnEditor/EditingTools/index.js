@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import styles from './index.less';
-
+import styles from './index.module.less';
 class EditingTools extends Component {
     handleOpen = () => {
         this.file.click();

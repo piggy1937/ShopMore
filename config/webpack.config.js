@@ -38,7 +38,7 @@ const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
 const useTypeScript = fs.existsSync(paths.appTsConfig);
 
 // style files regexes
-const cssRegex = /\.css$/;
+const cssRegex = /\.(css|less)$/;
 const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
@@ -83,6 +83,7 @@ module.exports = function(webpackEnv) {
         loader: require.resolve('css-loader'),
         options: cssOptions,
       },
+    
       {
         // Options for PostCSS as we reference these options twice
         // Adds vendor prefixing based on your specified browser support in
@@ -100,6 +101,7 @@ module.exports = function(webpackEnv) {
               },
               stage: 3,
             }),
+           
             // Adds PostCSS Normalize as the reset css with default options,
             // so that it honors browserslist config in package.json
             // which in turn let's users customize the target behavior as per their needs.
@@ -108,6 +110,9 @@ module.exports = function(webpackEnv) {
           sourceMap: isEnvProduction && shouldUseSourceMap,
         },
       },
+      {
+        loader : require.resolve('less-loader')
+     },
     ].filter(Boolean);
     if (preProcessor) {
       loaders.push({
@@ -328,12 +333,28 @@ module.exports = function(webpackEnv) {
             // smaller than specified limit in bytes as data URLs to avoid requests.
             // A missing `test` is equivalent to a match.
             {
-              test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+              test: [/\.bmp$/,/\.gif$/, /\.jpe?g$/, /\.png$/],
               loader: require.resolve('url-loader'),
               options: {
                 limit: 10000,
                 name: 'static/media/[name].[hash:8].[ext]',
               },
+            },
+            {
+              test: /\.svg$/,
+              // fonts 图标不处理
+              exclude: [/node_modules/, /fonts/],
+              use: [
+                { loader: require.resolve("babel-loader") },
+                {
+                  loader: require.resolve("@svgr/webpack"),
+                  options: {
+                    babel: false
+                  }
+                },
+                // 使之可以获取 svg 的 url
+                { loader: require.resolve("url-loader") }
+              ]
             },
             // Process application JS with Babel.
             // The preset includes JSX, Flow, TypeScript, and some ESnext features.
@@ -467,6 +488,10 @@ module.exports = function(webpackEnv) {
                 'sass-loader'
               ),
             },
+
+
+          
+
             // "file" loader makes sure those assets get served by WebpackDevServer.
             // When you `import` an asset, you get its (virtual) filename.
             // In production, they would get copied to the `build` folder.

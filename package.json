@@ -72,8 +72,12 @@
     "@babel/preset-env": "^7.7.1",
     "babel-loader": "^8.0.6",
     "core-js": "^3.4.1",
+    "node-sass": "^4.13.0",
+    "react-app-rewire-css-modules": "^1.0.0",
+    "react-app-rewired": "^2.0.2-next.0",
     "react-copy-to-clipboard": "^5.0.1",
-    "regenerator-runtime": "^0.13.3"
+    "regenerator-runtime": "^0.13.3",
+    "sass-loader": "^8.0.0"
   },
   "homepage": "/"
 }
