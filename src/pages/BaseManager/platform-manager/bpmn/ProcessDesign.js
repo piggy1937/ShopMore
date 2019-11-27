@@ -10,6 +10,15 @@ import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
 import propertiesProviderModule from './BpmnEditor/Toolbar';
 import EditingTools from './BpmnEditor/EditingTools';
 import BpmnModeler from './BpmnEditor/Modeler';
+import {diagramXML} from './BpmnEditor/sources/xml';
+import 'bpmn-js/dist/assets/diagram-js.css';
+import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
+import styles from './BpmnEditor/sources/Bpmn.module.less';
+
+// @connect(({processManage, loading}) => ({
+//     processManage,
+//     loading: loading.models.processManage,
+// }))
 @Form.create()
 class ProcessDesign extends Component {
     state = {
@@ -22,7 +31,170 @@ class ProcessDesign extends Component {
        
 
 
-   
+    // key value 转换
+    translateData(data, name = 'label', value = 'value') {
+        if (!data) return;
+
+        return data.map(item => {
+            return {
+                name: item[name],
+                value: item[value],
+            };
+        });
+    }
+
+    /**
+     * 下载xml/svg
+     *  @param  type  类型  svg / xml
+     *  @param  data  数据
+     *  @param  name  文件名称
+     */
+    download = (type, data, name) => {
+        let dataTrack = '';
+        const a = document.createElement('a');
+
+        switch (type) {
+            case 'xml':
+                dataTrack = 'bpmn';
+                break;
+            case 'svg':
+                dataTrack = 'svg';
+                break;
+            default:
+                break;
+        }
+
+        name = name || `diagram.${dataTrack}`;
+
+        a.setAttribute(
+            'href',
+            `data:application/bpmn20-xml;charset=UTF-8,${encodeURIComponent(data)}`
+        );
+        a.setAttribute('target', '_blank');
+        a.setAttribute('dataTrack', `diagram:download-${dataTrack}`);
+        a.setAttribute('download', name);
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+
+    // 导入 xml 文件
+    handleOpenFile = e => {
+        const that = this;
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        let data = '';
+        reader.readAsText(file);
+        reader.onload = function(event) {
+            data = event.target.result;
+            that.renderDiagram(data, 'open');
+        };
+    };
+
+    // 保存
+    handleSave = () => {
+        const {
+            dispatch,
+            match: {params},
+        } = this.props;
+        let json_xml = '',
+            svg_xml = '';
+
+        this.bpmnModeler.saveXML({format: true}, (err, xml) => {
+            console.log(xml);
+            json_xml = xml;
+        });
+        this.bpmnModeler.saveSVG({format: true}, (err, data) => {
+            console.log(data);
+            svg_xml = data;
+        });
+    };
+
+    // 前进
+    handleRedo = () => {
+        this.bpmnModeler.get('commandStack').redo();
+    };
+
+    // 后退
+    handleUndo = () => {
+        this.bpmnModeler.get('commandStack').undo();
+    };
+
+    // 下载 SVG 格式
+    handleDownloadSvg = () => {
+        this.bpmnModeler.saveSVG({format: true}, (err, data) => {
+            this.download('svg', data);
+        });
+    };
+
+    // 下载 XML 格式
+    handleDownloadXml = () => {
+        this.bpmnModeler.saveXML({format: true}, (err, data) => {
+            this.download('xml', data);
+        });
+    };
+
+    // 流程图放大缩小
+    handleZoom = radio => {
+        const newScale = !radio
+            ? 1.0 // 不输入radio则还原
+            : this.state.scale + radio <= 0.2 // 最小缩小倍数
+            ? 0.2
+            : this.state.scale + radio;
+
+        this.bpmnModeler.get('canvas').zoom(newScale);
+        this.setState({
+            scale: newScale,
+        });
+    };
+
+    // 渲染 xml 格式
+    renderDiagram = xml => {
+        this.bpmnModeler.importXML(xml, err => {
+            if (err) {
+                notification.error({
+                    message: '提示',
+                    description: '导入失败',
+                });
+            }
+        });
+    };
+
+    // 预览图片
+    handlePreview = () => {
+        this.bpmnModeler.saveSVG({format: true}, (err, data) => {
+            this.setState({
+                svgSrc: data,
+                svgVisible: true,
+            });
+        });
+    };
+
+    // 折叠
+    handlePanelFold = () => {
+        const {hidePanel} = this.state;
+        this.setState(
+            {
+                hidePanel: !hidePanel,
+                hideCount: 1,
+            },
+            () => {}
+        );
+    };
+
+    // 返回列表
+    handleBack() {
+       // router.push('/bpmn/processManage');
+    }
+
+    // 关闭流程图弹窗
+    handleCancel = () => {
+        this.setState({
+            svgSrc: '',
+            svgVisible: false,
+        });
+    };
     componentDidMount(){
         this.bpmnModeler = new BpmnModeler({
             container: '#canvas',
