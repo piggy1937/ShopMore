@@ -25,7 +25,7 @@ class CreateProcessDesignModal extends Component {
         visible={visible}
         title='新建模型'
         width={'85%'}
-        bodyStyle={{height:'500px'}}
+        bodyStyle={{height:'500px',padding:'0'}}
         centered
         onOk={this.handleOk}
         onCancel={this.onCancel}
