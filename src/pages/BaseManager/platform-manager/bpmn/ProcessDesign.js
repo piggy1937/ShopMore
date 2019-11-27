@@ -267,13 +267,7 @@ class ProcessDesign extends Component {
                             }}
                         />
                     </FullModal> */}
-                )}
-                <FooterToolbar>
-                    <Button >返回</Button>
-                    <Button type="primary" loading={loading} >
-                        保存
-                    </Button>
-                </FooterToolbar>
+                
             </div>
         );
     }

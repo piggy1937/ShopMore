@@ -11,6 +11,7 @@ const Login = LoadableComponent(import('@/pages/Login'))
 const ErrorPage = LoadableComponent(import('@/pages/Error'))
 const FormDesigner = LoadableComponent(import('@/pages/FormDesigner'))
 const PreView = LoadableComponent(import('@/pages/FormDesigner/preview'))
+
 @withRouter
 class App extends React.Component {
   render() {

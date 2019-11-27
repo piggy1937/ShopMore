@@ -20,6 +20,7 @@ import {
 import request from '@/utils/request'
 import {withRouter} from 'react-router-dom'
 import CreateFlowModal from './createFlowModal'
+import CreateProcessDesignModal from './createProcessDesignModal'
 /**模板管理 */
 @withRouter@Form.create()
 class ModelManager extends React.Component {
@@ -30,6 +31,7 @@ class ModelManager extends React.Component {
             items: [],
             isLoading: false,
             isShowCreateModal: false,
+            isShowCreateProcessDesignModal: false,
             total: 0,
             pageSize: 3,
             pageNumber: parseInt(window.location.hash.slice(1), 0) || 0
@@ -40,6 +42,12 @@ class ModelManager extends React.Component {
     toggleShowCreateModal = (visible) => {
       this.setState({
         isShowCreateModal: visible
+      })
+    }
+    /**流程设计 */
+    toggleShowCreateProcessDesignModal = (visible) => {
+      this.setState({
+        isShowCreateProcessDesignModal: visible
       })
     }
      /**父子组件调用 */
@@ -86,11 +94,11 @@ class ModelManager extends React.Component {
      * @returns {*}
      */
     handleUpdate =(id)=>{
-        this.props.history.push({pathname:`/template/${id}`})
+        this.toggleShowCreateProcessDesignModal(true)
     }
 
     render() {
-        const {items,isLoading,isShowCreateModal,pageNumber,total,pageSize} = this.state;
+        const {items,isLoading,isShowCreateModal,isShowCreateProcessDesignModal,pageNumber,total,pageSize} = this.state;
         const { getFieldDecorator, selectedRowKeys } = this.props.form
         const columns = [
             {
@@ -170,6 +178,9 @@ class ModelManager extends React.Component {
                     pagination={false}
                 />
                  <CreateFlowModal onRef={this.onModalRef} visible={isShowCreateModal} toggleVisible={this.toggleShowCreateModal} />
+                 <CreateProcessDesignModal onRef={this.onModalRef} visible={isShowCreateProcessDesignModal} toggleVisible={this.toggleShowCreateProcessDesignModal} />
+                 
+                 
             </Card>
             <div style={{textAlign: 'right'}}>
                 <Pagination className="pagination-com" hideOnSinglePage={false} defaultCurrent={pageNumber} total={total}  pageSize={pageSize} onChange={this.onPageChange} />

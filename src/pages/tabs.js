@@ -16,6 +16,7 @@ const RoleManager     = LoadableComponent(import('./role/role/index'), true);
 const FormManager     = LoadableComponent(import('./BaseManager/platform-manager/dynamic-form'), true);
 const TemplateManager  = LoadableComponent(import('./BaseManager/platform-manager/template'), true);
 const ModelManager  = LoadableComponent(import('./BaseManager/platform-manager/model'), true);
+
 const menu = [
     {
        name:'每刻报销',
