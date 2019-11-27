@@ -220,11 +220,7 @@ class ProcessDesign extends Component {
 
         return (
             <div style={{minHeight:'100%',height:'100%'}} className={styles.container}>
-                <Card
-                    bordered={false}
-                    style={{width: '100%', height: '100%'}}
-                    bodyStyle={{height: '100%'}}
-                >
+            
                     <div className={styles.container} style={  {minHeight:'100%',height:'100%'}} id="js-drop-zone">
                         <div className={styles.canvas} id="canvas"  style={{minHeight:'100%',height:'100%'}}/>
                         <div
@@ -256,7 +252,7 @@ class ProcessDesign extends Component {
                             onPreview={this.handlePreview}
                         />
                     </div>
-                </Card>
+            
 
                 {/* 查看流程图弹窗 */}
                 {/* {svgVisible && (
