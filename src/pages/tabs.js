@@ -1,8 +1,6 @@
 import React from 'react'
 import LoadableComponent from '../utils/LoadableComponent'
 //const Test = React.lazy(() => import('./Test'));   //报错，就没用React.lazy了
-const ButtonDemo = LoadableComponent(import('./ButtonDemo/index'), true);
-const IconDemo = LoadableComponent(import('./IconDemo/index'), true);
 const FeedbackDemo = LoadableComponent(import('./FeedbackDemo/index'), true);
 const UsersManager = LoadableComponent(import('./Users/index'), true);
 const Collection = LoadableComponent(import('./Collection/index'), true);
@@ -17,7 +15,7 @@ const RoleTypeManager = LoadableComponent(import('./role/type/index'), true);
 const RoleManager     = LoadableComponent(import('./role/role/index'), true);
 const FormManager     = LoadableComponent(import('./BaseManager/platform-manager/dynamic-form'), true);
 const TemplateManager  = LoadableComponent(import('./BaseManager/platform-manager/template'), true);
-const ModelManager  = LoadableComponent(import('./BaseManager/platform-manager/bpmn/ProcessDesign'), true);
+const ModelManager  = LoadableComponent(import('./BaseManager/platform-manager/model'), true);
 const menu = [
     {
        name:'每刻报销',
@@ -129,8 +127,6 @@ const constantMenuMap=[
     code: 'About'
 }]
 const tabs = {
-    ButtonDemo: <ButtonDemo />,
-    IconDemo: <IconDemo />,
     FeedbackDemo: <FeedbackDemo />,
     usersManager: <UsersManager />,
     Collection: <Collection />,
