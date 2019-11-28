@@ -1,26 +1,20 @@
-import React from 'react'
+import React,{createContext} from 'react'
 import {
     Table,
     Card,
     Form,
     Input,
     Button,
-    DatePicker,
-    message,
-    Icon,
     Row,
     Col,
-    Divider,
-    Tag,
-    Modal,
     Popconfirm,
-    notification,
-    Pagination, Select
+    Pagination, 
 } from 'antd'
 import request from '@/utils/request'
 import {withRouter} from 'react-router-dom'
 import CreateFlowModal from './createFlowModal'
 import CreateProcessDesignModal from './createProcessDesignModal'
+import { ProcessDesignProvider,ProcessDesignConsumer} from './ProcessDesignProvider'
 /**模板管理 */
 @withRouter@Form.create()
 class ModelManager extends React.Component {
@@ -31,10 +25,10 @@ class ModelManager extends React.Component {
             items: [],
             isLoading: false,
             isShowCreateModal: false,
-            isShowCreateProcessDesignModal: false,
+
             total: 0,
             pageSize: 3,
-            pageNumber: parseInt(window.location.hash.slice(1), 0) || 0
+            pageNumber: parseInt(window.location.hash.slice(1), 0) || 0,
         }
     }
    
@@ -44,12 +38,9 @@ class ModelManager extends React.Component {
         isShowCreateModal: visible
       })
     }
-    /**流程设计 */
-    toggleShowCreateProcessDesignModal = (visible) => {
-      this.setState({
-        isShowCreateProcessDesignModal: visible
-      })
-    }
+
+
+
      /**父子组件调用 */
     onModalRef = (ref) => {
         this.modalRef = ref
@@ -61,6 +52,9 @@ class ModelManager extends React.Component {
         const {pageNumber,pageSize} = this.state
         this.onPageChange(pageNumber,pageSize); 
     }
+
+  
+
     onPageChange=async (pageNumber, pageSize) =>{
         const res = await request({
             method: 'get',
@@ -94,7 +88,7 @@ class ModelManager extends React.Component {
      * @returns {*}
      */
     handleUpdate =(id)=>{
-        this.toggleShowCreateProcessDesignModal(true)
+        this.toggleShowCreateProcessDesignModal(true,id?id:-1)
     }
 
     render() {
@@ -139,14 +133,20 @@ class ModelManager extends React.Component {
                                 cancelText="No">
                                 <Button icon="delete" type='danger'>删除</Button>
                             </Popconfirm>&emsp;
-                        <Button type="primary" icon='edit' onClick={() => {
-                            this.handleUpdate(record['id'])
-                        }} loading={this.state.isLoading}>编辑</Button>
+                            <ProcessDesignConsumer>
+                                {
+                                  ({handleToggle}) =>(
+                                    <Button type="primary" icon='edit' onClick={() => {
+                                        handleToggle(record['id'])
+                                    }} loading={this.state.isLoading}>绘制流程图</Button>
+                                  )
+                                }
+                            </ProcessDesignConsumer>
                 </span>
                 ),
             },
         ];
-        return (<div>
+        return (<ProcessDesignProvider>
             <Card bordered={false}>
                 <Form layout='inline' style={{marginBottom: 16}}>
                     <Row gutter={24}>
@@ -178,14 +178,12 @@ class ModelManager extends React.Component {
                     pagination={false}
                 />
                  <CreateFlowModal onRef={this.onModalRef} visible={isShowCreateModal} toggleVisible={this.toggleShowCreateModal} />
-                 <CreateProcessDesignModal onRef={this.onModalRef} visible={isShowCreateProcessDesignModal} toggleVisible={this.toggleShowCreateProcessDesignModal} />
-                 
-                 
+                 <CreateProcessDesignModal  />     
             </Card>
             <div style={{textAlign: 'right'}}>
                 <Pagination className="pagination-com" hideOnSinglePage={false} defaultCurrent={pageNumber} total={total}  pageSize={pageSize} onChange={this.onPageChange} />
             </div>
-        </div>)
+        </ProcessDesignProvider>)
     }
 }
 

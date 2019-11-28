@@ -14,11 +14,7 @@ import {diagramXML} from './BpmnEditor/sources/xml';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import styles from './BpmnEditor/sources/Bpmn.module.less';
-import FooterToolbar from '@/components/FooterToolbar';
-// @connect(({processManage, loading}) => ({
-//     processManage,
-//     loading: loading.models.processManage,
-// }))
+import {ProcessDesignConsumer,ProcessDesignContext} from '../model/ProcessDesignProvider'
 @Form.create()
 class ProcessDesign extends Component {
     state = {
@@ -92,24 +88,6 @@ class ProcessDesign extends Component {
         };
     };
 
-    // 保存
-    handleSave = () => {
-        const {
-            dispatch,
-            match: {params},
-        } = this.props;
-        let json_xml = '',
-            svg_xml = '';
-
-        this.bpmnModeler.saveXML({format: true}, (err, xml) => {
-            console.log(xml);
-            json_xml = xml;
-        });
-        this.bpmnModeler.saveSVG({format: true}, (err, data) => {
-            console.log(data);
-            svg_xml = data;
-        });
-    };
 
     // 前进
     handleRedo = () => {
@@ -150,8 +128,8 @@ class ProcessDesign extends Component {
     };
 
     // 渲染 xml 格式
-    renderDiagram = xml => {
-        this.bpmnModeler.importXML(xml, err => {
+    renderDiagram = (bpmnModeler,xml) => {
+        bpmnModeler.importXML(xml, err => {
             if (err) {
                 notification.error({
                     message: '提示',
@@ -196,7 +174,8 @@ class ProcessDesign extends Component {
         });
     };
     componentDidMount(){
-        this.bpmnModeler = new BpmnModeler({
+        let contect = this.context;
+        const bpmnModeler = new BpmnModeler({
             container: '#canvas',
             propertiesPanel: {
                 parent: '#properties-panel',
@@ -206,15 +185,13 @@ class ProcessDesign extends Component {
                 camunda: camundaModdleDescriptor,
             },
         });
-        this.renderDiagram(diagramXML);
-        // 删除 bpmn logo
-        const bjsIoLogo = document.querySelector('.bjs-powered-by');
-        while (bjsIoLogo.firstChild) {
-            bjsIoLogo.removeChild(bjsIoLogo.firstChild);
-        }
+        this.renderDiagram(bpmnModeler,diagramXML);
+        contect.initBpmnModeler(bpmnModeler)
+       
     }
-
+    static contextType = ProcessDesignContext;
     render() {
+        
         const {loading} = this.props;
         const {hidePanel, hideFold, hideCount, svgVisible, svgSrc} = this.state;
 
@@ -239,6 +216,7 @@ class ProcessDesign extends Component {
                             id="properties-panel"
                             style={{height: '100%'}}
                         />
+                     
                         <EditingTools
                             onOpenFIle={this.handleOpenFile}
                             // onSave={this.handleSave}
@@ -251,6 +229,7 @@ class ProcessDesign extends Component {
                             onZoomReset={() => this.handleZoom()}
                             onPreview={this.handlePreview}
                         />
+                    
                     </div>
             
 
