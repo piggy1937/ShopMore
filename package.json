@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@babel/runtime-corejs3": "^7.7.2",
+    "@types/jquery": "^3.3.6",
+    "@types/jqueryui": "^1.12.3",
     "antd": "^3.20.0",
     "antd-theme-generator": "^1.1.6",
     "axios": "^0.19.0",
@@ -16,8 +18,6 @@
     "draftjs-to-html": "^0.8.4",
     "gsap": "^2.1.2",
     "immutable": "^4.0.0-rc.12",
-    "@types/jquery": "^3.3.6",
-    "@types/jqueryui": "^1.12.3",
     "jquery": "^3.4.0",
     "jquery-ui-dist": "^1.12.1",
     "lodash.debounce": "^4.0.8",
@@ -40,7 +40,10 @@
     "redux-thunk": "^2.3.0",
     "screenfull": "^4.2.0",
     "sha256": "^0.2.0",
-    "sortablejs": "^1.6.1"
+    "sortablejs": "^1.6.1",
+    "bpmn-js": "^6.0.4",
+    "bpmn-js-properties-panel": "^0.33.0",
+    "camunda-bpmn-moddle": "^4.3.0"
   },
   "scripts": {
     "start": "npm run color && react-app-rewired start",
@@ -54,16 +57,14 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all",
-      "ie 11"
+      "last 2 versions",
+      "android 4",
+      "opera 12"
     ],
     "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version",
-      "ie 11"
+      "last 2 versions",
+      "android 4",
+      "opera 12"
     ]
   },
   "devDependencies": {
@@ -71,8 +72,11 @@
     "@babel/plugin-proposal-decorators": "^7.4.4",
     "@babel/preset-env": "^7.7.1",
     "babel-loader": "^8.0.6",
+   
     "core-js": "^3.4.1",
     "node-sass": "^4.13.0",
+    "react-app-rewire-css-modules": "^1.0.0",
+    "react-app-rewire-less-modules": "^1.3.0",
     "react-copy-to-clipboard": "^5.0.1",
     "regenerator-runtime": "^0.13.3",
     "sass-loader": "^8.0.0"
