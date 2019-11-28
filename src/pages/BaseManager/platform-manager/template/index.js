@@ -103,14 +103,26 @@ class TemplateManager extends React.Component {
      * @param pageSize
      */
     onChangePage = (page, pageSize) => {
-        this.getDesignFormInfo(page-1)
+        this.getTemplateInfo(page-1)
         this.setState({
             pagination: {
                 current: (page - 1) * pageSize
             }
         })
     }
-
+    /**
+     * 删除模板
+     * @param id
+     */
+    handleDelete = async (id) => {
+            const ret = await request({
+                method: 'delete',
+                url: `/api/admin/template/${id}`
+            })
+            if (ret.code === 200) {
+                this.getTemplateInfo(0);
+            }
+        }
 
     /**
      * 根据id查询表单
@@ -157,7 +169,7 @@ class TemplateManager extends React.Component {
                                 placement="rightBottom"
                                 title="此操作将永久删除, 是否继续?"
                                 onConfirm={() => {
-
+                                    this.handleDelete(record['id'])
                                 }}
                                 okText="Yes"
                                 cancelText="No">
@@ -201,7 +213,7 @@ class TemplateManager extends React.Component {
                             <Form.Item style={{marginRight: 0, width: '100%'}} wrapperCol={{span: 24}}>
                                 <div style={{textAlign: 'left'}}>
                                     <Button icon="plus" onClick={() => {
-                                        this.props.history.push({pathname: '/template',state:{state:'create'}})
+                                        this.props.history.push({pathname:`/template/0`})
                                     }}>新建模板</Button>
                                 </div>
                             </Form.Item>

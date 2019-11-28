@@ -14,11 +14,15 @@ class CreateModal extends Component {
     constructor(props) {
         super(props)
         this.state={
-            isLoading:false
+            isLoading:false,
+            status:''
         }
-        this.checkTableNameUniqued = debounce(this.checkTableNameUniqued, 1000);
+        this.checkCodeUniqued = debounce(this.checkCodeUniqued, 1000);
     }
 
+    componentDidMount() {
+        this.props.onRef(this)
+    }
 
     onCancel = () => {
         this.props.form.resetFields()
@@ -28,9 +32,14 @@ class CreateModal extends Component {
         })
     }
     handleOk = () => {
+        const {isLoading,status} = this.state
         this.props.form.validateFields((errors, values) => {
-            if (!errors && !this.state.isLoading) {
-                this.onCreate(values)
+            if (!errors && !isLoading) {
+                 if(status==='update'){
+                     this.onUpdate(values)
+                 } else{
+                     this.onCreate(values)
+                 }
             }
         })
     }
@@ -39,7 +48,7 @@ class CreateModal extends Component {
     /**
      * code是否存在
      */
-    checkTableNameUniqued =  (rule, value, callback)=>{
+    checkCodeUniqued =  (rule, value, callback)=>{
         request({
             headers: {
                 'content-type': 'application/json',
@@ -47,7 +56,7 @@ class CreateModal extends Component {
             method: 'get',
             url: '/api/admin/template/check_code',
             data: {
-                databaseTableName:value
+                code:value
             }
         }).then(data=>{
             const {code,message} = data
@@ -61,16 +70,39 @@ class CreateModal extends Component {
         })
     }
 
+    /**
+     * 修改模板
+     */
+    onUpdate=()=>{
+        const template = JSON.stringify(FormStudio.getJsonData());
+        const {code,name,type,id} = this.props.form.getFieldsValue()
+        debugger
+        request({
+            headers: {
+                'content-type': 'application/json',
+            },
+            method: 'put',
+            url: '/api/admin/template/',
+            data: {
+                code,name,type,id,template
+            }
+        }).then(data=>{
+            if(data.code==200){
+                this.onCancel()
+                this.props.onRefresh()
+            }
+        })
+    }
 
 
-    /**创建表单 */
+    /**创建模板 */
     onCreate = async () => {
         this.setState({
             isLoading:true
         })
         const template = JSON.stringify(FormStudio.getJsonData());
 
-        const field = this.props.form.getFieldsValue()
+        const {code,name,type} = this.props.form.getFieldsValue()
         let res
         try{
             res = await request({
@@ -80,34 +112,37 @@ class CreateModal extends Component {
                 method: 'post',
                 url: '/api/admin/template',
                 data: {
-                    code:field.code,
-                    name:field.name,
-                    template,
-                    type:field.type
+                    code,name,type,template
                 }
             })
+            if(res.code==200){
+                this.onCancel()
+                this.props.onRefresh()
+            }else{
+                message.error(res.message)
+            }
         }catch(e){
-            this.onCancel()
-            this.setState({
-                isLoading: false,
-            })
             return
-        }
-        if(res.code==200){
-            this.onCancel()
-            message.success('添加成功')
-            this.props.history.push('/')
-        }else{
-            message.error(res.message)
         }
         this.setState({
             isLoading:false
         })
     }
 
+    initTemplate=(data)=>{
+        const {setFieldsValue} = this.props.form
+        const {id,code,name,type} = data
+        setFieldsValue({
+            id,code,name,type
+        })
+        this.setState({
+            status:'update'
+        })
+    }
+
     render() {
         const { visible } = this.props
-        const {isLoading} = this.state;
+        const {isLoading,status} = this.state;
         const { getFieldDecorator } = this.props.form
         const formItemLayout = {
             labelCol: { span: 6 },
@@ -136,11 +171,11 @@ class CreateModal extends Component {
                             rules: [
                                 { required: true, message: '模板标识' },
                                 { pattern: /^[^\s']+$/, message: '不能输入特殊字符' },
-                                {validator:this.checkTableCodeUniqued}
+                                 status===''&&{validator:this.checkCodeUniqued}
                             ],
-
                         })(
                             <Input
+                                disabled={status==="update"}
                                 placeholder='请输入模板标识' />
                         )}
                     </Form.Item>
@@ -163,6 +198,12 @@ class CreateModal extends Component {
                         })(
                             <Input
                                 placeholder='模板类型' />
+                        )}
+                    </Form.Item>
+                    <Form.Item >
+                        {getFieldDecorator('id')(
+                            <Input
+                                type='hidden' />
                         )}
                     </Form.Item>
                 </Form>

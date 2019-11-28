@@ -10,21 +10,16 @@ class FormView extends PureComponent{
       templateData:''
     }
   }
-  LinearLayout = null;
 
-  componentWillMount(){
-    const { formDefinition } = this.props; 
-    const topLayout = FormStudio._topLayout
-    if(topLayout){
-      this.LinearLayout=topLayout
-    }else{
+    componentWillMount(){
       const LinearLayoutFactory =FormStudio.getFactory("LinearLayout");
+      //初始化子类
+      LinearLayoutFactory.initChildren();
       this.LinearLayout = LinearLayoutFactory.renderComponenet(LinearLayoutFactory.createComponentDefinition())({
       });
-     
       FormStudio.topLayout = this.LinearLayout;
     }
-  }
+
   //  shouldComponentUpdate(){
   //    return true;
   //  }
@@ -32,9 +27,8 @@ class FormView extends PureComponent{
     const { formDefinition } = this.props; 
     const LinearLayoutFactory =FormStudio.getFactory("LinearLayout");
     this.LinearLayout = LinearLayoutFactory.renderComponenet(LinearLayoutFactory.createComponentDefinition(formDefinition.templateData))({
-    });
-   
-    FormStudio.topLayout = this.LinearLayout;
+     });
+     FormStudio.topLayout = this.LinearLayout;
    }
   componentDidUpdate(){
     const { formDefinition } = this.props; 
@@ -55,7 +49,6 @@ class FormView extends PureComponent{
             <div
               className="form-content"
             >
-  
               {
                  this.LinearLayout
               }
