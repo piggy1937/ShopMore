@@ -70,13 +70,6 @@ const menu = [
         ]
     },
     {
-        name: '用户管理',
-        icon: 'user',
-        code: 'usersManager',
-        authority: 'usersManager',
-
-    },
-    {
         name: '平台设计',
         icon: 'user',
         code: 'platformManager',
@@ -109,7 +102,14 @@ const menu = [
             }
         ]
 
-    }
+    },
+    {
+        name: '用户管理',
+        icon: 'user',
+        code: 'usersManager',
+        authority: 'usersManager',
+
+    },
 ]
 const constantMenuMap=[
     {
