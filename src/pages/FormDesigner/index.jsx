@@ -2,13 +2,13 @@ import React, {PureComponent} from 'react';
 import {Layout, Button,message} from 'antd';
 import FormDesigner from './FormDesigner';
 import 'antd/dist/antd.css';
-import FormStudio from "./utils/FormStudio";
 import CreateModal from './CreateModal'
 import request from '@/utils/request'
 import {withRouter} from 'react-router-dom'
 import { connect, } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { changeActiveMenu} from '@/store/actions'
+import $ from 'jquery';
 const {Header, Content} = Layout;
 const store = connect(
     (state) => ({
@@ -27,11 +27,9 @@ class Index extends React.Component {
                 isShowCreateModal: false,
 
             },
-            templateData:''
-
+            templateData:{}
         }
     }
-
     /**
      * 打开/关闭创建模态框
      */
@@ -42,25 +40,30 @@ class Index extends React.Component {
     }
     openCreateModal = () => {
         this.toggleShowCreateModal(true)
+        if(!$.isEmptyObject(this.state.templateData)){
+            const {id,code,name,type} =this.state.templateData
+            this.elementRef.initTemplate({id,code,name,type});
+        }
     }
     componentDidMount(){
         //match.params.
         const {id} = this.props.match.params
-        request({
-            method:'get',
-            url:`/api/admin/template/${id}`,
-        }).then(data=>{
-            if(data.code===200){
-                this.setState({
-                    templateData:data.result.template
-                })
-            }else{
-                message.error(data.message)
-            }
-        }).catch(err=>{
-            message.error(err.message)
-        })
-
+        if(id!=0){
+            request({
+                method:'get',
+                url:`/api/admin/template/${id}`,
+            }).then(data=>{
+                if(data.code===200){
+                    this.setState({
+                        templateData:data.result,
+                    })
+                }else{
+                    message.error(data.message)
+                }
+            }).catch(err=>{
+                message.error(err.message)
+            })
+        }
     }
     /**返回上级界面 */
     handleGoBack=()=>{
@@ -70,6 +73,13 @@ class Index extends React.Component {
          })
          this.props.history.goBack()
     }
+
+    /**父子组件调用 */
+    onElementRef = (ref) => {
+        this.elementRef = ref
+    }
+
+
     render() {
         const {isShowCreateModal,templateData} = this.state
         return (
@@ -85,11 +95,14 @@ class Index extends React.Component {
                     </div>
                 </Header>
                 <Content style={{padding: '50px 50px'}}>
-                    <FormDesigner templateData={templateData}/>
+                    <FormDesigner templateData={templateData.template}/>
                 </Content>
+
                 <CreateModal
                     visible={isShowCreateModal}
                     toggleVisible={this.toggleShowCreateModal}
+                    onRefresh={this.handleGoBack}
+                    onRef={this.onElementRef}
                 />
             </Layout>
         );

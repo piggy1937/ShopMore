@@ -60,8 +60,8 @@ class LinearLayoutFactory extends React.Component{
       children:this.children
     }
   }
-  updateState(children){
-    
+  initChildren(){
+     this.children=[]
   }
 }
 

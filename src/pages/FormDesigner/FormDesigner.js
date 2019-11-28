@@ -72,7 +72,7 @@ class FormDesigner extends PureComponent {
   renderChild(){
 
     return FormStudio.factoryFilter(item=>item.type !== 'LinearLayout').map(item=>{
-      return <FormComponent component={item} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} />
+      return <FormComponent component={item} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} key={item.type}/>
     })
   }
 
