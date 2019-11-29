@@ -129,7 +129,7 @@ class ProcessDesign extends Component {
 
     // 渲染 xml 格式
     renderDiagram = (bpmnModeler,xml) => {
-        console.log("4444444444444444",xml)
+        
         bpmnModeler.importXML(xml, err => {
             if (err) {
                 notification.error({

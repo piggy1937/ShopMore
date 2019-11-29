@@ -6,6 +6,7 @@ import {  message } from 'antd'
     handleToggle: () => {},
     handleOk:()=>{},
     initBpmnModeler:(model)=>{},
+    handleFlowDeploy:(modelId)=>{},
     modelId:-1,
     name:'',
     description:'',
@@ -94,11 +95,28 @@ export class ProcessDesignProvider extends React.Component {
         })
         console.log("initBp",model)
     }
+    /**
+     * 发布流程
+     */
+    handleFlowDeploy= async (modelId)=>{
+     const ret = await request({
+         method:'post',
+         url:`/api/admin/workflow/model/${modelId}/deploy`,
+         data:{}
+         })
+      if(ret.code === 200){
+
+      }  else{
+          console.log(ret)
+      } 
+
+    }
     state = {
         toggle: false,
         handleToggle: this.handleToggle,
         initBpmnModeler:this.initBpmnModeler,
         handleOk:this.handleOk,
+        handleFlowDeploy:this.handleFlowDeploy,
         modelId:-1,
         json_xml:'',
         svg_xml:'',

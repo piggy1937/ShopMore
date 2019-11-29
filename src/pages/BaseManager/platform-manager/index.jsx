@@ -30,7 +30,28 @@ class FlowManager extends Component {
         pagination:{},
          visible:false,
          title:'',
+         pageNumber:0,
+         pageSize:10,
+         items:[]
        }
+    
+   }
+  async componentDidMount(){
+      const {pageNumber,pageSize} = this.state
+        const ret = await request({
+            method:'get',
+            url:'/api/admin/workflow/process/definition/page',
+            data:{
+                pageNumber,pageSize
+            }
+        })
+        if(ret.code === 200){
+            this.setState({
+                items:ret.result.content
+            })
+        }else{
+            console.log(ret)
+        }
    }
     render() {
         const { pagination, visible,title } = this.state
@@ -39,21 +60,17 @@ class FlowManager extends Component {
         const columns = [
             {
                 title: 'ID',
-                key: 'num',
-                align: 'center',
-                render: (text, record, index) => {
-                    let num = index + 1 +this.state.pagination.current
-                    return num
-                }
+                key: 'id',
+                dataIndex: 'id',
             },
             {
                 title: '名称',
-                dataIndex: 'username',
+                dataIndex: 'name',
                 align: 'center'
             },
             {
                 title: 'Key',
-                dataIndex: 'avatar',
+                dataIndex: 'key',
             },
             {
                 title: '说明',
@@ -66,14 +83,13 @@ class FlowManager extends Component {
                 render: (record) => (
                     <div style={{ textAlign: 'left' }}>
                         <Popconfirm
-                            disabled={record.username==='admin'}
                             placement="rightBottom"
-                            title="此操作将永久删除, 是否继续?"
+                            title="此操作将启动流程, 是否继续?"
                             onConfirm={()=>{
                             }}
                             okText="Yes"
                             cancelText="No">
-                            <Button icon="delete"  type='danger'>删除</Button>
+                            <Button icon="delete"  type='danger'>启动</Button>
                         </Popconfirm>&emsp;
                         <Button type="primary" icon='undo'  onClick={()=> {
                         
