@@ -20,6 +20,13 @@
       "unicode_decimal": 58885
     },
     {
+      "icon_id": "3248676",
+      "name": "全屏",
+      "font_class": "quanping",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
       "icon_id": "7133436",
       "name": "菜单管理",
       "font_class": "jiaoyixulie",

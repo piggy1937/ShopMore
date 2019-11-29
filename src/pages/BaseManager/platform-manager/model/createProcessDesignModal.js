@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Modal, Form, Input, message, Select } from 'antd'
+import { Form, Input, message, Select } from 'antd'
 import ProcessDesign from '@/pages/BaseManager/platform-manager/bpmn/ProcessDesign'
 import {ProcessDesignConsumer} from './ProcessDesignProvider'
+import Modal from '@/components/model'
 class CreateProcessDesignModal extends Component {
    render(){
     const { visible } = this.props
