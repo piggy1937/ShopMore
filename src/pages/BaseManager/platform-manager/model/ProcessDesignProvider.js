@@ -111,6 +111,7 @@ export class ProcessDesignProvider extends React.Component {
       } 
 
     }
+    
     state = {
         toggle: false,
         handleToggle: this.handleToggle,

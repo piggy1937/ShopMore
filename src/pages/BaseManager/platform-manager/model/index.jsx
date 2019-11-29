@@ -46,7 +46,20 @@ class ModelManager extends React.Component {
         const {pageNumber,pageSize} = this.state
         this.onPageChange(pageNumber,pageSize); 
     }
+    handleDeleteModel=(modelId)=> {
+        request({
+            method:'delete',
+            url:`/api/admin/workflow/model/${modelId}`
+        }).then(data=>{
+           if(data.code === 200){
+            this.handleAnchor()
+           }
 
+        })
+        .catch(err=>{
+
+        })
+    }
   
 
     onPageChange=async (pageNumber, pageSize) =>{
@@ -117,11 +130,12 @@ class ModelManager extends React.Component {
                 key: 'action',
                 render: (text, record) => (
                     <span>
+                        
                             <Popconfirm
                                 placement="rightBottom"
                                 title="此操作将永久删除, 是否继续?"
                                 onConfirm={() => {
-
+                                      this.handleDeleteModel(record['id'])
                                 }}
                                 okText="Yes"
                                 cancelText="No">
