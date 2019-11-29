@@ -129,6 +129,7 @@ class ProcessDesign extends Component {
 
     // 渲染 xml 格式
     renderDiagram = (bpmnModeler,xml) => {
+        console.log("4444444444444444",xml)
         bpmnModeler.importXML(xml, err => {
             if (err) {
                 notification.error({
@@ -185,13 +186,13 @@ class ProcessDesign extends Component {
                 camunda: camundaModdleDescriptor,
             },
         });
-        this.renderDiagram(bpmnModeler,diagramXML);
+        this.renderDiagram(bpmnModeler,contect.initXML?contect.initXML:"");
         contect.initBpmnModeler(bpmnModeler)
        
     }
     static contextType = ProcessDesignContext;
     render() {
-        
+
         const {loading} = this.props;
         const {hidePanel, hideFold, hideCount, svgVisible, svgSrc} = this.state;
 

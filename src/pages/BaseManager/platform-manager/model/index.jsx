@@ -39,12 +39,6 @@ class ModelManager extends React.Component {
       })
     }
 
-
-
-     /**父子组件调用 */
-    onModalRef = (ref) => {
-        this.modalRef = ref
-    }
     componentDidMount() {
         this.handleAnchor()
     }
@@ -141,9 +135,10 @@ class ModelManager extends React.Component {
                                     }} loading={this.state.isLoading}>绘制流程图</Button>
                                   )
                                 }
-                            </ProcessDesignConsumer>
+                            </ProcessDesignConsumer>&emsp;
+                            <Button icon="delete" type="primary">编辑</Button>
                 </span>
-                ),
+                )
             },
         ];
         return (<ProcessDesignProvider>

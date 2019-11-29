@@ -91,9 +91,7 @@ class CreateFlowModal extends Component {
        this.setState({dialogStatus:'update'})
    }
 
-    componentDidMount(){
-        this.props.onRef(this)
-    }
+
     render() {
         const { visible } = this.props
         const { getFieldDecorator, getFieldValue } = this.props.form

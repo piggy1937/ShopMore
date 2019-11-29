@@ -55,8 +55,8 @@ export default function MagicPropertiesProvider(eventBus, bpmnFactory, elementRe
         //     groups: createVariableTab(element, bpmnFactory, elementRegistry, translate)
         // };
 
-        return [baseInfoTab];
-    };
+return [baseInfoTab];
+};
 }
 
 inherits(MagicPropertiesProvider, PropertiesActivator);

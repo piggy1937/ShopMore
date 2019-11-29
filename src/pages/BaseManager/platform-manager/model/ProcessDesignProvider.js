@@ -1,5 +1,6 @@
 import React, { createContext } from 'react'
 import request from '@/utils/request'
+import {  message } from 'antd'
  const ProcessDesignContext = createContext({
     toggle: false,
     handleToggle: () => {},
@@ -8,25 +9,54 @@ import request from '@/utils/request'
     modelId:-1,
     name:'',
     description:'',
-    bpmnModeler:{}
+    bpmnModeler:{},
+     initXML:``
 })
 export class ProcessDesignProvider extends React.Component {
     
 
     handleToggle = (modelId) => {
+        if(modelId){
+            this.getModelInfo(modelId)
+        }else{
+            this.setState({
+                toggle: !this.state.toggle,
+                initXML:'',
+                modelId
+            })
+        }
+    }
+
+    /**
+     * 根据id 获取模型信息
+     **/
+    getModelInfo=async(modelId)=>{
+       await request({
+            method:'get',
+            url:`/api/admin/workflow/model/${modelId}/json`
+        }).then(data=>{
+            const {name,description,model} =data.result
+            if(data.code===200){
+                this.setState({
+                  name,description,initXML:model
+                })
+            }
+        })
         this.setState({
-             toggle: !this.state.toggle,
-             modelId
-        
+            toggle: !this.state.toggle,
+            modelId
         })
     }
+
+
+
+
     /***
      * 提交修改表单
      */
     handleOk=async ()=>{
-        const {bpmnModeler,modelId} =this.state
+        const {bpmnModeler,modelId,name,description} =this.state
         if(!bpmnModeler){
-            console.log('bpmnModeler未初始化')
             return 
         }
         let json_xml = '',
@@ -39,16 +69,18 @@ export class ProcessDesignProvider extends React.Component {
         });
         let data ={
             json_xml,
-            svg_xml
+            svg_xml,
+            name,
+            description
         }
         const ret = await request({
             method:'put',
             url:`/api/admin/workflow/model/${modelId}`,
             data
         })
-        console.log(ret)
         if(ret.code === 200){
-
+            this.handleToggle()
+            message.success("编辑成功")
         }else{
             
         }
@@ -57,10 +89,10 @@ export class ProcessDesignProvider extends React.Component {
      * 初始化model
      */
     initBpmnModeler=(model)=>{
-        console.log(model)
         this.setState({
             bpmnModeler:model
         })
+        console.log("initBp",model)
     }
     state = {
         toggle: false,
@@ -72,7 +104,8 @@ export class ProcessDesignProvider extends React.Component {
         svg_xml:'',
         name:'',
         description:'',
-        bpmnModeler:{}  
+        bpmnModeler:{},
+        initXML:``
     }
 
     render() {
@@ -87,3 +120,4 @@ export class ProcessDesignProvider extends React.Component {
 // 3. 创建 Consumer
 const ProcessDesignConsumer = ProcessDesignContext.Consumer
 export {ProcessDesignConsumer,ProcessDesignContext}
+

@@ -14,6 +14,7 @@ class CreateProcessDesignModal extends Component {
                         bodyStyle={{height:'500px',padding:'0'}}
                         centered
                         onOk={()=>{handleOk()}}
+                           destroyOnClose
                         onCancel={()=>{handleToggle()}}>   
                         <ProcessDesign  />
                     </Modal>
