@@ -76,7 +76,6 @@ class CreateModal extends Component {
     onUpdate=()=>{
         const template = JSON.stringify(FormStudio.getJsonData());
         const {code,name,type,id} = this.props.form.getFieldsValue()
-        debugger
         request({
             headers: {
                 'content-type': 'application/json',
