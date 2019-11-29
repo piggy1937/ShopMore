@@ -20,6 +20,13 @@
       "unicode_decimal": 58885
     },
     {
+      "icon_id": "1649166",
+      "name": "最小化",
+      "font_class": "zuixiaohua",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
+    },
+    {
       "icon_id": "3248676",
       "name": "全屏",
       "font_class": "quanping",
