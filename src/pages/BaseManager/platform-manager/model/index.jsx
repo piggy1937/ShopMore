@@ -196,7 +196,7 @@ class ModelManager extends React.Component {
                     columns={columns}
                     pagination={false}
                 />
-                 <CreateFlowModal onRef={this.onModalRef} visible={isShowCreateModal} toggleVisible={this.toggleShowCreateModal} />
+                 <CreateFlowModal onRef={this.onModalRef}  handleAnchor={this.handleAnchor}  visible={isShowCreateModal} toggleVisible={this.toggleShowCreateModal} />
                  <CreateProcessDesignModal  />     
             </Card>
             <div style={{textAlign: 'right'}}>

@@ -51,6 +51,7 @@ class CreateFlowModal extends Component {
             if(ret.code === 200){
                 this.props.form.resetFields()
                 this.props.toggleVisible(false)
+                this.props.handleAnchor()
             }else{
                 message.error((ret.message))
             }
