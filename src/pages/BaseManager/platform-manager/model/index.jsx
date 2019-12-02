@@ -255,11 +255,12 @@ class ModelManager extends React.Component {
 
     onPageChange=async (pageNumber , pageSize) =>{
         this.cancel()
+        const number=pageNumber<1?0:pageNumber-1
         const res = await request({
             method: 'get',
             url: '/api/admin/workflow/model/page',
             data: {
-                pageNumber:pageNumber-1,
+                pageNumber:number,
                 pageSize,
             }
         })
