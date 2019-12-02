@@ -23,8 +23,8 @@ class ProcessDesign extends Component {
         svgSrc: '', // 图片地址
     };
 
-   
-       
+
+
 
 
     // key value 转换
@@ -129,7 +129,6 @@ class ProcessDesign extends Component {
 
     // 渲染 xml 格式
     renderDiagram = (bpmnModeler,xml) => {
-        
         bpmnModeler.importXML(xml, err => {
             if (err) {
                 notification.error({
@@ -186,9 +185,8 @@ class ProcessDesign extends Component {
                 camunda: camundaModdleDescriptor,
             },
         });
-        this.renderDiagram(bpmnModeler,contect.initXML?contect.initXML:"");
+        this.renderDiagram(bpmnModeler,contect.initXML?contect.initXML:diagramXML);
         contect.initBpmnModeler(bpmnModeler)
-       
     }
     static contextType = ProcessDesignContext;
     render() {
@@ -198,7 +196,7 @@ class ProcessDesign extends Component {
 
         return (
             <div style={{minHeight:'100%',height:'100%'}} className={styles.container}>
-            
+
                     <div className={styles.container} style={  {minHeight:'100%',height:'100%'}} id="js-drop-zone">
                         <div className={styles.canvas} id="canvas"  style={{minHeight:'100%',height:'100%'}}/>
                         <div
@@ -217,7 +215,7 @@ class ProcessDesign extends Component {
                             id="properties-panel"
                             style={{height: '100%'}}
                         />
-                     
+
                         <EditingTools
                             onOpenFIle={this.handleOpenFile}
                             // onSave={this.handleSave}
@@ -230,9 +228,9 @@ class ProcessDesign extends Component {
                             onZoomReset={() => this.handleZoom()}
                             onPreview={this.handlePreview}
                         />
-                    
+
                     </div>
-            
+
 
                 {/* 查看流程图弹窗 */}
                 {/* {svgVisible && (
@@ -243,7 +241,7 @@ class ProcessDesign extends Component {
                             }}
                         />
                     </FullModal> */}
-                
+
             </div>
         );
     }

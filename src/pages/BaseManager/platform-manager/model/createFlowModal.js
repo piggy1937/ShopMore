@@ -28,7 +28,7 @@ class CreateFlowModal extends Component {
         this.props.toggleVisible(false)
     }
     handleOk = () => {
-      
+
         this.props.form.validateFields((errors, values) => {
             if (!errors) {
                 if(this.state.dialogStatus==='update'){
@@ -36,7 +36,7 @@ class CreateFlowModal extends Component {
                 }else{
                     this.handleAddElement(values)
                 }
-               
+
             }
         })
     }
@@ -51,14 +51,14 @@ class CreateFlowModal extends Component {
             if(ret.code === 200){
                 this.props.form.resetFields()
                 this.props.toggleVisible(false)
-                this.props.handleAnchor()
+                this.props.onRefresh()
             }else{
                 message.error((ret.message))
             }
         }catch(err){
             console.log(err)
         }
-           
+
     }
     /**修改按钮或资源 */
     handleUpdateElement = async (values) => {
@@ -78,7 +78,7 @@ class CreateFlowModal extends Component {
         }catch(err){
             console.log(err)
         }
-           
+
     }
    /**初始化表格 */
    initForm=(data)=>{

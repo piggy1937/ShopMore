@@ -14,7 +14,7 @@ import {  message } from 'antd'
      initXML:``
 })
 export class ProcessDesignProvider extends React.Component {
-    
+
 
     handleToggle = (modelId) => {
         if(modelId){
@@ -39,8 +39,13 @@ export class ProcessDesignProvider extends React.Component {
             const {name,description,model} =data.result
             if(data.code===200){
                 this.setState({
-                  name,description,initXML:model
+                  name,description
                 })
+            if(model.startsWith("<?xml")){
+                   this.setState({
+                       initXML:model
+                   })
+               }
             }
         })
         this.setState({
@@ -58,7 +63,7 @@ export class ProcessDesignProvider extends React.Component {
     handleOk=async ()=>{
         const {bpmnModeler,modelId,name,description} =this.state
         if(!bpmnModeler){
-            return 
+            return
         }
         let json_xml = '',
             svg_xml = '';
@@ -83,7 +88,7 @@ export class ProcessDesignProvider extends React.Component {
             this.handleToggle()
             message.success("编辑成功")
         }else{
-            
+
         }
     }
     /***
@@ -108,10 +113,10 @@ export class ProcessDesignProvider extends React.Component {
 
       }  else{
           console.log(ret)
-      } 
+      }
 
     }
-    
+
     state = {
         toggle: false,
         handleToggle: this.handleToggle,
@@ -132,7 +137,7 @@ export class ProcessDesignProvider extends React.Component {
             <ProcessDesignContext.Provider value={this.state}>
                 {this.props.children}
             </ProcessDesignContext.Provider>
-        ) 
+        )
     }
 }
 
