@@ -120,8 +120,9 @@ class SelectComponentEditor extends PureComponent{
 @FactoryRegister(SelectComponent, SelectComponentEditor)
 class SelectFactory {
   type="Select"
-
+  icon="iconfont icon-dingshi"
   title="下拉选择"
+  category="basic"
 
   /**
    * 初始化一个组件定义

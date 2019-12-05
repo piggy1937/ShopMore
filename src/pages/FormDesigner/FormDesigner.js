@@ -3,6 +3,7 @@ import {Tabs, Card} from 'antd';
 import $ from './lib/jquery';
 import FormView from './FormView';
 import componentStyle from './component.less';
+import './FormDesigner.less'
 import FormStudio from './utils/FormStudio';
 import PropsEditor from  './PropsEditor';
 
@@ -36,16 +37,17 @@ class FormComponent extends PureComponent{
   render(){
     const {component, onMouseDown, onMouseUp} = this.props;
     return (
-      <div
+      <li
+      
         draggable
-        className={componentStyle.widgetItem}
+        className={[componentStyle.widgetItem,'form-edit-widget-label'].join(" ")}
         onMouseDown={()=>onMouseDown(component.type)}
         onMouseUp={()=>onMouseUp(component.type)}
         ref={this.ref}
         key={component.type}
       >
-        {component.title}
-      </div>
+        <i className={component.icon}></i>{component.title}
+      </li>
     )
   }
 }
@@ -70,23 +72,57 @@ class FormDesigner extends PureComponent {
 
 
   renderChild(){
+    return (
+      <div className="components-list">
+         <div className="widget-cate">基础组件</div>
+          <ul >
+            {
+              FormStudio.factoryFilter(item=>{
+              let flag = false
+              flag =(item.type !== 'LinearLayout'&&item.category==='basic')
+                
+               return flag
+              }).map(item=>{
+              return <FormComponent component={item} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} key={item.type}/>
+              })
+           }
+          
+          </ul>
+         <div className="widget-cate">布局字段</div>
+          <ul >
+            {
+              FormStudio.factoryFilter(item=>{
+              let flag = false
+              flag =(item.category==='advance')
+                
+               return flag
+              }).map(item=>{
+              return <FormComponent component={item} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} key={item.type}/>
+              })
+           }
+          
+          </ul>
 
-    return FormStudio.factoryFilter(item=>item.type !== 'LinearLayout').map(item=>{
-      return <FormComponent component={item} onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} key={item.type}/>
-    })
+      </div>
+
+
+
+    )
+   
+
+
+     
+
+
+    return 
   }
 
   render() {
     return (
       <div className="form-designer">
-        <Card bordered  type="card">
-            <div
-                className={componentStyle.widgetList}
-            >
+            <div className={componentStyle.widgetList}  style={{width:'200px'}}>
                 {this.renderChild()}
             </div>
-        </Card>
-
         <div>
           <FormView formDefinition={{templateData:this.props.templateData}} />
         </div>

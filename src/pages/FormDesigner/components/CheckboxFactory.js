@@ -105,8 +105,9 @@ class CheckboxComponentEditor extends PureComponent{
 @FactoryRegister(CheckboxComponent,CheckboxComponentEditor)
 class CheckboxFactory {
   type="Checkbox"
-
+  icon="iconfont icon-dingshi"
   title="多选框"
+  category="basic"
 
   /**
    * 初始化一个组件定义
@@ -116,6 +117,7 @@ class CheckboxFactory {
     return {
       type: this.type,
       title: this.title,
+      
       props:{
         placeholder: '请输入',
         options:[

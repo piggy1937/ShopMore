@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import { Form, InputNumber  } from 'antd';
+import { Form, InputNumber,Input  } from 'antd';
 import { ComponentEditor, FactoryRegister } from '../warpper';
 import { Layout } from '../component';
 import { guaranteeNumber } from '../utils/MiscUtil';
@@ -12,7 +12,7 @@ const LinearLayoutFactory = FormStudio.getFactory("LinearLayout");
 class ColumnLayout extends Layout{
 
   renderColumns(){
-    const {definition:{children, props:{columnNum}}}= this.props;
+    const {definition:{children, props:{columnNum,gutter}}}= this.props;
 
     let es = columnNum -children.length;
     if(es !== 0){
@@ -21,16 +21,18 @@ class ColumnLayout extends Layout{
         children.splice(children.length-es, es);
       }else{
         while(es!==0){
-          children.splice(children.length, 0, LinearLayoutFactory.createComponentDefinition());
+         const obj = {...LinearLayoutFactory.createComponentDefinition(),gutter}
+          children.splice(children.length, 0, obj);
           es-=1;
         }
       }
     }
 
     return children.map(item =>{
+      const obj = {...item,gutter}
       return (
         <div className="cell">
-          {LinearLayoutFactory.renderComponenet(item)()}
+          {LinearLayoutFactory.renderComponenet(obj)()}
         </div>)
     })
 
@@ -65,10 +67,15 @@ class ColumnComponentEditor extends PureComponent{
                   message:'不得小于1'
               },{
               type:'number',
-              max:1,
-              message:'不得小于10'
+              max:10,
+              message:'不得大于10'
           }]
           })(<InputNumber />)}
+        </Form.Item>
+        <Form.Item label="栅格间隔" style={{ marginBottom:0 }}>
+          {getFieldDecorator('gutter',{
+            initialValue: props.gutter
+          })(<Input placeholder='可以输入数字|字符串'/>)}
         </Form.Item>
       </Form>);
   }
@@ -77,9 +84,9 @@ class ColumnComponentEditor extends PureComponent{
 @FactoryRegister(ColumnLayout, ColumnComponentEditor)
 class ColumnLayoutFactory{
   type="ColumnLayout"
-
-  title="列布局"
-
+  title="栅格布局"
+  icon="iconfont icon-iconfonttubiao_zhageshuju"
+  category="advance"
   /**
    * 初始化一个组件定义
    * @returns {{type: string, title: string}}
@@ -89,6 +96,7 @@ class ColumnLayoutFactory{
       type: this.type,
       title: this.title,
       props:{
+        'gutter':'0',
         'columnNum':2
       },
       children:[

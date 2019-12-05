@@ -113,8 +113,9 @@ class RadioComponentEditor extends PureComponent{
 @FactoryRegister(RadioComponent, RadioComponentEditor)
 class RadioFactory {
   type="Radio"
-
+  icon="iconfont icon-dingshi"
   title="单选框"
+  category="basic"
 
   /**
    * 初始化一个组件定义

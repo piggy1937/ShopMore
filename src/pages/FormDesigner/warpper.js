@@ -8,7 +8,7 @@ export function ComponentEditor(WrappedComponent){
   return Form.create({
     onValuesChange(props, values, allValues) {
       if(props.onValuesChange){// PropsEditor#onValuesChange
-        props.onValuesChange(props, values, allValues)
+         props.onValuesChange(props, values, allValues)
       }
     }
   })(WrappedComponent);

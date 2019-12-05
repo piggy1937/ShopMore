@@ -48,8 +48,9 @@ class TextAreaComponentEditor extends PureComponent{
 @FactoryRegister(TextAreaComponent, TextAreaComponentEditor)
 class TextAreaFactory {
   type="TextArea"
-
-  title="多行输入框"
+  icon="iconfont icon-duohangwenben"
+  title="多行文本"
+  category="basic"
 
 
   /**
@@ -62,6 +63,7 @@ class TextAreaFactory {
       title: this.title,
       props:{
         placeholder: '请输入'
+
       },
     }
   }

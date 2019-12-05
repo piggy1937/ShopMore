@@ -13,6 +13,13 @@
       "unicode_decimal": 58889
     },
     {
+      "icon_id": "1190637",
+      "name": "单行文本",
+      "font_class": "danxingwenben",
+      "unicode": "e7e0",
+      "unicode_decimal": 59360
+    },
+    {
       "icon_id": "1263231",
       "name": "报销",
       "font_class": "baoxiao",
@@ -25,6 +32,13 @@
       "font_class": "zuixiaohua",
       "unicode": "e67a",
       "unicode_decimal": 59002
+    },
+    {
+      "icon_id": "1790454",
+      "name": "多行文本",
+      "font_class": "duohangwenben",
+      "unicode": "e6e7",
+      "unicode_decimal": 59111
     },
     {
       "icon_id": "3248676",
@@ -74,6 +88,13 @@
       "font_class": "iconzhengli_zuzhijiagou",
       "unicode": "e64b",
       "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "9960717",
+      "name": "iconfont图标_栅格数据",
+      "font_class": "iconfonttubiao_zhageshuju",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
     },
     {
       "icon_id": "11441223",

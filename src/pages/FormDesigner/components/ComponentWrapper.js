@@ -55,6 +55,7 @@ function ComponentWrapper(WrappedComponent){
       this.wrappedInstance = ref;
     },
     render(){
+      console.log('####################')
       const {active, renderCounter} = this.state;
       const {definition} =this.props;
       return (

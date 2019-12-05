@@ -61,8 +61,9 @@ class InputComponentEditor extends PureComponent{
 @FactoryRegister(InputComponent,InputComponentEditor)
 class InputFactory {
   type="Input"
-
-  title="单行输入框"
+  icon="iconfont icon-danxingwenben"
+  title="单行文本"
+  category="basic"
 
   /**
    * 初始化一个组件定义

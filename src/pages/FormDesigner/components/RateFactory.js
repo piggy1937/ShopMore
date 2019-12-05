@@ -61,8 +61,9 @@ class RateComponentEditor extends PureComponent{
 @FactoryRegister(RateComponent, RateComponentEditor)
 class RateFactory {
   type="Rate"
-
+  icon="iconfont icon-dingshi"
   title="评分"
+  category="basic"
 
   /**
    * 初始化一个组件定义
