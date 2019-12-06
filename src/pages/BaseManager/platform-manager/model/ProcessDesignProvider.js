@@ -98,7 +98,6 @@ export class ProcessDesignProvider extends React.Component {
         this.setState({
             bpmnModeler:model
         })
-        console.log("initBp",model)
     }
     /**
      * 发布流程

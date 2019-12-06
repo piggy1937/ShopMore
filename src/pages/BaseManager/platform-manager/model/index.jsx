@@ -148,7 +148,17 @@ class ModelManager extends React.Component {
                             </ProcessDesignConsumer>&emsp;
                             <Button disabled={editingKey !== ''} onClick={() => this.edit(record.id)} type="primary">
                             编辑
-                        </Button>
+                        </Button>&emsp;
+                              <ProcessDesignConsumer>
+                                {
+                                    ({handleFlowDeploy})=>(
+                                        <Button icon="delete" type="primary" onClick={()=>{
+                                            handleFlowDeploy(record['id'])
+                                        }}>发布</Button>
+                                    )
+                                }
+
+                            </ProcessDesignConsumer>
                         </span>
                     );
                 },
