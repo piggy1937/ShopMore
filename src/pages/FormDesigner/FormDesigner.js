@@ -55,7 +55,12 @@ class FormComponent extends PureComponent{
 
 
 class FormDesigner extends PureComponent {
-
+constructor(props){
+  super(props)
+  this.state={
+    count:0
+  }
+}
   componentDidMount(){
 
   }
@@ -72,6 +77,10 @@ class FormDesigner extends PureComponent {
 
 
   renderChild(){
+    //  this.setState({
+    //    count: this.state.count+1
+    //  })
+    console.log('打印了',this.state.count)
     return (
       <div className="components-list">
          <div className="widget-cate">基础组件</div>
@@ -118,12 +127,14 @@ class FormDesigner extends PureComponent {
   }
 
   render() {
+    console.log()
     return (
       <div className="form-designer">
             <div className={componentStyle.widgetList}  style={{width:'200px'}}>
                 {this.renderChild()}
             </div>
         <div>
+          {/* <FormView formDefinition={{templateData:this.props.templateData}} /> */}
           <FormView formDefinition={{templateData:this.props.templateData}} />
         </div>
 

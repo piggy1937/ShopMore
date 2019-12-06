@@ -10,7 +10,9 @@ class FormView extends PureComponent{
       templateData:''
     }
   }
-
+    /***
+     * view 将要加载时设置row
+     */
     componentWillMount(){
       const LinearLayoutFactory =FormStudio.getFactory("LinearLayout");
       //初始化子类
@@ -23,23 +25,21 @@ class FormView extends PureComponent{
   //  shouldComponentUpdate(){
   //    return true;
   //  }
-   componentWillUpdate(){
-    const { formDefinition } = this.props; 
-    const LinearLayoutFactory =FormStudio.getFactory("LinearLayout");
-    this.LinearLayout = LinearLayoutFactory.renderComponenet(LinearLayoutFactory.createComponentDefinition(formDefinition.templateData))({
-     });
-     FormStudio.topLayout = this.LinearLayout;
-   }
-  componentDidUpdate(){
-    const { formDefinition } = this.props; 
-    this.setState({templateData:formDefinition.templateData})
-  }
+  //  componentWillUpdate(){
+  //   const { formDefinition } = this.props; 
+  //   const LinearLayoutFactory =FormStudio.getFactory("LinearLayout");
+  //   this.LinearLayout = LinearLayoutFactory.renderComponenet(LinearLayoutFactory.createComponentDefinition())({
+  //    });
+  //    FormStudio.topLayout = this.LinearLayout;
+  //  }
+  // componentDidUpdate(){
+  //   const { formDefinition } = this.props; 
+  //   this.setState({templateData:formDefinition.templateData})
+  // }
   render() {
     const { formDefinition } = this.props;
-   
-    const data=console.log(formDefinition.templateData);
     return (
-      <div style={{width: formDefinition.width || '778px'}}>
+      <div style={{width: formDefinition.width || '1000px'}}>
         <div className="scroll-wrapper">
           <div className="form-view">
             <div className="form-head">

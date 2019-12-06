@@ -95,6 +95,7 @@ class Index extends React.Component {
                     </div>
                 </Header>
                 <Content style={{padding: '50px 50px'}}>
+                    {/* <FormDesigner templateData={templateData.template}/> */}
                     <FormDesigner templateData={templateData.template}/>
                 </Content>
 

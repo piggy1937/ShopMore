@@ -1,6 +1,6 @@
 @warn-color: #DB4040;
 @primary-color: #1890ff;
-@border-color: #ddd;
+@border-color: #ccc;
 
 .form-view {
   min-height: 93%;
@@ -93,6 +93,7 @@
     & .component-layout{
       border-right: none;
       border-left:none;
+      border-bottom:none ;
     }
 
     & .component-layout:first-child{
@@ -100,25 +101,32 @@
     }
   }
 
-  & .column-layout{
-    display: table;
-    width: 100%;
-    table-layout: fixed;
+  // & .column-layout{
+  //   display: table;
+  //   width: 100%;
+  //   table-layout: fixed;
 
 
-    & .cell{
-      display: table-cell;
-      height: 50px;
-      vertical-align: top;
-      border-left: 1px dashed @border-color;
-    }
+  //   & .cell{
+  //     display: table-cell;
+  //     height: 50px;
+  //     vertical-align: top;
+  //     border-left: 1px dashed @border-color;
+  //   }
 
-    & .cell:first-child{
-      border-left: none !important;
-    }
+  //   & .cell:first-child{
+  //     border-left: none !important;
+  //   }
 
-  }
-
+  // }
+  .cell{
+        min-height: 50px;
+        vertical-align: top;
+        border-left:1px dashed #4c4c4c;
+      }
+  .cell:first-child{
+        border-left: none !important;
+      }
   & .component-field{
     position: relative;
     background: #fff;
