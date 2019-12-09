@@ -118,7 +118,7 @@ class SyncInfo extends React.Component {
     }
 
        if(res.result){
-           const ret = res.result[0]
+           const ret = res.result
         const deleteData =[]
         const modifyData = []
         let message = ''
