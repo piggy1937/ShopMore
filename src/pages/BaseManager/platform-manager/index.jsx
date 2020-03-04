@@ -53,6 +53,18 @@ class FlowManager extends Component {
             console.log(ret)
         }
    }
+
+ /**删除表单 */
+ handleDelete = async (id)=>{
+    const ret = await request({
+        method:'delete',
+        url:`/api/admin/workflow/process/definition/deployment/${id}`
+    })
+    if(ret.code === 200){
+      console.log('aaaaaaaaaaaaaaaaaaaa')
+    }
+  }
+
     render() {
         const { pagination, visible,title } = this.state
         const { getFieldDecorator, selectedRowKeys } = this.props.form
@@ -94,6 +106,16 @@ class FlowManager extends Component {
                         <Button type="primary" icon='undo'  onClick={()=> {
                         
                         }}>编辑</Button>&emsp;
+                         <Popconfirm
+                            placement="rightBottom"
+                            title="此操作将永久删除, 是否继续?"
+                            onConfirm={()=>{
+                                this.handleDelete(record.deploymentId)
+                            }}
+                            okText="Yes"
+                            cancelText="No">
+                            <Button icon="delete"  type='danger'>删除</Button>
+                        </Popconfirm>
                     </div>
                 ),
             }

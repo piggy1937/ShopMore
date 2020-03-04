@@ -37,9 +37,7 @@ class InputComponentEditor extends PureComponent{
       message.warn(`最小长度${allValues.minLength}应该小于最大长度${allValues.maxLength}`);
       return false;
     }
-
     const { definition:{props}, definition } = this.props;
-    console.log('definition.name',this.props)
     definition.name = getErasure(allValues, 'name');
     definition.title = getErasure(allValues, 'title');
     Object.assign(props, allValues);

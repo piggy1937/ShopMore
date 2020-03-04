@@ -67,12 +67,12 @@ constructor(props){
 
   onMouseDown = (componentType)=>{
     this.setState({dragVisible:true});
-    console.log(componentType);
+    console.log(componentType,'onMouseDown');
   }
 
   onMouseUp = (componentType)=>{
-    // this.setState({dragVisible:false});
-    console.log(componentType);
+     this.setState({dragVisible:false});
+     console.log(componentType,'onMouseUp');
   }
 
 
