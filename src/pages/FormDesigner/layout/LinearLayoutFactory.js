@@ -66,7 +66,7 @@ class LinearLayoutFactory extends React.Component{
    * @returns {{type: string, title: string}}
    */
   createComponentDefinition(props){
-    let map = new Map( {
+    let map =Map( {
       type: this.type,
       title: this.title,
       span:this.state.span,
@@ -74,9 +74,22 @@ class LinearLayoutFactory extends React.Component{
       children:this.children,
       changeSpan:this.changeSpan
     })
-    map = map.set(props)
-
-
+   
+    if(props&&Object.keys(props).length!=0){
+      console.log(props)
+      let jobj 
+      try{
+      let jobj = JSON.parse(props)
+       map= map.set('type',jobj.type)
+       map= map.set('title',jobj.title)
+       map= map.set('span',jobj.span)
+       map= map.set('props',jobj.props)
+       map= map.set('changeSpan',jobj.changeSpan)
+       map= map.set('children',jobj.children)
+      }catch(e){
+        console.log(e)
+      }
+    }
     return map.toJS()
   }
   initChildren(){

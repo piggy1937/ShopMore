@@ -5,6 +5,7 @@ export function NameInput(props){
   return (
     <Form.Item label="名称" style={{ marginBottom:0 }}>
       {props.getFieldDecorator('name',{
+      initialValue: props.name,
       rules:[{
         pattern:/^[a-zA-Z_]+/g,
         message:'只能输入字母或下划线'
@@ -12,8 +13,8 @@ export function NameInput(props){
         max:30,
         message:'至多输入30个字符'
       },{
-        min:5,
-        message:'至少输入5个字符'
+        min:3,
+        message:'至少输入3个字符'
       }]
     })(<Input placeholder="必须是字母或下划线，长度在5~30" />)}
     </Form.Item>
@@ -79,11 +80,9 @@ export class PropsEditor extends  PureComponent{
 
   render(){
     const {form:{getFieldDecorator},definition, children} = this.props;
-
-
     return(
       <Form>
-        <NameInput getFieldDecorator={getFieldDecorator} />
+        <NameInput getFieldDecorator={getFieldDecorator} name={definition.name} />
         <Form.Item label="标题" style={{ marginBottom:0 }}>
           {getFieldDecorator('title',
             {

@@ -53,6 +53,7 @@ class Index extends React.Component {
                 method:'get',
                 url:`/api/admin/template/${id}`,
             }).then(data=>{
+                console.log('####',data)
                 if(data.code===200){
                     this.setState({
                         templateData:data.result,

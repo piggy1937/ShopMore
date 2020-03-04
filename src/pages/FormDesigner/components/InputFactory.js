@@ -39,6 +39,7 @@ class InputComponentEditor extends PureComponent{
     }
 
     const { definition:{props}, definition } = this.props;
+    console.log('definition.name',this.props)
     definition.name = getErasure(allValues, 'name');
     definition.title = getErasure(allValues, 'title');
     Object.assign(props, allValues);

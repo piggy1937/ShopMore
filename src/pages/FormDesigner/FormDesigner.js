@@ -127,7 +127,8 @@ constructor(props){
   }
 
   render() {
-    console.log()
+    
+    const {templateData} = this.props
     return (
       <div className="form-designer">
             <div className={componentStyle.widgetList}  style={{width:'200px'}}>
@@ -135,7 +136,7 @@ constructor(props){
             </div>
         <div>
           {/* <FormView formDefinition={{templateData:this.props.templateData}} /> */}
-          <FormView formDefinition={{templateData:this.props.templateData}} />
+          <FormView formDefinition={templateData} />
         </div>
 
         <Card bordered style={{flexGrow:1}} type="card" title="属性编辑">
