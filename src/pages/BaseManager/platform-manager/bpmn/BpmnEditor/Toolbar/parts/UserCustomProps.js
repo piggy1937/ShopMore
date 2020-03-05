@@ -28,7 +28,7 @@ function setSelect(element, value, name) {
 
 export default function(group, element, bpmnFactory, translate) {
     if (!is(element, 'bpmn:UserTask')) return;
-    const flowOptions = JSON.parse(window.sessionStorage.getItem('flowOptions'));
+    const flowOptions = JSON.parse(window.sessionStorage.getItem('flowOptions'))||{node_belong:'zhuzhu'};
 
     // 节点属性
     const belong = entryFactory.selectBox({
