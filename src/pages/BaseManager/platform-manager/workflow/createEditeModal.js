@@ -1,29 +1,29 @@
 import React, { Component } from 'react';
 import { Form, Input, message, Select } from 'antd'
-import ProcessDesign from '@/pages/BaseManager/platform-manager/bpmn/ProcessDesign'
-import {ProcessDesignConsumer} from './ProcessDesignProvider'
+import {WorkflowDesignConsumer} from './WorkflowDesignProvider'
 import Modal from '@/components/model'
-class CreateProcessDesignModal extends Component {
+import WorkflowDesign from './WorkflowDegign'
+class CreateEditeModal extends Component {
    render(){
     const { visible } = this.props
        return (
-        <ProcessDesignConsumer > 
+        <WorkflowDesignConsumer > 
             {
                 ({toggle,handleToggle,handleOk}) =>(
-                    <Modal visible={toggle} title='绘制流程图' width={'85%'}
+                    <Modal visible={toggle} title='自定义流程' width={'85%'}
                         bodyStyle={{height:'500px',padding:'0'}}
                         centered
                         onOk={()=>{handleOk()}}
                            destroyOnClose
                         onCancel={()=>{handleToggle()}}>   
-                        <ProcessDesign  />
+                        <WorkflowDesign/>
                     </Modal>
                 )
             }
                 
-    </ProcessDesignConsumer>  
+    </WorkflowDesignConsumer>  
     )
    }
 }
 
-export default CreateProcessDesignModal;
+export default CreateEditeModal;

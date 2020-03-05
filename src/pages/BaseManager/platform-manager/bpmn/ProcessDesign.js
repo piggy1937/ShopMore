@@ -14,7 +14,7 @@ import {diagramXML} from './BpmnEditor/sources/xml';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import styles from './BpmnEditor/sources/Bpmn.module.less';
-import {ProcessDesignConsumer,ProcessDesignContext} from '../model/ProcessDesignProvider'
+import {ProcessDesignContext} from '../model/ProcessDesignProvider'
 @Form.create()
 class ProcessDesign extends Component {
     state = {

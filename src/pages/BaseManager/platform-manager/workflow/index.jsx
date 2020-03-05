@@ -19,9 +19,9 @@ import {
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import request  from '@/utils/request'
-import {bindActionCreators} from "redux";
+import { WorkflowDesignProvider,WorkflowDesignConsumer} from './WorkflowDesignProvider'
+import CreateEditeModal from './createEditeModal'
 const { Search } = Input;
-
 @withRouter @Form.create()
 class FlowManager extends Component {
    constructor(props){
@@ -103,9 +103,15 @@ class FlowManager extends Component {
                             cancelText="No">
                             <Button icon="delete"  type='danger'>启动</Button>
                         </Popconfirm>&emsp;
-                        <Button type="primary" icon='undo'  onClick={()=> {
-                        
-                        }}>编辑</Button>&emsp;
+                        <WorkflowDesignConsumer>
+                                {
+                                    ({handleToggle}) => (
+                                        <Button type="primary" icon='edit' onClick={() => {
+                                            handleToggle(record['id'])
+                                        }} >编辑</Button>
+                                    )
+                                }
+                            </WorkflowDesignConsumer>&emsp;
                          <Popconfirm
                             placement="rightBottom"
                             title="此操作将永久删除, 是否继续?"
@@ -121,6 +127,7 @@ class FlowManager extends Component {
             }
         ]
         return (
+            <WorkflowDesignProvider>
             <div style={{ padding: 24 }}>
                 <Card bordered={false}>
                     <Form layout='inline' style={{ marginBottom: 16 }}>
@@ -157,8 +164,10 @@ class FlowManager extends Component {
                     <div style={{textAlign: 'right'}}>
                         <Pagination defaultCurrent={1} total={this.state.pagination.total} onChange={this.onChangePage} />
                     </div>
+                    <CreateEditeModal></CreateEditeModal>
                 </Card>
             </div>
+            </WorkflowDesignProvider>
         );
     }
 }
