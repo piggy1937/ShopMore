@@ -1,5 +1,5 @@
 import {getBusinessObject} from 'bpmn-js/lib/util/ModelUtil';
-import cmdHelper from 'bpmn-js-properties-panel/lib/helper/CmdHelper';
+import cmdHelper from 'cus-bpmn-js-properties-panel/lib/helper/CmdHelper';
 import {query, domify, attr} from 'min-dom/dist';
 import {forEach} from 'lodash/collection';
 

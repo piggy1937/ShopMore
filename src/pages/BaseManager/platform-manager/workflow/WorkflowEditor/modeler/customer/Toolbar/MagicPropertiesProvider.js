@@ -1,5 +1,5 @@
 import inherits from 'inherits';
-import PropertiesActivator from 'bpmn-js-properties-panel/lib/PropertiesActivator';
+import PropertiesActivator from 'cus-bpmn-js-properties-panel/lib/PropertiesActivator';
 // import conditionalProps from 'bpmn-js-properties-panel/lib/provider/camunda/parts/ConditionalProps.js';
 
 import baseInfo from './parts/BaseInfoProps';

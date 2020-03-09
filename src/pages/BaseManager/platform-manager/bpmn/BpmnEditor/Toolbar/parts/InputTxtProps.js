@@ -1,4 +1,4 @@
-import entryFactory from 'bpmn-js-properties-panel/lib/factory/EntryFactory';
+import entryFactory from 'cus-/lib/factory/EntryFactory';
 
 export default function(group, element, bpmnFactory, translate) {
     group.entries.push(

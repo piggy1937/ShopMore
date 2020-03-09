@@ -1,10 +1,10 @@
 import {is, getBusinessObject} from 'bpmn-js/lib/util/ModelUtil';
 import {isAny} from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
 import {query} from 'min-dom';
-import cmdHelper from 'bpmn-js-properties-panel/lib/helper/CmdHelper';
-import elementHelper from 'bpmn-js-properties-panel/lib/helper/ElementHelper';
-import eventDefinitionHelper from 'bpmn-js-properties-panel/lib/helper/EventDefinitionHelper';
-import script from 'bpmn-js-properties-panel/lib/provider/camunda/parts/implementation/Script';
+import cmdHelper from 'cus-bpmn-js-properties-panel/lib/helper/CmdHelper';
+import elementHelper from 'cus-bpmn-js-properties-panel/lib/helper/ElementHelper';
+import eventDefinitionHelper from 'cus-bpmn-js-properties-panel/lib/helper/EventDefinitionHelper';
+import script from 'cus-bpmn-js-properties-panel/lib/provider/camunda/parts/implementation/Script';
 
 let domQuery = query;
 

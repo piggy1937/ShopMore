@@ -1,8 +1,8 @@
-import entryFactory from 'bpmn-js-properties-panel/lib/factory/EntryFactory';
+import entryFactory from 'cus-bpmn-js-properties-panel/lib/factory/EntryFactory';
 import {is, getBusinessObject} from 'bpmn-js/lib/util/ModelUtil';
 import {isAny} from 'bpmn-js/lib/features/modeling/util/ModelingUtil';
-import eventDefinitionHelper from 'bpmn-js-properties-panel/lib/helper/EventDefinitionHelper';
-import cmdHelper from 'bpmn-js-properties-panel/lib/helper/CmdHelper';
+import eventDefinitionHelper from 'cus-bpmn-js-properties-panel/lib/helper/EventDefinitionHelper';
+import cmdHelper from 'cus-bpmn-js-properties-panel/lib/helper/CmdHelper';
 
 const CONDITIONAL_SOURCES = [
     'bpmn:Activity',

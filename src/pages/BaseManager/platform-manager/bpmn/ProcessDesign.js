@@ -5,7 +5,7 @@ import React, {Component} from 'react';
 import {Card, Form, Button, notification} from 'antd';
 
 // Bpmn 相关文件
-import propertiesPanelModule from 'bpmn-js-properties-panel';
+import propertiesPanelModule from 'cus-bpmn-js-properties-panel';
 import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
 import propertiesProviderModule from './BpmnEditor/Toolbar';
 import EditingTools from './BpmnEditor/EditingTools';

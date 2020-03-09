@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styles from './WorkflowEditor/workflow.module.less';
 import BpmnModeler from './WorkflowEditor/modeler';
-import propertiesPanelModule from 'bpmn-js-properties-panel';
+import propertiesPanelModule from 'cus-bpmn-js-properties-panel';
 import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';

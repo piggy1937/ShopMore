@@ -1,6 +1,6 @@
-import entryFactory from 'bpmn-js-properties-panel/lib/factory/EntryFactory';
+import entryFactory from 'cus-bpmn-js-properties-panel/lib/factory/EntryFactory';
 import {getBusinessObject, is} from 'bpmn-js/lib/util/ModelUtil';
-import cmdHelper from 'bpmn-js-properties-panel/lib/helper/CmdHelper';
+import cmdHelper from 'cus-bpmn-js-properties-panel/lib/helper/CmdHelper';
 
 // const roleArr = [
 //     { name: '业务专员', value: 'JJZY' },
@@ -27,7 +27,7 @@ function setSelect(element, value, name) {
 }
 
 export default function(group, element, bpmnFactory, translate) {
-    console.log('aaaaaaaaaaaaaaa',element)
+    //console.log('aaaaaaaaaaaaaaa',element)
     //  if (is(element, 'bpmn:EndEvent')||is(element,'bpmn:Process')
     //  ||is(element,'bpmn:SequenceFlow')
     //  ||is(element,'bpmn:ExclusiveGateway')

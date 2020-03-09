@@ -1,4 +1,4 @@
-import entryFactory from 'bpmn-js-properties-panel/lib/factory/EntryFactory';
+import entryFactory from 'cus-bpmn-js-properties-panel/lib/factory/EntryFactory';
 
 // 编号
 export default function(group, element, bpmnFactory, translate) {
