@@ -28,7 +28,13 @@ function setSelect(element, value, name) {
 
 export default function(group, element, bpmnFactory, translate) {
     console.log('aaaaaaaaaaaaaaa',element)
-    if (!is(element, 'bpmn:ManualTask')) return;
+    //  if (is(element, 'bpmn:EndEvent')||is(element,'bpmn:Process')
+    //  ||is(element,'bpmn:SequenceFlow')
+    //  ||is(element,'bpmn:ExclusiveGateway')
+    //  ) return;
+
+     if (!(is(element, 'bpmn:StartEvent')||is(element, 'bpmn:ManualTask'))) return;
+
     const flowOptions = JSON.parse(window.sessionStorage.getItem('flowOptions'))||{node_belong:'',roles:[],users:''};
 
     // // 节点属性
