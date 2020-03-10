@@ -3,6 +3,7 @@ import { Table, Card, Form, Input, Button, DatePicker, message, Icon, Row, Col, 
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import request  from '@/utils/request'
+import { async } from 'regenerator-runtime'
 const store = connect(
     (state) => ({ user: state.user })
 )
@@ -91,19 +92,7 @@ class BudgetInfo extends React.Component {
    async componentDidMount (){
        
 
-        let p1 = new Promise(async (resolve, reject) => {
-            try{
-                const ret = await request({
-                    method:'get',
-                    url:'/api/admin/subject',
-                    data:{}
-                })
-                resolve(ret)
-            }catch(e){
-                reject(e)
-            }
-           
-          })
+      
           
           let p2 = new Promise(async (resolve, reject) => {      
             try{
@@ -132,18 +121,31 @@ class BudgetInfo extends React.Component {
 
           })
           try{
-         const ret= await Promise.all([p1, p2,p3])
+         const ret= await Promise.all([ p2,p3])
         if(ret){
             this.setState({
-                treeData:ret[0].result?ret[0].result:[],
-                depTreeData:ret[1].result?ret[1].result:[],
-                projTreeData:ret[2].result?ret[2].result:[]
+                depTreeData:ret[0].result?ret[0].result:[],
+                projTreeData:ret[1].result?ret[1].result:[]
             })
         }
         }catch(e){
             message.error(e.message)
         }
     }
+    /***
+     * 加载科目节点
+     */
+
+     onLoadSubjectData = async ()=>{
+            const ret = await request({
+                method:'get',
+                url:'/api/admin/subject',
+                data:{}
+            })
+            this.setState({
+                treeData:ret.result?ret.result:[]
+            })
+     }
     /***
      * 加载部门节点
      */
@@ -245,7 +247,7 @@ class BudgetInfo extends React.Component {
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
-                                <Form.Item label="科目">
+                                <Form.Item label="科目" onClick={()=>{this.onLoadSubjectData()}}>
                                     {getFieldDecorator('subject')(
                                         <TreeSelect
                                         showSearch
