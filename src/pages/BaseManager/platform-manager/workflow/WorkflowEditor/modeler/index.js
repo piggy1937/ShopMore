@@ -13,3 +13,4 @@ CustomModeler.prototype._modules = [].concat(
         CustomModule
     ]
 )
+CustomModeler.$inject = ['contectService'];

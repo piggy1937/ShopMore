@@ -21,6 +21,7 @@ import { withRouter } from 'react-router-dom'
 import request  from '@/utils/request'
 import { WorkflowDesignProvider,WorkflowDesignConsumer} from './WorkflowDesignProvider'
 import CreateEditeModal from './createEditeModal'
+import CreateSelUserModal from './createSelUserModal'
 const { Search } = Input;
 @withRouter @Form.create()
 class FlowManager extends Component {
@@ -164,7 +165,10 @@ class FlowManager extends Component {
                     <div style={{textAlign: 'right'}}>
                         <Pagination defaultCurrent={1} total={this.state.pagination.total} onChange={this.onChangePage} />
                     </div>
-                    <CreateEditeModal></CreateEditeModal>
+                    <CreateEditeModal>
+                       <CreateSelUserModal></CreateSelUserModal>
+                    </CreateEditeModal>
+                    
                 </Card>
             </div>
             </WorkflowDesignProvider>

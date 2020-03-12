@@ -3,7 +3,9 @@ import request from '@/utils/request'
 import {  message } from 'antd'
  const WorkflowDesignContext = createContext({
     toggle: false,
+    toggleSelUserModal:false,
     handleToggle: () => {},
+    handleSelUserToggle: ()=>{},
     handleOk:()=>{},
     initBpmnModeler:(model)=>{},
     bpmnModeler:{},
@@ -22,6 +24,13 @@ export class WorkflowDesignProvider extends React.Component {
                 processId
             })
         }
+    }
+
+    handleSelUserToggle = () => {
+        console.log('#######################')
+        this.setState({
+            toggleSelUserModal: !this.state.toggleSelUserModal,
+        })
     }
     /***
      * 初始化model
@@ -61,9 +70,14 @@ export class WorkflowDesignProvider extends React.Component {
     state = {
         toggle: false,
         handleToggle: this.handleToggle,
+        handleSelUserToggle: this.handleSelUserToggle,
         handleOk:this.handleOk,
-        initBpmnModeler: this.initBpmnModeler
+        initBpmnModeler: this.initBpmnModeler,
+        toggleSelUserModal:false  //是否弹出候选用户框
     }
+
+   
+
     render() {
         return (
             <WorkflowDesignContext.Provider value={this.state}>

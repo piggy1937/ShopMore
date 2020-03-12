@@ -29,7 +29,7 @@ class MySider extends React.Component {
                     )
                 } else {
                     return (
-                        <Menu.SubMenu key={item.key} title={<span>{item.icon && <i className={item.icon} ></i>}<span>{item.title}</span></span>}>
+                        <Menu.SubMenu key={item.key|| item.title} title={<span>{item.icon && <i className={item.icon} ></i>}<span>{item.title}</span></span>}>
                             {this.renderMenu(item.children)}
                         </Menu.SubMenu>
                     )

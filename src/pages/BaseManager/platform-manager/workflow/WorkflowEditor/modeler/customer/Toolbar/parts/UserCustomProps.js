@@ -1,3 +1,4 @@
+import React from 'react';
 import entryFactory from 'cus-bpmn-js-properties-panel/lib/factory/EntryFactory';
 import {getBusinessObject, is} from 'bpmn-js/lib/util/ModelUtil';
 import cmdHelper from 'cus-bpmn-js-properties-panel/lib/helper/CmdHelper';
@@ -26,7 +27,8 @@ function setSelect(element, value, name) {
     return obj;
 }
 
-export default function(group, element, bpmnFactory, translate) {
+export default function(group, element, bpmnFactory, translate,contectService) {
+  
     //console.log('aaaaaaaaaaaaaaa',element)
     //  if (is(element, 'bpmn:EndEvent')||is(element,'bpmn:Process')
     //  ||is(element,'bpmn:SequenceFlow')
@@ -128,31 +130,45 @@ export default function(group, element, bpmnFactory, translate) {
     // group.entries.push(role);
 
     // 用户任务执行人
-    const user = entryFactory.selectBox({
-        id: 'candidateUsers',
-        label: translate('候选用户'),
-        // selectOptions: flowOptions.users,
-        selectOptions: [{name: '请选择', value: ''}].concat(flowOptions.users),
-        modelProperty: 'candidateUsers',
-        get(el) {
-            return {
-                candidateUsers: getSelect(el, 'camunda:candidateUsers'),
-            };
-        },
-        set(el, value) {
-            const bo = getBusinessObject(el);
-            const props = setSelect(el, value, 'candidateUsers');
-            return cmdHelper.updateBusinessObject(element, bo, props);
-        },
-        validate: function(element, values) {
-            let validationResult = {};
+    // const user = entryFactory.selectBox({
+    //     id: 'candidateUsers',
+    //     label: translate('候选用户'),
+    //     // selectOptions: flowOptions.users,
+    //     selectOptions: [{name: '请选择', value: ''}].concat(flowOptions.users),
+    //     modelProperty: 'candidateUsers',
+    //     get(el) {
+    //         return {
+    //             candidateUsers: getSelect(el, 'camunda:candidateUsers'),
+    //         };
+    //     },
+    //     set(el, value) {
+    //         const bo = getBusinessObject(el);
+    //         const props = setSelect(el, value, 'candidateUsers');
+    //         return cmdHelper.updateBusinessObject(element, bo, props);
+    //     },
+    //     validate: function(element, values) {
+    //         let validationResult = {};
 
-            if (!values.candidateUsers) {
-                validationResult.candidateUsers = '请选择候选用户';
+    //         if (!values.candidateUsers) {
+    //             validationResult.candidateUsers = '请选择候选用户';
+    //         }
+
+    //         return validationResult;
+    //     },
+    // });
+    const user =  entryFactory.cusTextField({
+            id: 'candidateUsers',
+            label: translate('候选用户'),
+            modelProperty: 'candidateUsers',
+            actionSearch:{
+                name: 'actionSearch',
+                method: ()=>{
+                   console.log('31231232',contectService)
+                   contectService.handleSelUserToggle()
+                     
+                }
+                
             }
-
-            return validationResult;
-        },
     });
 
     group.entries.push(user);

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component,PureComponent } from 'react';
 import { Form, Input, message, Select } from 'antd'
 import {WorkflowDesignConsumer} from './WorkflowDesignProvider'
 import Modal from '@/components/model'
@@ -10,13 +10,15 @@ class CreateEditeModal extends Component {
         <WorkflowDesignConsumer > 
             {
                 ({toggle,handleToggle,handleOk}) =>(
-                    <Modal visible={toggle} title='自定义流程' width={'85%'}
+                    <Modal visible={toggle} title='自定义流程' width={'85%'} 
+                        drag= {true}
                         bodyStyle={{height:'500px',padding:'0'}}
                         centered
                         onOk={()=>{handleOk()}}
-                           destroyOnClose
+                        destroyOnClose
                         onCancel={()=>{handleToggle()}}>   
-                        <WorkflowDesign/>
+                         <WorkflowDesign/>
+                        {this.props.children}
                     </Modal>
                 )
             }

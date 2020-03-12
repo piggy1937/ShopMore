@@ -56,18 +56,27 @@ class ModalTitle extends React.Component {
     // }
   };
     render() {
-      const { title } = this.props;
+      const { title,drag,fullScreen} = this.props;
+      console.log('dsassssssssssssssssssssss',drag)
+      let TitleContent
+        if(drag){
+          TitleContent= <DragM updateTransform={this.updateTransform}>
+          <span style={{width:'90%',display:'inline-block'}}>{title} </span>
+          </DragM>
+        }else{
+          TitleContent=  <span style={{width:'90%',display:'inline-block'}}>{title} </span>
+        }
+        
       return (
           <div>
-            <DragM updateTransform={this.updateTransform}>
-            <span style={{width:'90%',display:'inline-block'}}>{title} </span>
-            </DragM>
-           
-            <span style={{float:'right',paddingRight:'30px',display:'inline-block'}} onClick={()=>{
+              {TitleContent}
+            
+            <span style={{float:'right',paddingRight:'30px',display:'inline-block'}}  onClick={()=>{
                 this.state.isFull ? fullExit() : fullScreen();
                 
             }}> <i className={`iconfont icon-quanping ${Styles.quanping}`} ></i></span>
              <span  style={{float:'right',paddingRight:'10px',display:'inline-block'}} onClick={()=>fullExit()}><i className={`iconfont icon-zuixiaohua ${Styles.quanping}`} ></i></span>
+       
         </div>
        
       );
@@ -75,7 +84,7 @@ class ModalTitle extends React.Component {
 }
 class CustomizeModel extends React.Component{
     render() {
-        const title = <ModalTitle title={this.props.title} />;
+        const title = <ModalTitle title={this.props.title} drag={this.props.drag} fullScreen={this.props.fullScreen}/>;
         return (
                 <Modal
                     {...this.props}

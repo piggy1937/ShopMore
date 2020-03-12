@@ -7,7 +7,11 @@ import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import {WorkflowDesignContext} from './WorkflowDesignProvider'
 import propertiesProviderModule from './WorkflowEditor/modeler/customer/Toolbar';
+import MagicPropertiesProvider from './WorkflowEditor/modeler/customer/Toolbar/MagicPropertiesProvider';
+
 import { notification} from 'antd';
+
+
 /**
  * 工作流自定义
  */
@@ -30,7 +34,13 @@ class WorkflowDesign extends Component {
             propertiesPanel: {
                 parent: '#properties-panel',
             },
-            additionalModules: [propertiesPanelModule, propertiesProviderModule],
+            additionalModules: [propertiesPanelModule, {
+                
+                    __init__: ['propertiesProvider','contectService'],
+                    propertiesProvider: ['type', MagicPropertiesProvider],
+                    contectService:['value',contect]
+                
+            },],
             moddleExtensions: {
                 camunda: camundaModdleDescriptor,
             },
@@ -86,18 +96,12 @@ class WorkflowDesign extends Component {
             <div style={{ minHeight: '100%', height: '100%' }} className={styles.container}>
                 <div className={styles.container} style={  {minHeight:'100%',height:'100%'}} id="js-drop-zone">
                     <div className={styles.canvas} id="canvas"    style={{minHeight:'100%',height:'100%'}}/>
-
-
                     <div className={`properties-panel-parent showPanel`}
-                    
                          id="properties-panel"
                             style={{height: '100%'}}
                     />
                 </div>
-
-              
-
-
+               
             </div>
 
         )

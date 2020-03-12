@@ -1,7 +1,6 @@
 import inherits from 'inherits';
 import PropertiesActivator from 'cus-bpmn-js-properties-panel/lib/PropertiesActivator';
 // import conditionalProps from 'bpmn-js-properties-panel/lib/provider/camunda/parts/ConditionalProps.js';
-
 import baseInfo from './parts/BaseInfoProps';
 // import gateWayProps from './parts/GateWayProps';
 // import checkboxProps from './parts/CheckboxProps';
@@ -11,7 +10,7 @@ import userCustomProps from './parts/UserCustomProps';
 import ConditionProps from './parts/ConditionProps';
 
 // 创建基础信息看板
-function createBaseInfoTab(element, bpmnFactory, elementRegistry, translate) {
+function createBaseInfoTab(element, bpmnFactory, elementRegistry, translate,contectService) {
     const generalGroup = {
         id: 'baseInfo',
         label: '',
@@ -20,7 +19,7 @@ function createBaseInfoTab(element, bpmnFactory, elementRegistry, translate) {
 
     baseInfo(generalGroup, element, bpmnFactory, translate);
     // gateWayProps(generalGroup, element, bpmnFactory, translate);
-    userCustomProps(generalGroup, element, bpmnFactory, translate);
+    userCustomProps(generalGroup, element, bpmnFactory, translate,contectService);
     // Expression(generalGroup, element, bpmnFactory, translate);
     ConditionProps(generalGroup, element, bpmnFactory, translate);
     // console.log('初始化属性看板');
@@ -40,14 +39,15 @@ function createBaseInfoTab(element, bpmnFactory, elementRegistry, translate) {
 //     return [generalGroup];
 // }
 
-export default function MagicPropertiesProvider(eventBus, bpmnFactory, elementRegistry, translate) {
+export default function MagicPropertiesProvider(eventBus, bpmnFactory, elementRegistry, translate,contectService) {
     PropertiesActivator.call(this, eventBus);
     this.getTabs = function(element) {
         const baseInfoTab = {
             id: 'baseInfo',
             label: '基本信息',
-            groups: createBaseInfoTab(element, bpmnFactory, elementRegistry, translate),
+            groups: createBaseInfoTab(element, bpmnFactory, elementRegistry, translate,contectService),
         };
+
 
         // const variableTab = {
         //     id: 'variableInfo',
@@ -61,4 +61,4 @@ return [baseInfoTab];
 
 inherits(MagicPropertiesProvider, PropertiesActivator);
 
-MagicPropertiesProvider.$inject = ['eventBus', 'bpmnFactory', 'elementRegistry', 'translate'];
+MagicPropertiesProvider.$inject = ['eventBus', 'bpmnFactory', 'elementRegistry', 'translate','contectService'];
