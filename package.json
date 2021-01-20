@@ -13,7 +13,7 @@
     "core-js": "^3.4.1",
     "crypto-js": "^3.1.9-1",
     "draft-js-prism": "^1.0.6",
-    "gsap": "^2.1.2",
+    "gsap": "^3.6.0",
     "immutable": "^4.0.0-rc.12",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
